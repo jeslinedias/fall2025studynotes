@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Financial Statements Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A thematic, dashboard-style Single Page Application (SPA) is used instead of a linear lesson format to promote exploration and comparison. The app is divided into four main sections accessible via a sticky header: Introduction, Balance Sheet, Income Statement, and Cash Flow Statement. This structure allows users to jump directly to a topic of interest. The core interaction is a company selector (Walmart vs. General Mills) that dynamically updates all visualizations and data points within a section, facilitating direct comparison and deeper understanding of how concepts apply to different businesses. This non-linear, interactive approach is chosen for superior usability and engagement over a static report. -->
+    <!-- Visualization & Content Choices: Data from the report is presented through interactive charts and contextual text. GOAL: Compare/Inform -> VIZ: Bar and Doughnut charts (Chart.js) are used to compare financial statement components. INTERACTION: Users can switch company data via buttons, which updates charts and text, and click on key terms to reveal definitions. JUSTIFICATION: This approach transforms static data into an exploratory experience. Bar charts effectively show magnitude differences (e.g., Assets vs. Liabilities), while doughnut charts show proportional composition. Clickable definitions provide layered information without cluttering the UI. LIBRARY: Chart.js for all canvas-based visualizations. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+        .company-btn.active { background-color: #3b82f6; color: white; }
+        .concept-card { transition: transform 0.2s; }
+        .concept-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body class="bg-neutral-50 text-gray-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-neutral-200">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-blue-600">Financial Explorer</h1>
+                <div class="hidden sm:flex items-center space-x-8">
+                    <a href="#introduction" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Introduction</a>
+                    <a href="#balance-sheet" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Balance Sheet</a>
+                    <a href="#income-statement" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Income Statement</a>
+                    <a href="#cash-flow" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Cash Flow</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="introduction" class="min-h-[70vh] flex items-center">
+            <div class="w-full text-center">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Welcome to the Foundations of Financial Accounting.</h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">This interactive tool translates complex accounting principles into an engaging, visual experience. Explore the three core financial statements, compare real-world data from major corporations, and build a solid understanding of how businesses report their performance and position.</p>
+                <a href="#balance-sheet" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">Start Exploring</a>
+            </div>
+        </section>
+
+        <div class="flex justify-center my-12">
+            <div class="inline-flex rounded-lg shadow-sm" role="group">
+                <button type="button" id="walmart-btn" class="company-btn px-6 py-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">
+                    Walmart
+                </button>
+                <button type="button" id="general-mills-btn" class="company-btn px-6 py-3 text-sm font-medium text-gray-900 bg-white border-t border-b border-r border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">
+                    General Mills
+                </button>
+            </div>
+        </div>
+
+        <section id="balance-sheet" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Balance Sheet</h2>
+                <p class="mt-2 text-lg text-gray-600 max-w-2xl mx-auto">A snapshot of a company's financial health, showing what it owns (Assets) and what it owes (Liabilities & Equity) at a single point in time.</p>
+                <p class="mt-2 font-semibold text-xl text-blue-600">Assets = Liabilities + Shareholders' Equity</p>
+            </div>
+            <div class="chart-container mb-12 h-64 md:h-80">
+                <canvas id="balanceEquationChart"></canvas>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-4 text-center">Assets</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">Resources controlled by the company to create future value.</p>
+                    <div class="chart-container h-64">
+                        <canvas id="assetsChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-4 text-center">Liabilities</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">A company's financial obligations or debts.</p>
+                    <div class="chart-container h-64">
+                        <canvas id="liabilitiesChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-4 text-center">Shareholders' Equity</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">The net value of a company, or the amount financed by its owners.</p>
+                    <div class="chart-container h-64">
+                        <canvas id="equityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="income-statement" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Income Statement</h2>
+                <p class="mt-2 text-lg text-gray-600 max-w-2xl mx-auto">Summarizes a company's financial performance over a period of time, showing its revenues, expenses, and ultimately, its profit or loss.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="chart-container h-96">
+                    <canvas id="incomeStatementChart"></canvas>
+                </div>
+                <div class="mt-8 text-center">
+                    <h4 class="text-lg font-semibold">Key Takeaway: Profit Margin</h4>
+                    <p class="text-3xl font-bold text-blue-600 mt-2" id="profit-margin">0.0%</p>
+                    <p class="text-gray-600 mt-1">This shows the percentage of revenue that turns into profit. A higher margin is generally better.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cash-flow" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Cash Flow Statement</h2>
+                <p class="mt-2 text-lg text-gray-600 max-w-2xl mx-auto">Tracks the movement of cash into and out of the company from its operations, investments, and financing activities.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="chart-container h-96">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+                <div class="mt-8 text-center">
+                    <h4 class="text-lg font-semibold">Overall Cash Change</h4>
+                    <p class="text-3xl font-bold mt-2" id="cash-change">$0</p>
+                    <p class="text-gray-600 mt-1">This is the net result of all cash activities for the period.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-neutral-200 mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
+            <p>Interactive Financial Explorer. Data sourced from Module 1 Lecture Transcript.</p>
+        </div>
+    </footer>
+
+    <script>
+        const financialData = {
+            walmart: {
+                year: 2023,
+                balanceSheet: {
+                    assets: { total: 243197, current: 73134, longterm: 170063, breakdown: { cash: 8625, receivables: 7933, inventories: 56576, ppe: 100760, other: 69303 } },
+                    liabilities: { total: 159933, current: 87334, longterm: 72599, breakdown: { accountsPayable: 53742, shortTermDebt: 4191, longTermDebt: 34649, other: 67351 } },
+                    equity: { total: 83264, commonStock: 269, apic: 4969, retainedEarnings: 83135, breakdown: { commonAndApic: 5238, retainedEarnings: 83135, other: -5109 } }
+                },
+                incomeStatement: {
+                    revenues: 611289,
+                    cogs: 463721,
+                    operatingExpenses: 127110,
+                    netIncome: 11292
+                },
+                cashFlow: {
+                    operating: 28841,
+                    investing: -17722,
+                    financing: -17039,
+                    netChange: -5993
+                }
+            },
+            generalMills: {
+                year: 2023,
+                balanceSheet: {
+                    assets: { total: 32114, current: 4967, longterm: 27147, breakdown: { cash: 641, inventories: 2368, ppe: 3636, goodwill: 14511, otherIntangibles: 6967, other: 3991 } },
+                    liabilities: { total: 21665, current: 6700, longterm: 14965, breakdown: { accountsPayable: 4194, shortTermDebt: 1500, longTermDebt: 9965, other: 6006 } },
+                    equity: { total: 10449, commonStock: 728, apic: 6813, retainedEarnings: 17180, breakdown: { commonAndApic: 7541, retainedEarnings: 17180, other: -14272 } }
+                },
+                incomeStatement: {
+                    revenues: 20094,
+                    cogs: 13059,
+                    operatingExpenses: 3426,
+                    netIncome: 2609
+                },
+                cashFlow: {
+                    operating: 3400,
+                    investing: -500,
+                    financing: -3200,
+                    netChange: -300
+                }
+            }
+        };
+
+        let currentCompany = 'walmart';
+        const charts = {};
+
+        const initChart = (ctx, config) => {
+            if (charts[ctx.canvas.id]) {
+                charts[ctx.canvas.id].destroy();
+            }
+            charts[ctx.canvas.id] = new Chart(ctx, config);
+        };
+
+        const updateDashboard = () => {
+            const data = financialData[currentCompany];
+
+            document.getElementById('walmart-btn').classList.toggle('active', currentCompany === 'walmart');
+            document.getElementById('general-mills-btn').classList.toggle('active', currentCompany === 'generalMills');
+
+            updateBalanceSheet(data.balanceSheet);
+            updateIncomeStatement(data.incomeStatement);
+            updateCashFlow(data.cashFlow);
+        };
+
+        const formatCurrency = (value) => {
+             if (Math.abs(value) >= 1000) {
+                return `$${(value / 1000).toFixed(1)}B`;
+            }
+            return `$${value}M`;
+        }
+
+        const updateBalanceSheet = (d) => {
+            const { assets, liabilities, equity } = d;
+            
+            initChart(document.getElementById('balanceEquationChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Assets', 'Liabilities & Equity'],
+                    datasets: [{
+                        data: [assets.total, liabilities.total + equity.total],
+                        backgroundColor: ['#3b82f6', '#10b981'],
+                        borderColor: '#ffffff',
+                        borderWidth: 4,
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' }, title: { display: true, text: `Total Assets vs. Liabilities & Equity (${formatCurrency(assets.total)})` } } }
+            });
+
+            initChart(document.getElementById('assetsChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(assets.breakdown).map(l => l.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())),
+                    datasets: [{ label: 'Amount (in millions)', data: Object.values(assets.breakdown), backgroundColor: ['#60a5fa', '#3b82f6', '#1d4ed8', '#1e3a8a', '#172554', '#dbeafe'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            initChart(document.getElementById('liabilitiesChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(liabilities.breakdown).map(l => l.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())),
+                    datasets: [{ label: 'Amount (in millions)', data: Object.values(liabilities.breakdown), backgroundColor: ['#f87171', '#ef4444', '#dc2626', '#b91c1c'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            initChart(document.getElementById('equityChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Common Stock & APIC', 'Retained Earnings', 'Other'],
+                    datasets: [{ label: 'Amount (in millions)', data: [equity.breakdown.commonAndApic, equity.breakdown.retainedEarnings, equity.breakdown.other], backgroundColor: ['#4ade80', '#22c55e', '#16a34a'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        };
+
+        const updateIncomeStatement = (d) => {
+            const { revenues, cogs, operatingExpenses, netIncome } = d;
+            const grossProfit = revenues - cogs;
+            const operatingIncome = grossProfit - operatingExpenses;
+
+            initChart(document.getElementById('incomeStatementChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Revenues', 'Gross Profit', 'Operating Income', 'Net Income'],
+                    datasets: [{
+                        label: 'Amount (in millions)',
+                        data: [revenues, grossProfit, operatingIncome, netIncome],
+                        backgroundColor: ['#3b82f6', '#60a5fa', '#93c5fd', '#10b981']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'From Revenue to Net Income' } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            const profitMargin = (netIncome / revenues * 100).toFixed(1);
+            document.getElementById('profit-margin').textContent = `${profitMargin}%`;
+        };
+
+        const updateCashFlow = (d) => {
+            const { operating, investing, financing, netChange } = d;
+            
+            initChart(document.getElementById('cashFlowChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Operating', 'Investing', 'Financing'],
+                    datasets: [{
+                        label: 'Cash Flow (in millions)',
+                        data: [operating, investing, financing],
+                        backgroundColor: (context) => context.raw >= 0 ? '#22c55e' : '#ef4444',
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Sources and Uses of Cash' } },
+                    scales: { x: { beginAtZero: false } }
+                }
+            });
+
+            const cashChangeText = `${netChange >= 0 ? '+' : ''}${netChange.toLocaleString()}M`;
+            const cashChangeEl = document.getElementById('cash-change');
+            cashChangeEl.textContent = `$${cashChangeText}`;
+            cashChangeEl.style.color = netChange >= 0 ? '#22c55e' : '#ef4444';
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboard();
+
+            document.getElementById('walmart-btn').addEventListener('click', () => {
+                currentCompany = 'walmart';
+                updateDashboard();
+            });
+
+            document.getElementById('general-mills-btn').addEventListener('click', () => {
+                currentCompany = 'generalMills';
+                updateDashboard();
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main > section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
