@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: Developing as a Leader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Warm Neutral Harmony" - A calming and professional palette using beige, slate, warm gray, and a subtle terracotta accent. -->
+    <!-- Application Structure Plan: The SPA is structured into four thematic, scrollable sections to create a narrative user journey: 1) "The Essence of Leadership" introduces the core definition through interactive cards. 2) "The Evolution of Leadership" uses an interactive timeline to show historical context. 3) "Core Competencies" features an interactive chart and detailed cards to explore essential skills. 4) "Your Leadership Journey" provides interactive tools for self-reflection (roles and personal definition). This thematic structure was chosen over a linear report format to make complex information more digestible and engaging, allowing users to explore concepts at their own pace and focus on areas most relevant to them. -->
+    <!-- Visualization & Content Choices: 1) Leadership Definition -> Goal: Inform/Organize -> Method: Interactive HTML/CSS cards -> Interaction: Click to reveal details -> Justification: Breaks down a dense definition into memorable, bite-sized pieces. 2) History of Leadership -> Goal: Show Change -> Method: Interactive Timeline (HTML/CSS/JS) -> Interaction: Click on eras to display details -> Justification: Visually represents the progression of theories, making it easier to understand than plain text. 3) Competencies -> Goal: Compare/Inform -> Method: Bar Chart (Chart.js) & Cards -> Interaction: Hover on chart, click on competency categories -> Justification: The chart provides a quick visual comparison of competency importance, while the cards offer deeper insights. 4) Leadership Roles -> Goal: Compare/Organize -> Method: Tabbed content (HTML/CSS/JS) -> Interaction: Click tabs (Coach, Mentor, Sponsor) -> Justification: Allows for easy side-by-side comparison of distinct but related roles. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F3; /* Warm Beige */
+            color: #4A4A4A; /* Warm Gray */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #D97706; /* Terracotta Accent */
+            border-bottom-color: #D97706;
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #D1D5DB;
+            border: 4px solid #F5F5F3;
+        }
+        .timeline-item.active::before {
+            background-color: #D97706;
+        }
+        .tab.active {
+            background-color: #D97706;
+            color: #FFFFFF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 450px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-slate-700">Developing as a Leader</h1>
+        <div class="hidden md:flex space-x-8">
+            <a href="#definition" class="nav-link active">Essence</a>
+            <a href="#history" class="nav-link">Evolution</a>
+            <a href="#competencies" class="nav-link">Competencies</a>
+            <a href="#journey" class="nav-link">Your Journey</a>
+        </div>
+        <button id="mobile-menu-button" class="md:hidden text-slate-700 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+        <a href="#definition" class="block py-2 nav-link mobile-nav-link">Essence</a>
+        <a href="#history" class="block py-2 nav-link mobile-nav-link">Evolution</a>
+        <a href="#competencies" class="block py-2 nav-link mobile-nav-link">Competencies</a>
+        <a href="#journey" class="block py-2 nav-link mobile-nav-link">Your Journey</a>
+    </div>
+</header>
+
+<main class="container mx-auto px-6 py-12">
+
+    <!-- Section 1: The Essence of Leadership -->
+    <section id="definition" class="mb-24 text-center scroll-mt-20">
+        <h2 class="text-4xl font-bold text-slate-800 mb-4">The Essence of Leadership</h2>
+        <p class="max-w-3xl mx-auto text-lg text-slate-600 mb-12">Leadership is a dynamic process, not a static position. The following definition provides a framework for understanding its core components. Click on each element to explore its meaning and importance.</p>
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-12">
+            <p class="text-2xl font-medium text-slate-700 leading-relaxed">"Leadership is a <strong class="text-amber-700">socially-constructed process</strong> in which an individual is either <strong class="text-amber-700">given or takes increased responsibility or accountability</strong> in <strong class="text-amber-700">empowering others</strong> to <strong class="text-amber-700">collectively solve problems</strong> in alignment with an organization's or team's <strong class="text-amber-700">purpose</strong>."</p>
+        </div>
+        <div id="definition-cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        </div>
+    </section>
+
+    <!-- Section 2: The Evolution of Leadership -->
+    <section id="history" class="mb-24 scroll-mt-20">
+        <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">The Evolution of Leadership</h2>
+        <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-16">Our understanding of leadership has transformed over the last century. Theories have shifted from focusing on innate traits to emphasizing relationships and context. Explore this evolution by clicking on the different eras in the timeline below.</p>
+        <div class="flex flex-col md:flex-row justify-center">
+            <div class="md:w-1/3 lg:w-1/4">
+                <ul id="timeline-nav" class="space-y-4">
+                </ul>
+            </div>
+            <div class="md:w-2/3 lg:w-3/4 md:pl-12 mt-8 md:mt-0">
+                <div id="timeline-content" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 min-h-[300px]">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Core Competencies -->
+    <section id="competencies" class="mb-24 scroll-mt-20">
+        <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Core Competencies for Modern Leaders</h2>
+        <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12">Effective leadership requires a blend of skills focused on the self, others, and the organization. A global study highlighted five crucial competencies. The chart below shows their relative importance, according to leaders worldwide. Click the buttons below the chart to learn more about each area.</p>
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mb-8">
+            <div class="chart-container">
+                <canvas id="competenciesChart"></canvas>
+            </div>
+        </div>
+        <div id="competency-buttons" class="flex flex-wrap justify-center gap-4 mb-8">
+        </div>
+        <div id="competency-details" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 min-h-[150px]">
+        </div>
+    </section>
+
+    <!-- Section 4: Your Leadership Journey -->
+    <section id="journey" class="scroll-mt-20">
+        <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Your Leadership Journey</h2>
+        <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12">Developing as a leader is a personal and reflective process. It involves understanding the different roles you can play and defining what leadership means to you. Use the tools below to explore these concepts.</p>
+
+        <div class="grid lg:grid-cols-2 gap-12">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-bold text-slate-700 mb-6">The Three Roles of a Leader</h3>
+                <p class="text-slate-600 mb-6">A leader must adapt, playing different roles to support their team's growth. Understanding the distinction between a Coach, Mentor, and Sponsor is key. Click each tab to see how they differ.</p>
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button class="tab py-2 px-4 font-medium text-slate-600 active" data-role="Coach">Coach</button>
+                    <button class="tab py-2 px-4 font-medium text-slate-600" data-role="Mentor">Mentor</button>
+                    <button class="tab py-2 px-4 font-medium text-slate-600" data-role="Sponsor">Sponsor</button>
+                </div>
+                <div id="role-content"></div>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-bold text-slate-700 mb-6">Define Your Leadership</h3>
+                <p class="text-slate-600 mb-6">Leadership is personal. Answering these questions can help you craft your own leadership philosophy and guide your development. This is the foundation of your growth.</p>
+                <ul class="space-y-4 text-slate-700">
+                    <li class="flex items-start">
+                        <span class="text-amber-600 mr-3 mt-1">&#10003;</span>
+                        <div><strong>Why do I want to lead?</strong><p class="text-sm text-slate-500">Connect leadership to your personal identity and purpose.</p></div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-amber-600 mr-3 mt-1">&#10003;</span>
+                        <div><strong>What are my leadership values?</strong><p class="text-sm text-slate-500">Define the principles that will guide your actions.</p></div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-amber-600 mr-3 mt-1">&#10003;</span>
+                        <div><strong>How will I practice leadership?</strong><p class="text-sm text-slate-500">Identify opportunities to experiment and grow in your teams and roles.</p></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-slate-800 text-white mt-24">
+    <div class="container mx-auto px-6 py-8 text-center">
+        <p>&copy; 2025 Interactive Leadership Guide. An exploration of modern leadership principles.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const appData = {
+            definitions: [
+                { title: "Socially-Constructed Process", icon: "🤝", content: "Leadership isn't a fixed quality; it emerges from the unique relationships, situations, and cultural contexts you are in. Your effectiveness in one scenario doesn't guarantee success in another." },
+                { title: "Responsibility & Accountability", icon: "⚖️", content: "Leadership is not about formal power. It's about taking ownership. You can be given a leadership role, or you can step up and take the initiative to lead when you see an opportunity." },
+                { title: "Empowering Others", icon: "🚀", content: "Great leaders don't command and control. They create an environment where others can grow, contribute their best work, and solve problems. It's about enabling, not dictating." },
+                { title: "Collectively Solve Problems", icon: "🧩", content: "Business is fundamentally about solving problems. A leader's role is to foster a culture of collaborative problem-solving, where the team works together to find solutions." },
+                { title: "Alignment with Purpose", icon: "🎯", content: "Leaders provide vision and direction. They ensure everyone understands the 'why' behind their work, aligning individual efforts with the team's or organization's larger goals." }
+            ],
+            history: [
+                { era: "Trait Approach", period: "~1900s-1940s", title: "The 'Great Man' Theory", content: "Early theories suggested leaders are born, not made. The focus was on identifying the inherent qualities and characteristics of great historical figures. This approach was limited as it ignored situational factors and the potential for leadership development." },
+                { era: "Behaviorist Approach", period: "~1940s-1960s", title: "Focus on Actions", content: "Research shifted to what leaders *do* rather than who they *are*. This approach identified key behaviors, typically categorized as either task-focused (initiating structure) or people-focused (consideration). It suggested leadership could be learned and modeled." },
+                { era: "Contingency Approach", period: "~1960s-1970s", title: "It Depends...", content: "This era recognized that there is no one best way to lead. Effectiveness is contingent on the situation, including the task, the environment, and, crucially, the followers' maturity and readiness. Leaders must adapt their style accordingly." },
+                { era: "Relational Approach", period: "~1970s-Present", title: "Leadership is a Relationship", content: "Modern theories place the relationship between leaders and followers at the center. Concepts like trust, authenticity, and service are paramount. Leader-Member Exchange (LMX) theory highlights the importance of high-quality, trusting dyadic relationships." }
+            ],
+            competencies: [
+                { name: 'Strong Ethics & Safety', percentage: 67, description: 'Creating a foundation of trust through high moral standards and clear, safe expectations. This is the most critical competency for modern leaders.' },
+                { name: 'Empower Others', percentage: 32, description: 'Instilling confidence and providing autonomy for team members to self-organize and make decisions. This fosters ownership and innovation.' },
+                { name: 'Foster Connection', percentage: 29, description: 'Building a sense of belonging and psychological safety, where team members feel connected to each other and the shared mission.' },
+                { name: 'Encourage Learning', percentage: 28, description: 'Promoting openness to new ideas and fostering a culture of curiosity and continuous learning. The leader acts as a learner, not just a knower.' },
+                { name: 'Nurture Growth', percentage: 19, description: 'Actively developing team members to help them grow and eventually become leaders themselves. The primary purpose is to create more leaders.' }
+            ],
+            roles: {
+                Coach: { icon: '🧠', title: 'The Guide', description: 'A coach acts as a support system, using powerful questions to help individuals find their own answers. They don\'t give advice but facilitate self-discovery and keep you on your path.', analogy: 'Like the gutter rails in bowling, a coach keeps you in the lane but doesn\'t throw the ball for you.' },
+                Mentor: { icon: '🗺️', title: 'The Advisor', description: 'A mentor shares wisdom from their own experience. They provide specific advice, guidance, and a roadmap based on a path they have already walked.', analogy: 'An experienced marathon runner who gives you a detailed training plan and nutrition tips.' },
+                Sponsor: { icon: '📣', title: 'The Advocate', description: 'A sponsor is a person with influence who actively advocates for your career. They talk about your achievements when you are not in the room and create opportunities for you.', analogy: 'The person who gets you an invitation to run in an exclusive, high-profile marathon.' }
+            }
+        };
+
+        const definitionCardsContainer = document.getElementById('definition-cards');
+        appData.definitions.forEach(def => {
+            const card = document.createElement('div');
+            card.className = 'card bg-white p-6 rounded-lg shadow border border-gray-100 text-left cursor-pointer';
+            card.innerHTML = `
+                <div class="flex items-center mb-3">
+                    <span class="text-3xl mr-4">${def.icon}</span>
+                    <h3 class="text-xl font-bold text-slate-700">${def.title}</h3>
+                </div>
+                <p class="text-slate-600 hidden">${def.content}</p>
+            `;
+            definitionCardsContainer.appendChild(card);
+            card.addEventListener('click', () => {
+                card.querySelector('p').classList.toggle('hidden');
+            });
+        });
+
+        const timelineNav = document.getElementById('timeline-nav');
+        const timelineContent = document.getElementById('timeline-content');
+        appData.history.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<button class="w-full text-left p-4 rounded-lg transition-colors hover:bg-amber-100" data-index="${index}">
+                <span class="font-bold text-slate-700">${item.era}</span>
+                <span class="block text-sm text-slate-500">${item.period}</span>
+            </button>`;
+            timelineNav.appendChild(li);
+        });
+
+        function updateTimeline(index) {
+            const item = appData.history[index];
+            timelineContent.innerHTML = `
+                <h3 class="text-2xl font-bold text-amber-700 mb-2">${item.title}</h3>
+                <p class="text-lg text-slate-600">${item.content}</p>
+            `;
+            document.querySelectorAll('#timeline-nav button').forEach((btn, i) => {
+                btn.classList.toggle('bg-amber-100', i === index);
+            });
+        }
+        timelineNav.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (button) {
+                updateTimeline(parseInt(button.dataset.index));
+            }
+        });
+        updateTimeline(0);
+
+        const competencyButtons = document.getElementById('competency-buttons');
+        const competencyDetails = document.getElementById('competency-details');
+        appData.competencies.forEach((comp, index) => {
+            const button = document.createElement('button');
+            button.className = 'tab py-2 px-4 rounded-full font-medium text-slate-600 bg-gray-200 hover:bg-amber-600 hover:text-white transition-colors';
+            button.textContent = comp.name;
+            button.dataset.index = index;
+            competencyButtons.appendChild(button);
+        });
+
+        function updateCompetencyDetails(index) {
+            const comp = appData.competencies[index];
+            competencyDetails.innerHTML = `<p class="text-lg text-slate-700">${comp.description}</p>`;
+             document.querySelectorAll('#competency-buttons button').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+        }
+        competencyButtons.addEventListener('click', e => {
+            if(e.target.tagName === 'BUTTON') {
+                updateCompetencyDetails(parseInt(e.target.dataset.index));
+            }
+        });
+        updateCompetencyDetails(0);
+
+        const ctx = document.getElementById('competenciesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: appData.competencies.map(c => c.name),
+                datasets: [{
+                    label: '% of Leaders Citing as Important',
+                    data: appData.competencies.map(c => c.percentage),
+                    backgroundColor: '#F59E0B',
+                    borderColor: '#D97706',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Percentage (%)' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const roleTabs = document.querySelectorAll('.tab[data-role]');
+        const roleContent = document.getElementById('role-content');
+        function updateRoleContent(role) {
+            const roleData = appData.roles[role];
+            roleContent.innerHTML = `
+                <div class="flex items-start">
+                    <span class="text-4xl mr-4">${roleData.icon}</span>
+                    <div>
+                        <h4 class="text-xl font-bold text-slate-700">${roleData.title}</h4>
+                        <p class="text-slate-600 mt-2">${roleData.description}</p>
+                        <p class="text-sm text-slate-500 mt-4 italic"><strong>Analogy:</strong> ${roleData.analogy}</p>
+                    </div>
+                </div>
+            `;
+            roleTabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.role === role);
+            });
+        }
+        roleTabs.forEach(tab => {
+            tab.addEventListener('click', () => updateRoleContent(tab.dataset.role));
+        });
+        updateRoleContent('Coach');
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                    });
+                }
+            });
+        }, { rootMargin: "-50% 0px -50% 0px" });
+
+        sections.forEach(section => observer.observe(section));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                if(mobileMenu.classList.contains('hidden') === false){
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
