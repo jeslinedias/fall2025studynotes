@@ -9,32 +9,60 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: A thematic, dashboard-style Single Page Application (SPA) is used instead of a linear lesson format to promote exploration and comparison. The app is divided into four main sections accessible via a sticky header: Introduction, Balance Sheet, Income Statement, and Cash Flow Statement. This structure allows users to jump directly to a topic of interest. The core interaction is a company selector (Walmart vs. General Mills) that dynamically updates all visualizations and data points within a section, facilitating direct comparison and deeper understanding of how concepts apply to different businesses. This non-linear, interactive approach is chosen for superior usability and engagement over a static report. -->
-    <!-- Visualization & Content Choices: Data from the report is presented through interactive charts and contextual text. GOAL: Compare/Inform -> VIZ: Bar and Doughnut charts (Chart.js) are used to compare financial statement components. INTERACTION: Users can switch company data via buttons, which updates charts and text, and click on key terms to reveal definitions. JUSTIFICATION: This approach transforms static data into an exploratory experience. Bar charts effectively show magnitude differences (e.g., Assets vs. Liabilities), while doughnut charts show proportional composition. Clickable definitions provide layered information without cluttering the UI. LIBRARY: Chart.js for all canvas-based visualizations. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN for icons -->
+    <!-- Chosen Palette: Serene Ocean -->
+    <!-- Application Structure Plan: A thematic, single-page infographic is designed to tell a story about financial accounting. The structure flows from a high-level introduction to the core components: the Balance Sheet, Income Statement, and Cash Flow Statement, followed by a section for additional key concepts and case insights. This narrative approach guides the user through the fundamentals in a logical sequence. The core interaction is vertical scrolling, with sticky navigation to allow users to jump between sections. This is more intuitive for a content-heavy infographic than a complex dashboard, ensuring a smooth and guided user experience. -->
+    <!-- Visualization & Content Choices: Data from the report is presented using a mix of large-type statistics, detailed textual explanations, and clear visualizations. GOAL: Compare/Inform -> VIZ: Bar and Doughnut charts (Chart.js) are used to compare financial statement components and show breakdowns. INTERACTION: The infographic is primarily non-interactive, focusing on clear presentation of data as per the source material. This choice is to maintain the simplicity and narrative flow of an infographic. JUSTIFICATION: Bar charts effectively show magnitude differences (e.g., Assets vs. Liabilities), while doughnut charts show proportional composition. The detailed textual content provides in-depth explanations of concepts and specific examples from the transcript, enhancing understanding without relying solely on visualizations. LIBRARY: Chart.js for all canvas-based visualizations. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; } /* Default subtle background */
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
         @media (min-width: 768px) { .chart-container { height: 350px; } }
         .nav-link { transition: color 0.3s, border-color 0.3s; }
-        .nav-link.active { color: #3b82f6; border-bottom-color: #3b82f6; }
-        .company-btn.active { background-color: #3b82f6; color: white; }
-        .concept-card { transition: transform 0.2s; }
-        .concept-card:hover { transform: translateY(-5px); }
+        .nav-link.active { color: #DBEAFE; border-bottom-color: #DBEAFE; } /* Lighter blue for active nav link on dark header */
+        .stat-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); padding: 1.5rem; text-align: center; }
+        .stat-label { font-size: 1rem; color: #4B5563; }
+        .stat-value { font-size: 2.25rem; font-weight: 700; color: #2563EB; }
+        .highlight { background-color: #FFDE7A; padding: 1px 3px; border-radius: 3px; }
+        .current-highlight { background-color: #FFB300; padding: 1px 3px; border-radius: 3px; }
+        /* Loading spinner for AI Analysis */
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body class="bg-neutral-50 text-gray-800">
+<body class="text-gray-800">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-neutral-200">
+    <header class="bg-gradient-to-r from-blue-800 to-blue-600 sticky top-0 z-50 shadow-lg border-b border-blue-900"> <!-- Gradient background and stronger border -->
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <h1 class="text-xl md:text-2xl font-bold text-blue-600">Financial Explorer</h1>
-                <div class="hidden sm:flex items-center space-x-8">
-                    <a href="#introduction" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Introduction</a>
-                    <a href="#balance-sheet" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Balance Sheet</a>
-                    <a href="#income-statement" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Income Statement</a>
-                    <a href="#cash-flow" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">Cash Flow</a>
+                <button id="backToHome" class="text-white hover:text-blue-200 focus:outline-none flex items-center space-x-1.5 font-medium transition-colors duration-200">
+                    <i class="fas fa-home text-xl"></i> <span class="hidden sm:inline">Home</span>
+                </button>
+                <h1 class="text-xl md:text-2xl font-extrabold text-white flex-grow text-center sm:text-left sm:ml-4">Financial Accounting Foundations</h1>
+                <div class="hidden lg:flex items-center space-x-6 ml-auto mr-4">
+                    <a href="#introduction" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Intro</a>
+                    <a href="#balance-sheet" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Balance Sheet</a>
+                    <a href="#income-statement" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Income Statement</a>
+                    <a href="#cash-flow" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Cash Flow</a>
+                    <a href="#key-concepts" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Key Concepts</a>
+                </div>
+                <div class="flex items-center ml-auto sm:ml-0 space-x-2">
+                    <label for="searchInput"></label><input type="text" id="searchInput" placeholder="Search..." class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm w-24 sm:w-36 md:w-48 transition-all duration-200 text-gray-800">
+                    <button id="searchButton" class="bg-blue-300 text-blue-900 p-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-colors duration-200 shadow-md">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="prevMatch" class="px-2.5 py-1.5 bg-blue-300 text-blue-900 rounded-lg hover:bg-blue-400 hidden text-xs sm:text-sm border border-blue-400 transition-colors duration-200">Prev</button>
+                    <button id="nextMatch" class="px-2.5 py-1.5 bg-blue-300 text-blue-900 rounded-lg hover:bg-blue-400 hidden text-xs sm:text-sm border border-blue-400 transition-colors duration-200">Next</button>
                 </div>
             </div>
         </nav>
@@ -42,280 +70,822 @@
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
-        <section id="introduction" class="min-h-[70vh] flex items-center">
-            <div class="w-full text-center">
-                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Welcome to the Foundations of Financial Accounting.</h2>
-                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">This interactive tool translates complex accounting principles into an engaging, visual experience. Explore the three core financial statements, compare real-world data from major corporations, and build a solid understanding of how businesses report their performance and position.</p>
-                <a href="#balance-sheet" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">Start Exploring</a>
+        <section id="introduction" class="min-h-[70vh] flex flex-col justify-center items-center bg-gray-50 rounded-lg shadow-inner py-8 mb-12">
+            <div class="w-full text-center pb-12 border-b border-gray-200 mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">The Language of Business</h2>
+                <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-8">Financial accounting is the process of recording, summarizing, and reporting a company's financial transactions. This infographic breaks down the three core financial statements and related concepts using real-world data from Walmart's 2023 annual report and examples from General Mills.</p>
+                <a href="#balance-sheet" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-lg">Explore the Statements</a>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left mb-8">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">What is Accounting?</h3>
+                <p class="mb-4 text-gray-700 leading-relaxed">Accounting is formally defined as "the measurement, processing, and communication of financial information about economic entities." This crucial process serves various stakeholders by providing insights into a firm's financial activities.</p>
+                <h4 class="text-xl font-semibold text-gray-800 mb-2 mt-6">Key Users of Accounting Information:</h4>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Shareholders/Investors:</strong> Utilize accounting data to predict a firm's future cash flows, influencing investment decisions.</li>
+                    <li><strong>Creditors:</strong> Assess a firm's liquidity, risk, and profitability to determine lending viability and terms.</li>
+                    <li><strong>Employees:</strong> Use financial information to gauge firm stability, which can impact employment security and contract negotiations.</li>
+                    <li><strong>Customers:</strong> May check a firm's financial strength to ensure it can honor commitments, such as product warranties.</li>
+                    <li><strong>Management:</strong> Relies on accounting insights for strategic decision-making and for structuring compensation contracts.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left mb-8">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Financial vs. Management Accounting</h3>
+                <p class="mb-4 text-gray-700 leading-relaxed">While both branches deal with economic reality, they serve distinct audiences and purposes:</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Financial Accounting:</strong> Focuses on measuring and communicating financial information specifically for <strong>external users</strong> (e.g., shareholders, investors, creditors, governmental authorities (like the SEC), and independent auditors).</li>
+                    <li><strong>Management Accounting:</strong> Dedicated to measuring and communicating information for <strong>internal users</strong> (e.g., managers, employees).</li>
+                </ul>
+                <p class="italic text-gray-600 mt-4">In essence, financial and management accounting both capture the same underlying economic events but present them in different forms tailored to the specific needs of their respective users.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Obtaining Financial Accounting Information</h3>
+                <p class="mb-4 text-gray-700 leading-relaxed">Accessing a company's financial information is straightforward for public firms. A common and highly useful resource is the company's official website, typically found under an "Investor Relations" or "Financials" section.</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Annual Reports:</strong> These comprehensive documents provide accounting information for a particular fiscal year. For instance, our examples draw heavily from Walmart's 2023 Annual Report.</li>
+                    <li><strong>SEC Filings:</strong> For publicly traded companies, the SEC (Securities and Exchange Commission) filings section often provides access to both quarterly and annual financial data, offering a more granular view.</li>
+                </ul>
+                <p class="text-gray-700 mt-4 leading-relaxed">The core of accounting information comprises the major financial statements (Balance Sheet, Income Statement, Cash Flow Statement) and their accompanying "Notes to Financial Statements." These notes are crucial as they provide detailed explanations and assumptions behind the numbers presented in the main statements.</p>
             </div>
         </section>
 
-        <div class="flex justify-center my-12">
-            <div class="inline-flex rounded-lg shadow-sm" role="group">
-                <button type="button" id="walmart-btn" class="company-btn px-6 py-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">
-                    Walmart
-                </button>
-                <button type="button" id="general-mills-btn" class="company-btn px-6 py-3 text-sm font-medium text-gray-900 bg-white border-t border-b border-r border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">
-                    General Mills
-                </button>
-            </div>
-        </div>
-
-        <section id="balance-sheet" class="py-16">
+        <section id="balance-sheet" class="py-16 bg-blue-50 rounded-lg shadow-inner mb-12">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold">Balance Sheet</h2>
-                <p class="mt-2 text-lg text-gray-600 max-w-2xl mx-auto">A snapshot of a company's financial health, showing what it owns (Assets) and what it owes (Liabilities & Equity) at a single point in time.</p>
-                <p class="mt-2 font-semibold text-xl text-blue-600">Assets = Liabilities + Shareholders' Equity</p>
+                <h2 class="text-3xl font-bold text-blue-800">The Balance Sheet</h2>
+                <p class="mt-2 text-lg text-gray-700 max-w-2xl mx-auto">A fundamental financial statement, the Balance Sheet offers a snapshot of a company's financial health at a single point in time. It reveals what a company owns (Assets) and what it owes to others (Liabilities) or to its owners (Shareholders' Equity).</p>
+                <p class="mt-4 font-semibold text-2xl text-blue-700 bg-blue-100 inline-block px-4 py-2 rounded-lg border border-blue-200">Assets = Liabilities + Shareholders' Equity</p>
+                <p class="text-gray-600 mt-2 text-sm">This equation, known as the Fundamental Accounting Equation, highlights that a firm's total resources are always equal to its total financing.</p>
             </div>
-            <div class="chart-container mb-12 h-64 md:h-80">
-                <canvas id="balanceEquationChart"></canvas>
+            <div class="grid md:grid-cols-2 gap-8 items-center mb-16">
+                <div class="chart-container h-80">
+                    <canvas id="balanceEquationChart"></canvas>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="stat-card">
+                        <p class="stat-label">Total Assets (Walmart 2023)</p>
+                        <p class="stat-value">$243,197 Million</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Total Liabilities (Walmart 2023)</p>
+                        <p class="stat-value">$159,933 Million</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Total Shareholders' Equity (Walmart 2023)</p>
+                        <p class="stat-value">$83,264 Million</p>
+                    </div>
+                </div>
             </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="font-bold text-xl mb-4 text-center">Assets</h3>
-                    <p class="text-sm text-gray-600 mb-4 text-center">Resources controlled by the company to create future value.</p>
-                    <div class="chart-container h-64">
-                        <canvas id="assetsChart"></canvas>
-                    </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left mb-8">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">1. Assets: What the Company Owns</h3>
+                <p class="mb-4 text-gray-700 leading-relaxed">Assets are resources that a firm controls, from which it expects to derive probable future economic benefits, and for which these benefits can be estimated with sufficient reliability. In simpler terms, these are things the company owns that have value.</p>
+                
+                <h4 class="text-xl font-semibold text-gray-800 mb-3 mt-6">A. Current Assets</h4>
+                <p class="mb-4 text-gray-700 leading-relaxed">These are assets that are expected to be converted into cash, used up, or sold within one year or one operating cycle (whichever is longer). They represent a company's short-term liquidity.</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Cash and Cash Equivalents:</strong> The most liquid of all assets, readily available for use.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $8,625 million</p>
+                        <p class="text-sm text-gray-600 italic">Note: Walmart's cash decreased from $14,760 million in 2022 to $8,625 million in 2023, a net decrease of about $6 billion.</p>
+                    </li>
+                    <li><strong>Receivables, Net (Accounts Receivable):</strong> Amounts owed to the company by customers for goods or services that have been delivered but not yet paid for. These are typically collected within a year.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $7,933 million</p>
+                        <p class="text-sm text-gray-600 italic">This represents sales Walmart has made but has not yet collected cash from customers.</p>
+                    </li>
+                    <li><strong>Inventories:</strong> Goods that a company holds for sale in the ordinary course of business, or raw materials and work-in-progress for goods to be sold.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $56,576 million</p>
+                        <p class="text-sm text-gray-600 italic">For Walmart, this includes merchandise in its stores and warehouses. For a coffee company, this would be coffee beans and roasted coffee waiting for sale.</p>
+                    </li>
+                    <li><strong>Prepaid Expenses:</strong> Payments made in advance for goods or services that will be consumed or used in the future (e.g., prepaid rent, prepaid insurance). These are assets because they represent future economic benefits.</li>
+                </ul>
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-3 mt-8">B. Long-Term Assets</h4>
+                <p class="mb-4 text-gray-700 leading-relaxed">These assets have a useful life extending beyond one year and are typically used to generate revenue over a longer period. They are not intended for immediate sale.</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Property and Equipment, Net (PPE):</strong> Tangible assets used in the company's operations that have a long life. "Net" signifies that accumulated depreciation has been deducted.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $100,760 million</p>
+                        <p class="text-sm text-gray-600 italic">Examples for Walmart include its vast network of Superstores, distribution centers, fixtures, fittings, and delivery trucks. For General Mills, Land, Buildings, and Equipment amounted to <strong>$3,636 million</strong> in 2023.</p>
+                    </li>
+                    <li><strong>Goodwill:</strong> An intangible asset that arises when a company acquires another company for a price higher than the fair market value of its identifiable net assets. It represents the value of a company's reputation, brand name, customer base, etc.
+                        <p class="font-bold text-blue-600 mt-1">General Mills 2023: $14,511 million</p>
+                        <p class="text-sm text-gray-600 italic">Goodwill constituted almost half of General Mills' total assets, which is logical given its history of acquiring numerous food brands since 1928.</p>
+                    </li>
+                    <li><strong>Other Intangible Assets:</strong> Non-physical assets that have value due to legal rights or economic advantages, distinct from goodwill (e.g., patents, trademarks, copyrights, customer relationships).
+                        <p class="font-bold text-blue-600 mt-1">General Mills 2023: $6,967 million</p>
+                        <p class="text-sm text-gray-600 italic">For General Mills, these primarily consist of purchased brands (like Cheerios, Betty Crocker) and established customer relationships, acquired through past mergers and acquisitions.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-center mb-8">What Makes Up Walmart's Assets?</h3>
+                <div class="chart-container h-96">
+                    <canvas id="assetsChart"></canvas>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="font-bold text-xl mb-4 text-center">Liabilities</h3>
-                    <p class="text-sm text-gray-600 mb-4 text-center">A company's financial obligations or debts.</p>
-                    <div class="chart-container h-64">
-                        <canvas id="liabilitiesChart"></canvas>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="font-bold text-xl mb-4 text-center">Shareholders' Equity</h3>
-                    <p class="text-sm text-gray-600 mb-4 text-center">The net value of a company, or the amount financed by its owners.</p>
-                    <div class="chart-container h-64">
-                        <canvas id="equityChart"></canvas>
-                    </div>
-                </div>
+                <p class="text-center mt-4 text-gray-600 leading-relaxed">This chart illustrates the composition of Walmart's assets. As a major retailer, its largest asset category is Property, Plant, and Equipment (PPE), reflecting its extensive physical infrastructure of stores and warehouses. Inventories, the vast quantity of goods awaiting sale, also form a substantial part of its resources.</p>
+            </div>
+
+            <div class="mt-16 bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left mb-8">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">2. Liabilities: What the Company Owes</h3>
+                <p class="mb-4 text-gray-700 leading-relaxed">Liabilities represent a company's financial obligations or debts to external parties. For an obligation to be classified as a liability, three conditions must generally be met: it must involve the future transfer of economic benefits, be measurable, and the benefit that created the obligation must have already been received by the firm.</p>
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-3 mt-6">A. Current Liabilities</h4>
+                <p class="mb-4 text-gray-700 leading-relaxed">These are obligations that are expected to be settled or paid within one year or one operating cycle.</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Accounts Payable:</strong> Amounts a firm owes to its suppliers for goods and services purchased on credit. A key characteristic is that they are typically interest-free.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $53,742 million</p>
+                        <p class="text-sm text-gray-600 italic">This indicates that Walmart received over $53 billion worth of goods and services from its suppliers which it will pay within the next year. For General Mills, Accounts Payable was <strong>$4,194 million</strong> in 2023.</p>
+                    </li>
+                    <li><strong>Short-Term Debt (Long-Term Debt Due Within One Year):</strong> This represents the portion of long-term debt that is scheduled to be repaid within the upcoming year.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $4,191 million</p>
+                    </li>
+                    <li><strong>Wage Payable:</strong> The amount a firm owes to its employees for work that has been performed but not yet paid (e.g., salaries earned but not yet disbursed on payday).</li>
+                    <li><strong>Utilities Payable:</strong> Bills for utilities (electricity, water, etc.) that have been consumed but are not yet paid. For example, a coffee company using utilities in the current month but paying the bill next month.</li>
+                    <li><strong>Unearned Revenue (or Deferred Revenue):</strong> Cash received by the company for goods or services that have not yet been delivered or performed. This is a liability because the company has an obligation to provide the goods or services in the future (e.g., gift cards sold by a retailer).</li>
+                </ul>
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-3 mt-8">B. Long-Term Liabilities</h4>
+                <p class="mb-4 text-gray-700 leading-relaxed">These are financial obligations that are not due for settlement within the next year.</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Long-Term Debt:</strong> Money borrowed from financial institutions or through the issuance of bonds that is repayable over a period exceeding one year (e.g., a 15-year bank loan).
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $34,649 million</p>
+                        <p class="text-sm text-gray-600 italic">For General Mills, Long-Term Debt was <strong>$9,965 million</strong> in 2023, primarily referring to bonds.</p>
+                    </li>
+                    <li><strong>Provisions:</strong> These represent liabilities of uncertain timing or amount. A provision is recognized when there is a present obligation as a result of a past event, it is probable that an outflow of resources embodying economic benefits will be required to settle the obligation, and a reliable estimate can be made of the amount of the obligation. For example, if a firm is facing an environmental hazard lawsuit and there is a reasonable certainty it will lose, it needs to create a provision for the future penalty.</li>
+                </ul>
+                <p class="italic text-gray-600 mt-4">A significant insight for Walmart is that a substantial portion of its operations is financed by interest-free sources: accounts payable and retained earnings. This minimizes the cost of financing for the company.</p>
+            </div>
+
+            <div class="mt-16 bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">3. Shareholders' Equity: The Owners' Claim</h3>
+                <p class="mb-4 text-gray-700 leading-relaxed">Shareholders' Equity, also known as Stockholders' Equity or Owner's Equity, represents the residual claim of the owners on the assets of the company after all liabilities have been paid. It is the core of the fundamental accounting equation: Assets minus Liabilities.</p>
+                <p class="mb-4 text-gray-700 leading-relaxed">Essentially, it shows the portion of the company's assets that are financed by the owners, rather than by external creditors.</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Common Stock:</strong> Represents the nominal (or par) value of the shares that a firm has issued to its investors. Par value is a legal concept, typically a small and arbitrary number (e.g., $0.10), and does not reflect the actual market value of the share.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $269 million</p>
+                        <p class="text-sm text-gray-600 italic">An example for a coffee company would be 1,000 shares of common stock issued to owners.</p>
+                    </li>
+                    <li><strong>Additional Paid-in Capital (APIC) / Capital in Excess of Par Value:</strong> This account captures the amount of cash or other assets that shareholders have paid for shares above their nominal (par) value during the issuance.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $4,969 million</p>
+                        <p class="text-sm text-gray-600 italic">This means Walmart shareholders paid $4,969 million over and above the par value when purchasing Walmart shares.</p>
+                    </li>
+                    <li><strong>Retained Earnings:</strong> Represents the accumulated profits of a company that have not been distributed to shareholders as dividends but have been reinvested back into the business. This is a significant source of internal, interest-free financing for a firm's future growth.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023: $83,135 million</p>
+                        <p class="text-sm text-gray-600 italic">This was Walmart's most important shareholders' equity account in 2023, signifying a substantial portion of profits kept within the company.</p>
+                    </li>
+                    <li><strong>Treasury Stock:</strong> This is a contra-equity account (it reduces total equity) representing shares of a company's own stock that it has repurchased from the open market. Companies often buy back their own stock to reduce the number of outstanding shares, which can increase earnings per share or return cash to shareholders.</li>
+                    <li><strong>Accumulated Other Comprehensive Income (AOCI):</strong> This account includes certain gains and losses that are not reported on the income statement but are part of comprehensive income. Examples include unrealized gains or losses on certain investments, or foreign currency translation adjustments. For Walmart, 'Other' equity (likely AOCI) was a negative <strong>$5,109 million</strong> in 2023.</li>
+                </ul>
+                <p class="italic text-gray-600 mt-4">As noted previously, Walmart's operations are largely financed by its accounts payable and retained earnings. The common benefit of these two primary financing sources is that they are both interest-free, providing a cost-effective way for Walmart to fund its large-scale operations.</p>
             </div>
         </section>
 
-        <section id="income-statement" class="py-16">
+        <section id="income-statement" class="py-16 bg-emerald-50 rounded-lg shadow-inner mb-12">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold">Income Statement</h2>
-                <p class="mt-2 text-lg text-gray-600 max-w-2xl mx-auto">Summarizes a company's financial performance over a period of time, showing its revenues, expenses, and ultimately, its profit or loss.</p>
+                <h2 class="text-3xl font-bold text-emerald-800">The Income Statement</h2>
+                <p class="mt-2 text-lg text-gray-700 max-w-2xl mx-auto">Also known as the Profit & Loss (P&L) statement, the Income Statement summarizes a company's financial performance over a specific period of time (typically a quarter or a year). It shows how much revenue a company generated and the expenses it incurred to earn that revenue, ultimately leading to its net income or loss.</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-white p-6 rounded-lg shadow-xl mb-8">
                 <div class="chart-container h-96">
                     <canvas id="incomeStatementChart"></canvas>
                 </div>
                 <div class="mt-8 text-center">
-                    <h4 class="text-lg font-semibold">Key Takeaway: Profit Margin</h4>
-                    <p class="text-3xl font-bold text-blue-600 mt-2" id="profit-margin">0.0%</p>
-                    <p class="text-gray-600 mt-1">This shows the percentage of revenue that turns into profit. A higher margin is generally better.</p>
+                    <h4 class="text-lg font-semibold text-gray-800">Key Takeaway: Profit Margin (Walmart 2023)</h4>
+                    <p class="text-5xl font-bold text-blue-600 mt-2">1.8%</p>
+                    <p class="text-gray-600 mt-2 max-w-xl mx-auto leading-relaxed">This metric indicates that for every $100 in sales, Walmart earned $1.80 in net profit in 2023. This relatively low profit margin is characteristic of high-volume retailers like Walmart, whose business model relies on selling a massive quantity of goods at competitive prices rather than high per-unit profits.</p>
                 </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Components of the Income Statement</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Sales (Revenues or Turnover):</strong> The total value of goods sold or services provided during the period. This is typically the top line of the income statement.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Total Revenues: $611,289 million</p>
+                        <p class="text-sm text-gray-600 italic">Walmart's total revenues showed a steady increase between 2021 and 2023. For General Mills, Net Sales in 2023 was <strong>$20,094 million</strong>.</p>
+                    </li>
+                    <li><strong>Cost of Sales (Cost of Goods Sold - COGS):</strong> The direct costs attributable to the production of the goods sold by a company. For a retailer, this is the cost of purchasing the merchandise sold.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Cost of Sales: $463,721 million</p>
+                        <p class="text-sm text-gray-600 italic">Example: If Walmart buys milk for $4 and sells it for $5, the $4 is the cost of sales.</p>
+                    </li>
+                    <li><strong>Operating Expenses:</strong> Costs incurred in running the day-to-day operations of the business, not directly tied to production. These include selling, general, and administrative (SG&A) expenses.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Operating Selling General and Administrative Expenses: $127,110 million</p>
+                        <p class="text-sm text-gray-600 italic">Common examples include wages, electricity, insurance, and rent.</p>
+                    </li>
+                    <li><strong>Other Income/Expenses:</strong> Income or expenses arising from activities that are not part of the firm's main core operations.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Interest Income: $254 million</p>
+                        <p class="text-sm text-gray-600 italic">Example: Interest income Walmart earns from keeping its cash in a bank account. Note that in the income statement table, interest income is shown as a negative amount because it reduces overall interest expense.</p>
+                    </li>
+                    <li><strong>Income Taxes:</strong> The amount a firm owes to the government based on its taxable income.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Provision for Income Taxes: $5,724 million</p>
+                    </li>
+                    <li><strong>Extraordinary Gains/Losses:</strong> Very rare and unusual gains or losses that are distinct from normal business activities. These are reported separately to prevent them from distorting the perception of a firm's recurring operational performance.
+                        <p class="text-sm text-gray-600 italic">Example: A significant financial loss incurred due to an unexpected fire.</p>
+                    </li>
+                </ul>
+                <p class="text-gray-700 mt-6 mb-4 leading-relaxed font-bold">Consolidated Net Income (or Net Earnings):</p>
+                <p class="text-gray-700 mb-4 leading-relaxed">This is the bottom line of the income statement, representing the firm's financial performance over the period. It is calculated by taking revenues and subtracting all expenses and losses (including cost of sales, operating expenses, interest, and taxes).</p>
+                <p class="font-bold text-blue-600 mt-1">Walmart 2023 Consolidated Net Income: $11,292 million</p>
+                <p class="font-bold text-blue-600 mt-1">General Mills 2023 Net Earnings: $2,609 million</p>
+                <p class="text-gray-600 italic mt-4 leading-relaxed">While Walmart's net income appears modest compared to its vast revenues (resulting in a small 1.8% profit margin), its profitability stems from the immense volume of sales, coupled with its ability to finance operations through largely interest-free sources like accounts payable and retained earnings.</p>
             </div>
         </section>
 
-        <section id="cash-flow" class="py-16">
+        <section id="cash-flow" class="py-16 bg-indigo-50 rounded-lg shadow-inner mb-12">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold">Cash Flow Statement</h2>
-                <p class="mt-2 text-lg text-gray-600 max-w-2xl mx-auto">Tracks the movement of cash into and out of the company from its operations, investments, and financing activities.</p>
+                <h2 class="text-3xl font-bold text-indigo-800">The Cash Flow Statement</h2>
+                <p class="mt-2 text-lg text-gray-700 max-w-2xl mx-auto">The Cash Flow Statement provides a detailed account of all cash inflows and outflows of a firm over a specific period (typically a quarter or a year). It summarizes precisely how a company's cash balance changes by categorizing cash flows into three main activities: Operating, Investing, and Financing.</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-white p-6 rounded-lg shadow-xl mb-8">
                 <div class="chart-container h-96">
                     <canvas id="cashFlowChart"></canvas>
                 </div>
                 <div class="mt-8 text-center">
-                    <h4 class="text-lg font-semibold">Overall Cash Change</h4>
-                    <p class="text-3xl font-bold mt-2" id="cash-change">$0</p>
-                    <p class="text-gray-600 mt-1">This is the net result of all cash activities for the period.</p>
+                    <h4 class="text-lg font-semibold text-gray-800">Overall Cash Change in 2023 (Walmart)</h4>
+                    <p class="text-5xl font-bold text-blue-600 mt-2">-$5,993 Million</p>
+                    <p class="text-gray-600 mt-2 max-w-xl mx-auto leading-relaxed">In 2023, Walmart's overall cash balance decreased by approximately $6 billion. This change is the net result of cash generated from operations being offset by significant cash expenditures in investing activities (e.g., building new stores) and financing activities (e.g., paying dividends and repurchasing shares). This explains the decrease from $14,834 million cash at the beginning of 2023 to $8,841 million at the end of 2023.</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl mx-auto text-left">
+                <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Three Major Cash Flow Activities</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li><strong>Cash Flows from Operating Activities:</strong> This section reflects the cash generated or used by a firm's primary, day-to-day business operations (e.g., selling products, paying suppliers, paying employees).
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Net Cash Provided by Operating Activities: $28,841 million (a significant cash inflow)</p>
+                        <p class="text-sm text-gray-600 italic">This substantial positive figure indicates that Walmart's core business of buying and selling groceries is highly effective at generating cash.</p>
+                    </li>
+                    <li><strong>Cash Flows from Investing Activities:</strong> This section accounts for cash used to acquire or dispose of long-term assets and other investments (e.g., purchasing property, plant, and equipment, or buying/selling other companies' stock).
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Net Cash Used in Investing Activities: -$17,722 million (a substantial cash outflow)</p>
+                        <p class="text-sm text-gray-600 italic">A brief look at the details reveals that the majority of this spending was for payments of property and equipment, indicating ongoing investment in its physical infrastructure.</p>
+                    </li>
+                    <li><strong>Cash Flows from Financing Activities:</strong> This section covers cash activities related to debt, equity, and dividends. It shows how a company raises capital and how it returns capital to its owners.
+                        <p class="font-bold text-blue-600 mt-1">Walmart 2023 Net Cash Used in Financing Activities: -$17,039 million (a significant cash outflow)</p>
+                        <p class="text-sm text-gray-600 italic">Detailed examination shows Walmart spent $9,920 million on repurchasing its own shares and $6,114 million on dividend payments, indicating a return of capital to shareholders.</p>
+                    </li>
+                </ul>
+                <p class="text-gray-700 italic mt-4 leading-relaxed">The sum of these three categories of cash flows precisely explains the total increase or decrease in a company's cash balance for the period.</p>
+            </div>
+        </section>
+
+        <section id="key-concepts" class="py-16 bg-pink-50 rounded-lg shadow-inner mb-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-pink-800">Additional Key Concepts & Case Insights</h2>
+                <p class="mt-2 text-lg text-gray-700 max-w-2xl mx-auto">Beyond the main financial statements, the lecture covered important details and practical applications through various case studies, offering deeper insights into specific accounting practices and reporting nuances.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-xl text-left">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Annual Report Sections (General Mills Example)</h3>
+                    <p class="mb-4 text-gray-700 leading-relaxed">Understanding where to find specific information within an annual report is crucial for detailed financial analysis.</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                        <li><strong>Company Overview (p. 4):</strong> Provides a succinct summary of the company's business model and the markets in which it operates.</li>
+                        <li><strong>Management's Discussion and Analysis (MD&A) (pp. 15–16):</strong> This section contains managers' perspectives and summaries of the firm's financial performance over the past year. It's important to note that this is management's <em>opinion</em> and is generally positively biased, as it is not formal accounting.</li>
+                        <li><strong>Financial Statements and Supplementary Data (pp. 39–88):</strong> This comprehensive section houses the core financial statements (Balance Sheet, Income Statement, Cash Flow Statement) alongside critical financial statement footnotes. These footnotes explain the detailed calculations, accounting policies, and assumptions behind the amounts presented in the main statements.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl text-left">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Inventory Accounting Methods (General Mills Example)</h3>
+                    <p class="mb-4 text-gray-700 leading-relaxed">Firms adopt specific accounting methods for valuing inventory. To understand a firm's chosen method, one typically refers to Footnote 1 (or sometimes Footnote 2) of their annual report, which outlines significant accounting policies.</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                        <li><strong>LIFO (Last-In, First-Out) Method:</strong> General Mills, for most of its U.S. inventories (excluding grain), uses the LIFO method, valuing inventory at the lower of cost. Under LIFO, it is assumed that the last goods purchased or produced are the first ones sold.</li>
+                    </ul>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-3 mt-6">Main Components of General Mills Inventory (2023):</h4>
+                    <p class="mb-4 text-gray-700 leading-relaxed">Footnote 18 of General Mills' 2023 Annual Report provides supplemental information on its inventory composition:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                        <li><strong>Finished Goods:</strong> The largest component, ready for sale.</li>
+                        <li><strong>Raw Materials:</strong> Materials awaiting processing.</li>
+                        <li><strong>Grain:</strong> A specific category for General Mills due to its nature as a food producer.</li>
+                    </ul>
+                    <p class="italic text-gray-600 mt-4">For General Mills in 2023, finished goods had a balance of <strong>$2,066 million</strong>.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl text-left md:col-span-2">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b border-gray-200">Financial Scenario Classifications (Coffee Company Example)</h3>
+                    <p class="mb-4 text-gray-700 leading-relaxed">The lecture provided a case study to practice classifying various financial scenarios into Assets, Liabilities, or Shareholders' Equity. Here are the key classifications:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                        <li><strong>Agreement to hire a person to work as a server:</strong> No financial accounting is recorded at this stage, as no payment has been made and no service has been provided.</li>
+                        <li><strong>Roasting machine used to roast coffee beans:</strong> This is classified as a <strong>Fixed Asset</strong> because it is a tangible resource used in the company's operations over a long period.</li>
+                        <li><strong>Utilities for the current month payable next month:</strong> This is a <strong>Current Liability</strong>. The utility service has been used (benefit received), creating an obligation to pay within a year.</li>
+                        <li><strong>$4,000 in cash on hand:</strong> This is a <strong>Current Asset</strong>, as cash is the most liquid resource a company owns.</li>
+                        <li><strong>1,000 shares of common stock:</strong> This represents <strong>Shareholders' Equity</strong>, specifically the ownership stake in the company.</li>
+                        <li><strong>50,000 kilograms of coffee beans:</strong> This is classified as <strong>Inventory</strong>, which is a <strong>Current Asset</strong> for a coffee company as it's a product held for sale.</li>
+                        <li><strong>Invoice from a main supplier of coffee beans (firm owes money to a supplier):</strong> This is <strong>Accounts Payable</strong>, typically a <strong>Current Liability</strong>, representing short-term debt to suppliers.</li>
+                        <li><strong>Bank note due in three years:</strong> This is a <strong>Long-Term Liability</strong>, as it represents a bank borrowing that will be repaid over a period longer than one year.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-analysis" class="py-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-inner">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800">Financial Statement Analyzer (AI Powered)</h2>
+                <p class="mt-2 text-lg text-gray-700 max-w-2xl mx-auto">Paste raw financial statement data below to get a summary of key values and an AI-driven assessment of the company's performance.</p>
+            </div>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl">
+                <div class="mb-6">
+                    <label for="financialDataInput" class="block text-lg font-semibold text-gray-800 mb-2">Paste Financial Statement Data Here:</label>
+                    <textarea id="financialDataInput" rows="10" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-800" placeholder="e.g., 'Total Assets: $100M, Net Income: $10M, Cash from Operations: $5M...'">
+Company: Microsoft Corporation
+Fiscal Year Ended: June 30, 2023
+
+Key Financials (in millions):
+Total Revenue: $211,915
+Net Income: $72,361
+Total Assets: $484,729
+Total Liabilities: $252,698
+Cash from Operating Activities: $89,035
+</textarea>
+                </div>
+                <div class="flex justify-center mb-8">
+                    <button id="analyzeButton" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-lg flex items-center justify-center">
+                        <span id="analyzeButtonText">Analyze Financials</span>
+                        <div id="loader" class="loader ml-3 hidden"></div>
+                    </button>
+                </div>
+                <div id="analysisOutput" class="mt-6 p-6 bg-blue-50 border border-blue-200 rounded-lg text-left text-gray-800 leading-relaxed hidden">
+                    <h3 class="text-xl font-bold text-blue-700 mb-3">AI Analysis:</h3>
+                    <div id="aiContent"></div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="bg-white border-t border-neutral-200 mt-16">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
-            <p>Interactive Financial Explorer. Data sourced from Module 1 Lecture Transcript.</p>
+    <footer class="bg-blue-800 text-white mt-16 py-8 shadow-inner"> <!-- Added subtle inner shadow for footer -->
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm md:text-base opacity-90">Data sourced from Module 1 Lecture Transcript: Financial Accounting Foundations.</p>
+            <p class="text-xs md:text-sm mt-2 opacity-80">&copy; 2025 Financial Accounting Explorer. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        const financialData = {
-            walmart: {
-                year: 2023,
-                balanceSheet: {
-                    assets: { total: 243197, current: 73134, longterm: 170063, breakdown: { cash: 8625, receivables: 7933, inventories: 56576, ppe: 100760, other: 69303 } },
-                    liabilities: { total: 159933, current: 87334, longterm: 72599, breakdown: { accountsPayable: 53742, shortTermDebt: 4191, longTermDebt: 34649, other: 67351 } },
-                    equity: { total: 83264, commonStock: 269, apic: 4969, retainedEarnings: 83135, breakdown: { commonAndApic: 5238, retainedEarnings: 83135, other: -5109 } }
-                },
-                incomeStatement: {
-                    revenues: 611289,
-                    cogs: 463721,
-                    operatingExpenses: 127110,
-                    netIncome: 11292
-                },
-                cashFlow: {
-                    operating: 28841,
-                    investing: -17722,
-                    financing: -17039,
-                    netChange: -5993
+        const setupCharts = () => {
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
                 }
-            },
-            generalMills: {
-                year: 2023,
-                balanceSheet: {
-                    assets: { total: 32114, current: 4967, longterm: 27147, breakdown: { cash: 641, inventories: 2368, ppe: 3636, goodwill: 14511, otherIntangibles: 6967, other: 3991 } },
-                    liabilities: { total: 21665, current: 6700, longterm: 14965, breakdown: { accountsPayable: 4194, shortTermDebt: 1500, longTermDebt: 9965, other: 6006 } },
-                    equity: { total: 10449, commonStock: 728, apic: 6813, retainedEarnings: 17180, breakdown: { commonAndApic: 7541, retainedEarnings: 17180, other: -14272 } }
+                return label;
+            };
+
+            const defaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#4B5563', // Gray text for legends
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
                 },
-                incomeStatement: {
-                    revenues: 20094,
-                    cogs: 13059,
-                    operatingExpenses: 3426,
-                    netIncome: 2609
-                },
-                cashFlow: {
-                    operating: 3400,
-                    investing: -500,
-                    financing: -3200,
-                    netChange: -300
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#4B5563' // Gray text for x-axis labels
+                        },
+                        grid: {
+                            color: '#E5E7EB' // Light gray grid lines
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#4B5563' // Gray text for y-axis labels
+                        },
+                        grid: {
+                            color: '#E5E7EB' // Light gray grid lines
+                        }
+                    }
                 }
-            }
-        };
+            };
 
-        let currentCompany = 'walmart';
-        const charts = {};
-
-        const initChart = (ctx, config) => {
-            if (charts[ctx.canvas.id]) {
-                charts[ctx.canvas.id].destroy();
-            }
-            charts[ctx.canvas.id] = new Chart(ctx, config);
-        };
-
-        const updateDashboard = () => {
-            const data = financialData[currentCompany];
-
-            document.getElementById('walmart-btn').classList.toggle('active', currentCompany === 'walmart');
-            document.getElementById('general-mills-btn').classList.toggle('active', currentCompany === 'generalMills');
-
-            updateBalanceSheet(data.balanceSheet);
-            updateIncomeStatement(data.incomeStatement);
-            updateCashFlow(data.cashFlow);
-        };
-
-        const formatCurrency = (value) => {
-             if (Math.abs(value) >= 1000) {
-                return `$${(value / 1000).toFixed(1)}B`;
-            }
-            return `$${value}M`;
-        }
-
-        const updateBalanceSheet = (d) => {
-            const { assets, liabilities, equity } = d;
-            
-            initChart(document.getElementById('balanceEquationChart').getContext('2d'), {
+            // Balance Sheet Equation Chart
+            const balanceCtx = document.getElementById('balanceEquationChart').getContext('2d');
+            new Chart(balanceCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Assets', 'Liabilities & Equity'],
+                    labels: ['Liabilities', "Shareholders' Equity"],
                     datasets: [{
-                        data: [assets.total, liabilities.total + equity.total],
-                        backgroundColor: ['#3b82f6', '#10b981'],
-                        borderColor: '#ffffff',
+                        data: [159933, 83264],
+                        backgroundColor: ['#60A5FA', '#2563EB'], // Light blue, Dark blue
+                        borderColor: '#F8F9FA', // Background color for border
                         borderWidth: 4,
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' }, title: { display: true, text: `Total Assets vs. Liabilities & Equity (${formatCurrency(assets.total)})` } } }
-            });
-
-            initChart(document.getElementById('assetsChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(assets.breakdown).map(l => l.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())),
-                    datasets: [{ label: 'Amount (in millions)', data: Object.values(assets.breakdown), backgroundColor: ['#60a5fa', '#3b82f6', '#1d4ed8', '#1e3a8a', '#172554', '#dbeafe'] }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-
-            initChart(document.getElementById('liabilitiesChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(liabilities.breakdown).map(l => l.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())),
-                    datasets: [{ label: 'Amount (in millions)', data: Object.values(liabilities.breakdown), backgroundColor: ['#f87171', '#ef4444', '#dc2626', '#b91c1c'] }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-
-            initChart(document.getElementById('equityChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['Common Stock & APIC', 'Retained Earnings', 'Other'],
-                    datasets: [{ label: 'Amount (in millions)', data: [equity.breakdown.commonAndApic, equity.breakdown.retainedEarnings, equity.breakdown.other], backgroundColor: ['#4ade80', '#22c55e', '#16a34a'] }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-        };
-
-        const updateIncomeStatement = (d) => {
-            const { revenues, cogs, operatingExpenses, netIncome } = d;
-            const grossProfit = revenues - cogs;
-            const operatingIncome = grossProfit - operatingExpenses;
-
-            initChart(document.getElementById('incomeStatementChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['Revenues', 'Gross Profit', 'Operating Income', 'Net Income'],
-                    datasets: [{
-                        label: 'Amount (in millions)',
-                        data: [revenues, grossProfit, operatingIncome, netIncome],
-                        backgroundColor: ['#3b82f6', '#60a5fa', '#93c5fd', '#10b981']
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'From Revenue to Net Income' } }, scales: { y: { beginAtZero: true } } }
-            });
-
-            const profitMargin = (netIncome / revenues * 100).toFixed(1);
-            document.getElementById('profit-margin').textContent = `${profitMargin}%`;
-        };
-
-        const updateCashFlow = (d) => {
-            const { operating, investing, financing, netChange } = d;
-            
-            initChart(document.getElementById('cashFlowChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['Operating', 'Investing', 'Financing'],
-                    datasets: [{
-                        label: 'Cash Flow (in millions)',
-                        data: [operating, investing, financing],
-                        backgroundColor: (context) => context.raw >= 0 ? '#22c55e' : '#ef4444',
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, title: { display: true, text: 'Sources and Uses of Cash' } },
-                    scales: { x: { beginAtZero: false } }
+                options: { 
+                    ...defaultOptions, 
+                    plugins: { 
+                        ...defaultOptions.plugins, 
+                        title: { 
+                            display: true, 
+                            text: "How Assets of $243.2B are Financed", 
+                            color: '#374151' // Darker gray for chart title
+                        } 
+                    } 
                 }
             });
 
-            const cashChangeText = `${netChange >= 0 ? '+' : ''}${netChange.toLocaleString()}M`;
-            const cashChangeEl = document.getElementById('cash-change');
-            cashChangeEl.textContent = `$${cashChangeText}`;
-            cashChangeEl.style.color = netChange >= 0 ? '#22c55e' : '#ef4444';
+            // Assets Breakdown Chart
+            const assetsCtx = document.getElementById('assetsChart').getContext('2d');
+            new Chart(assetsCtx, {
+                type: 'bar',
+                data: {
+                    labels: [['Property, Plant,', '& Equipment'], 'Inventories', ['Other', 'Assets'], 'Receivables', 'Cash'],
+                    datasets: [{
+                        label: 'Amount (in millions)',
+                        data: [100760, 56576, 69303, 7933, 8625],
+                        backgroundColor: ['#2563EB', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'] // Darker to lighter blues
+                    }]
+                },
+                options: { 
+                    ...defaultOptions, 
+                    plugins: { 
+                        ...defaultOptions.plugins, 
+                        legend: { display: false },
+                        title: { 
+                            display: true, 
+                            text: "Composition of Walmart's Assets (2023)", 
+                            color: '#374151' 
+                        }
+                    }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#4B5563'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#4B5563'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        }
+                    } 
+                }
+            });
+
+            // Income Statement Chart
+            const incomeCtx = document.getElementById('incomeStatementChart').getContext('2d');
+            new Chart(incomeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Revenues', ['Cost of', 'Sales'], ['Operating', 'Expenses'], ['Net', 'Income']],
+                    datasets: [{
+                        label: 'Amount (in millions)',
+                        data: [611289, 463721, 127110, 11292],
+                        backgroundColor: ['#22C55E', '#4ADE80', '#86EFAC', '#10B981'] // Greens for income statement
+                    }]
+                },
+                options: { 
+                    ...defaultOptions, 
+                    plugins: { 
+                        ...defaultOptions.plugins, 
+                        legend: { display: false }, 
+                        title: { 
+                            display: true, 
+                            text: 'Walmart: From Revenue to Net Income (2023)', 
+                            color: '#374151' 
+                        } 
+                    }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#4B5563'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#4B5563'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        } 
+                    } 
+                }
+            });
+
+            // Cash Flow Chart
+            const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+            new Chart(cashFlowCtx, {
+                type: 'bar',
+                data: {
+                    labels: [['Cash from', 'Operations'], ['Cash used in', 'Investing'], ['Cash used in', 'Financing']],
+                    datasets: [{
+                        label: 'Cash Flow (in millions)',
+                        data: [28841, -17722, -17039],
+                        backgroundColor: (context) => context.raw >= 0 ? '#8B5CF6' : '#EC4899', // Purple for positive, Pink for negative
+                    }]
+                },
+                options: { 
+                    ...defaultOptions, 
+                    plugins: { 
+                        ...defaultOptions.plugins, 
+                        legend: { display: false }, 
+                        title: { 
+                            display: true, 
+                            text: 'Walmart: Sources and Uses of Cash (2023)', 
+                            color: '#374151' 
+                        } 
+                    }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#4B5563'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#4B5563'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        }
+                    } 
+                }
+            });
         };
 
+        let highlightedElements = [];
+        let currentHighlightIndex = -1;
+        let originalTextContentMap = new Map(); // To store original text for clearing highlights reliably
+
+        // Function to clear all highlights
+        function clearHighlights() {
+            highlightedElements.forEach(span => {
+                const originalText = originalTextContentMap.get(span);
+                if (originalText !== undefined) { // Check if originalText exists in map
+                    const textNode = document.createTextNode(originalText);
+                    if (span.parentNode) {
+                        span.parentNode.replaceChild(textNode, span);
+                    }
+                }
+            });
+
+            // Fallback for any remaining .highlight or .current-highlight spans
+            const remainingHighlights = document.querySelectorAll('.highlight, .current-highlight');
+            remainingHighlights.forEach(span => {
+                if (span.parentNode) {
+                    span.parentNode.replaceChild(document.createTextNode(span.textContent), span);
+                }
+            });
+
+            // Normalize the DOM to merge adjacent text nodes
+            document.querySelector('main').normalize();
+
+            highlightedElements = [];
+            originalTextContentMap.clear(); // Clear the map
+            currentHighlightIndex = -1;
+            document.getElementById('prevMatch').classList.add('hidden');
+            document.getElementById('nextMatch').classList.add('hidden');
+        }
+
+        // Function to perform the search and highlight
+        function performSearch() {
+            clearHighlights(); // Clear existing highlights first
+
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (!searchTerm) {
+                return; // Do nothing if search term is empty
+            }
+
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            const mainContent = document.querySelector('main');
+            const textNodes = [];
+
+            // First pass: Collect all relevant text nodes
+            const walker = document.createTreeWalker(mainContent, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while ((node = walker.nextNode())) {
+                // Exclude script, style, and chart container elements, and the search input field itself
+                if (
+                    node.parentNode.tagName === 'SCRIPT' ||
+                    node.parentNode.tagName === 'STYLE' ||
+                    node.parentNode.classList.contains('chart-container') ||
+                    node.parentNode.closest('#searchInput') ||
+                    node.parentNode.closest('#searchButton') ||
+                    node.parentNode.closest('#prevMatch') ||
+                    node.parentNode.closest('#nextMatch') ||
+                    node.parentNode.closest('#ai-analysis') // Exclude AI analysis section from general search
+                ) {
+                    continue;
+                }
+                if (node.nodeValue.trim().length > 0 && regex.test(node.nodeValue)) {
+                    textNodes.push(node);
+                }
+            }
+
+            // Second pass: Replace text nodes with highlighted spans
+            textNodes.forEach(textNode => {
+                const originalText = textNode.nodeValue;
+                const parent = textNode.parentNode;
+                
+                const newContent = [];
+                let lastIndex = 0;
+
+                originalText.replace(regex, (match, p1, offset) => {
+                    if (offset > lastIndex) {
+                        newContent.push(document.createTextNode(originalText.substring(lastIndex, offset)));
+                    }
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
+                    span.textContent = match;
+                    highlightedElements.push(span);
+                    originalTextContentMap.set(span, match); // Store the original matched text for reliable un-highlighting
+                    newContent.push(span);
+                    lastIndex = offset + match.length;
+                    return match; // Return the match to keep replace working as expected (though we're building manually)
+                });
+
+                if (lastIndex < originalText.length) {
+                    newContent.push(document.createTextNode(originalText.substring(lastIndex)));
+                }
+
+                if (newContent.length > 0 && parent && parent.contains(textNode)) {
+                     // Check if parent still contains the original textNode before replacing
+                     // This handles cases where a node might have been replaced by a prior highlight operation in a nested element
+                     const fragment = document.createDocumentFragment();
+                     newContent.forEach(item => fragment.appendChild(item));
+                     parent.replaceChild(fragment, textNode);
+                }
+            });
+
+            if (highlightedElements.length > 0) {
+                document.getElementById('prevMatch').classList.remove('hidden');
+                document.getElementById('nextMatch').classList.remove('hidden');
+                scrollToMatch(0); // Highlight and scroll to the first match
+            } else {
+                // Show "No matches found" message
+                const messageBox = document.createElement('div');
+                messageBox.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50';
+                messageBox.innerHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <p class="text-lg font-semibold text-gray-800 mb-4">No matches found.</p>
+                        <button id="closeMessageBox" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(messageBox);
+                document.getElementById('closeMessageBox').addEventListener('click', () => {
+                    document.body.removeChild(messageBox);
+                });
+            }
+        }
+
+        // Function to scroll to and highlight a specific match
+        function scrollToMatch(index) {
+            if (highlightedElements.length === 0) return;
+
+            // Remove previous 'current-highlight'
+            if (currentHighlightIndex !== -1 && highlightedElements[currentHighlightIndex]) {
+                highlightedElements[currentHighlightIndex].classList.remove('current-highlight');
+                highlightedElements[currentHighlightIndex].classList.add('highlight');
+            }
+
+            // Calculate new index, ensuring it wraps around
+            currentHighlightIndex = (index + highlightedElements.length) % highlightedElements.length;
+            const targetElement = highlightedElements[currentHighlightIndex];
+
+            if (targetElement) {
+                targetElement.classList.remove('highlight');
+                targetElement.classList.add('current-highlight');
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        async function analyzeFinancials() {
+            const financialDataInput = document.getElementById('financialDataInput').value.trim();
+            const analysisOutput = document.getElementById('analysisOutput');
+            const aiContent = document.getElementById('aiContent');
+            const analyzeButton = document.getElementById('analyzeButton');
+            const analyzeButtonText = document.getElementById('analyzeButtonText');
+            const loader = document.getElementById('loader');
+
+            if (!financialDataInput) {
+                // Using a custom message box instead of alert()
+                const messageBox = document.createElement('div');
+                messageBox.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50';
+                messageBox.innerHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <p class="text-lg font-semibold text-gray-800 mb-4">Please paste some financial statement data to analyze.</p>
+                        <button id="closeMessageBox" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(messageBox);
+                document.getElementById('closeMessageBox').addEventListener('click', () => {
+                    document.body.removeChild(messageBox);
+                });
+                return;
+            }
+
+            analyzeButton.disabled = true;
+            analyzeButtonText.textContent = 'Analyzing...';
+            loader.classList.remove('hidden');
+            analysisOutput.classList.add('hidden'); // Hide previous output
+            aiContent.innerHTML = ''; // Clear previous AI content
+
+            const prompt = `
+                Analyze the following financial data.
+                First, identify and list the most important financial values (e.g., Total Assets, Total Revenues, Net Income, Cash from Operations, etc.) with their amounts.
+                Second, provide a concise assessment of whether the company is performing well based *only* on the provided data. Explain your reasoning briefly.
+
+                Format your response clearly, using bold for headings and bullet points for lists.
+
+                Financial Data:
+                ${financialDataInput}
+            `;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will provide this API key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let response;
+            try {
+                // Exponential backoff for API call
+                for (let i = 0; i < 5; i++) { // Max 5 retries
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        break; // Success, exit loop
+                    } else if (response.status === 429) {
+                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000; // Exponential backoff with jitter
+                        // console.warn(`Rate limit exceeded. Retrying in ${delay / 1000}s...`); // Suppressing console warnings for retries
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        throw new Error(`API error: ${response.status} ${response.statusText}`);
+                    }
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch after multiple retries.');
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    aiContent.innerHTML = formatLLMOutput(text); // Use the formatting function
+                    analysisOutput.classList.remove('hidden');
+                } else {
+                    aiContent.innerHTML = '<p class="text-red-600">Could not retrieve analysis. Unexpected API response structure.</p>';
+                    analysisOutput.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error analyzing financial data:', error);
+                aiContent.innerHTML = `<p class="text-red-600">Error during analysis: ${error.message}. Please try again.</p>`;
+                analysisOutput.classList.remove('hidden');
+            } finally {
+                analyzeButton.disabled = false;
+                analyzeButtonText.textContent = 'Analyze Financials';
+                loader.classList.add('hidden');
+            }
+        }
+
+        function formatLLMOutput(text) {
+            // Replace markdown bold (**) with strong tags
+            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Replace markdown lists (-) with unordered list HTML
+            formattedText = formattedText.replace(/^- (.*)$/gm, '<li>$1</li>');
+            if (formattedText.includes('<li>')) {
+                formattedText = `<ul>${formattedText}</ul>`;
+            }
+            // Add paragraphs for better spacing
+            formattedText = formattedText.split('\n').map(line => {
+                if (line.startsWith('<ul') || line.startsWith('<li') || line.startsWith('</ul')) {
+                    return line; // Don't wrap list items/ul tags in p tags
+                }
+                return line.trim() === '' ? '' : `<p>${line}</p>`;
+            }).join('');
+
+            return formattedText;
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
-            updateDashboard();
-
-            document.getElementById('walmart-btn').addEventListener('click', () => {
-                currentCompany = 'walmart';
-                updateDashboard();
-            });
-
-            document.getElementById('general-mills-btn').addEventListener('click', () => {
-                currentCompany = 'generalMills';
-                updateDashboard();
-            });
+            setupCharts();
             
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('main > section');
@@ -334,7 +904,27 @@
             }, { rootMargin: "-50% 0px -50% 0px" });
 
             sections.forEach(section => observer.observe(section));
+
+            // Search functionality event listeners
+            document.getElementById('searchButton').addEventListener('click', performSearch);
+            document.getElementById('searchInput').addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            document.getElementById('prevMatch').addEventListener('click', () => scrollToMatch(currentHighlightIndex - 1));
+            document.getElementById('nextMatch').addEventListener('click', () => scrollToMatch(currentHighlightIndex + 1));
+
+            // Home button functionality
+            document.getElementById('backToHome').addEventListener('click', () => {
+                document.getElementById('introduction').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            // AI Analysis button listener
+            document.getElementById('analyzeButton').addEventListener('click', analyzeFinancials);
         });
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
