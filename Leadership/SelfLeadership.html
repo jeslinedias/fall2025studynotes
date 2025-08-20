@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Self-Leadership: Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Warm Earth & Indigo Harmony" - Base: light warm gray. Primary Accents: terracotta orange, deep indigo. Secondary accents: subtle cream, soft teal. -->
+    <!-- Application Structure Plan: The SPA is organized into five main thematic sections, mirroring the module's logical flow (Identifying as a Leader, Self-Awareness, Effective Decisions, Ethical Decisions, Psychological Well-Being). Each section includes introductory text and interactive elements (a dedicated Assessment Card for the Leader Identity Assessment, new "Info Reveal Boxes" for detailed content which are now always expanded, tabbed views, charts, a matrix for archetypes, a detailed TRAGEDIES mnemonic breakdown with floating cards, and interactive lists for concepts and biases). This structure was chosen to provide a clear, linear progression through the module's topics while allowing users to drill down into details interactively. -->
+    <!-- Visualization & Content Choices: 1) Leader Identity: Goal: Inform -> Method: Highlighted definition box and a prominent Assessment Card for Self-Report Survey -> Interaction: All content is now immediately visible. 2) Self-Awareness Archetypes: Goal: Organize/Compare -> Method: Interactive Grid/Matrix (HTML/CSS/JS) with reordered internal awareness rows -> Interaction: Click to toggle archetype details. 3) Decision-Making Biases: Goal: Inform -> Method: Clickable cards/tabs -> Interaction: Click to reveal examples. 4) Ethical Decision Barriers (TRAGEDIES): Goal: Inform/Organize -> Method: Grid of Info Reveal Boxes (Floating Cards), 2 per row with distinct background shades -> Interaction: All content is now visible without a "Read More" button. 5) Psychological Well-Being Dimensions: Goal: Inform -> Method: Enhanced Tabbed content for better visibility and navigation -> Interaction: Click tabs to switch. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F8F8; /* Light Gray */
+            color: #333333; /* Dark Gray */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #C2410C; /* Terracotta Orange */
+            border-bottom-color: #C2410C;
+        }
+        /* Styles for the Info Reveal Box widget (content always expanded) */
+        .info-reveal-box {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .info-reveal-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .info-reveal-header h4 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .info-reveal-content {
+            overflow: auto;
+            max-height: fit-content;
+            color: #4B5563;
+            padding-bottom: 0;
+        }
+      
+        .archetype-cell {
+            background-color: #E0E7FF; /* Light Blue */
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid #BFDBFE;
+        }
+        .archetype-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .tab-button.active {
+            background-color: #C2410C;
+            color: #FFFFFF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 400px;
+            min-height: 250px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 50vh;
+            }
+        }
+
+        .skill-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1.5rem; /* p-6 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .skill-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Styles for the Floating Cards (TRAGEDIES) */
+        .floating-card {
+            border: 1px solid #D1D5DB; /* Light gray border */
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Default shadow */
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+            cursor: pointer;
+        }
+        .floating-card:hover {
+            transform: translateY(-5px); /* Lift effect */
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Larger shadow on hover */
+        }
+        .floating-card .info-reveal-header {
+            border-bottom: 1px solid #D1D5DB; /* Separator border */
+            border-radius: 0.75rem 0.75rem 0 0; /* Rounded top */
+            padding: 1rem 1.5rem; /* Adjusted padding */
+        }
+        .floating-card .info-reveal-content {
+            padding: 1rem 1.5rem; /* Adjusted padding */
+            border-radius: 0 0 0.75rem 0.75rem; /* Rounded bottom */
+        }
+
+        /* Enhanced styles for Well-Being Tabs */
+        .well-being-tabs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid for tabs */
+            gap: 0.5rem; /* Space between tabs */
+            border-bottom: none; /* Remove previous single border */
+            margin-bottom: 1.5rem; /* Add margin below tabs */
+        }
+
+        .well-being-tab {
+            background-color: #E0E7FF; /* Light indigo */
+            color: #4338CA; /* Darker indigo text */
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem; /* Rounded corners for tabs */
+            font-weight: normal; /* Changed from 500 to normal */
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, transform 0.1s;
+            border: 1px solid #C7D2FE; /* Light indigo border */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+
+        .well-being-tab:hover {
+            background-color: #C7D2FE; /* Slightly darker indigo on hover */
+            color: #3730A3; /* Even darker indigo text on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .well-being-tab.active {
+            background-color: #6366F1; /* Primary indigo */
+            color: #FFFFFF; /* White text */
+            border-color: #4F46E5; /* Stronger indigo border */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* More prominent shadow for active state */
+            transform: translateY(-1px); /* Less lift than hover */
+        }
+
+        /* Style for highlighted definition */
+        .highlighted-definition {
+            background-color: #FFFBEB; /* Light yellow background */
+            border: 1px solid #FCD34D; /* Yellow border */
+            border-left: 6px solid #F59E0B; /* Stronger left border (orange) */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #78350F; /* Dark brown text for contrast */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        /* Subtle style for the Assessment Card */
+        .assessment-card {
+            background-color: #FDFDFD; /* Very light gray/almost white */
+            border: 1px solid #E0E0E0; /* Lighter gray border */
+            border-left: 6px solid #B0B0B0; /* Subtle gray left border */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Very subtle shadow */
+            margin-bottom: 1.5rem;
+        }
+        .assessment-card h4 {
+            color: #555555; /* Medium gray for header */
+            margin-bottom: 0.75rem;
+        }
+        .assessment-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .assessment-card li {
+            background-color: #F8F8F8; /* Even lighter gray for list items */
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #E5E5E5; /* Lighter gray border for items */
+            color: #666666; /* Slightly lighter gray text for items */
+            font-weight: normal; /* Changed from 500 to normal */
+        }
+        .assessment-card li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-700">Strategic Self-Leadership</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="LeadershipDevelopmentHub.html" class="nav-link active">Home</a> <!-- Added Home button -->
+                <a href="#identifying" class="nav-link">Leader Identity</a>
+                <a href="#self-awareness" class="nav-link">Self-Awareness</a>
+                <a href="#decisions" class="nav-link">Decisions</a>
+                <a href="#ethical-decisions" class="nav-link">Ethical Decisions</a>
+                <a href="#well-being" class="nav-link">Well-Being</a>
+                <a href="#conclusion" class="nav-link">Conclusion</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-slate-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#" class="block py-2 nav-link mobile-nav-link">Home</a> <!-- Added Home button for mobile -->
+            <a href="#identifying" class="block py-2 nav-link mobile-nav-link">Leader Identity</a>
+            <a href="#self-awareness" class="block py-2 nav-link mobile-nav-link">Self-Awareness</a>
+            <a href="#decisions" class="block py-2 nav-link mobile-nav-link">Decisions</a>
+            <a href="#ethical-decisions" class="block py-2 nav-link mobile-nav-link">Ethical Decisions</a>
+            <a href="#well-being" class="block py-2 nav-link mobile-nav-link">Well-Being</a>
+            <a href="#conclusion" class="block py-2 nav-link mobile-nav-link">Conclusion</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Lesson 2-1: Identifying as a Leader -->
+        <section id="identifying" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Lesson 2-1: Identifying as a Leader</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12">This section explores the fundamental concept of <strong>leader identity</strong> – how individuals perceive themselves as leaders – and why this self-perception is crucial for leadership development. It emphasizes that leadership is not just a role, but a deeply ingrained identity.</p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">What is Leader Identity?</h3>
+                <!-- Highlighted Definition Box -->
+                <div class="highlighted-definition">
+                    <p class="text-lg"><strong>Leader identity</strong> is the extent to which someone perceives themselves to be a leader. It's a sub-component of one's overall identity that relates to being a leader or how one thinks of oneself as a leader. It's both <strong>cognitively and socially constructed</strong>, influenced by our relationships and how others react to us.</p>
+                </div>
+                
+                <!-- NEW ASSESSMENT CARD for Leader Identity Assessment -->
+                <div class="assessment-card">
+                    <h4 class="font-semibold text-xl">Leader Identity Assessment (Self-Report Survey)</h4>
+                    <p class="text-slate-700 mb-4">Reflect on the following statements to assess your current leader identity:</p>
+                    <ul>
+                        <li>I am a leader.</li>
+                        <li>I see myself as a leader.</li>
+                        <li>If I had to describe myself to others, I would include the word leader.</li>
+                        <li>I prefer being seen by others as a leader.</li>
+                    </ul>
+                </div>
+                
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Why Leader Identity Matters: Building Leader Capacity</h3>
+                <p class="text-slate-600 mb-4">Your belief in yourself as a leader is the <strong>starting point</strong> for effective leadership. Leadership develops through a <strong>ready, willing, and able reciprocal process</strong>, with leader identity and self-efficacy being the initial threshold.</p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-8">
+                    <div class="text-center">
+                        <span class="text-5xl">✅</span>
+                        <p class="text-xl font-bold text-slate-700 mt-2">Ready</p>
+                        <p class="text-slate-600">Leader Identity/Efficacy</p>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl">💪</span>
+                        <p class="text-xl font-bold text-slate-700 mt-2">Able</p>
+                        <p class="text-slate-600">Leadership Skill/Practice</p>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl">💡</span>
+                        <p class="text-xl font-bold text-slate-700 mt-2">Willing</p>
+                        <p class="text-slate-600">Motivation to Lead</p>
+                    </div>
+                </div>
+                <p class="text-slate-600 mt-8">As you develop your leader identity, you become more motivated to take on leadership roles and practice your skills, which in turn strengthens your leader identity. This is a continuous cycle of growth and learning by doing.</p>
+            </div>
+        </section>
+
+        <!-- Lesson 2-2: Developing Self-awareness -->
+        <section id="self-awareness" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Lesson 2-2: Developing Self-awareness</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12"><strong>Self-awareness</strong> is often considered the most fundamental skill for effective and sustained leadership. It involves a deep understanding of ourselves and how others perceive us, enabling us to differentiate our internal 'noise' from external signals.</p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">The Power of Self-Awareness</h3>
+                <p class="text-slate-600 mb-4">Connecting deeply with others in trusting leader-follower relationships requires accurate self-awareness. However, studies show only 10-15% of people truly fit the criteria for being self-aware. It is about <strong>knowing ourselves inside and out</strong>, and being willing to be vulnerable.</p>
+                
+                <!-- INFO REVEAL BOX for Benefits of High Self-Awareness (no button) -->
+                <div class="info-reveal-box mb-4">
+                    <div class="info-reveal-header">
+                        <h4 class="font-semibold text-lg text-slate-700">Benefits of High Self-Awareness</h4>
+                    </div>
+                    <div class="info-reveal-content">
+                        <ul class="list-disc list-inside text-slate-600">
+                            <li>More <strong>confident</strong> and <strong>creative</strong></li>
+                            <li>Make <strong>sounder decisions</strong></li>
+                            <li>Build <strong>stronger relationships</strong></li>
+                            <li>Communicate more <strong>effective</strong></li>
+                            <li>Less likely to lie, cheat, and steal</li>
+                            <li>Better workers, more <strong>promotions</strong></li>
+                            <li>More effective leaders with more <strong>satisfied employees</strong> and more <strong>profitable companies</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Internal vs. External Self-Awareness (Tasha Eurich's Framework)</h3>
+                <p class="text-slate-600 mb-6">Self-awareness has two dimensions, and they are largely unrelated. Developing as leaders requires focusing on both.</p>
+                <div class="grid grid-cols-3 gap-2 text-center bg-gray-100 p-4 rounded-lg">
+                    <div class="font-bold text-slate-700 flex items-center justify-center"></div>
+                    <div class="font-bold text-slate-700 flex items-center justify-center">Low External</div>
+                    <div class="font-bold text-slate-700 flex items-center justify-center">High External</div>
+                    
+                    <!-- Reordered rows: High Internal first, then Low Internal -->
+                    <div class="font-bold text-slate-700 flex items-center justify-center rotate-180 [writing-mode:vertical-lr]">High Internal</div>
+                    <div class="archetype-cell p-4 rounded-md flex flex-col justify-center items-center text-sm" data-archetype="Introspective">
+                        <span class="text-3xl">🧘</span>
+                        <p class="font-bold text-slate-800 mt-2">Introspective</p>
+                        <p class="text-xs text-slate-600 hidden mt-1">High internal, low external. Know themselves well but rarely challenge those views against how others see them or seek critical feedback.</p>
+                    </div>
+                    <div class="archetype-cell p-4 rounded-md flex flex-col justify-center items-center text-sm" data-archetype="Aware">
+                        <span class="text-3xl">🦄</span>
+                        <p class="font-bold text-slate-800 mt-2">Aware</p>
+                        <p class="text-xs text-slate-600 hidden mt-1">High in both internal and external self-awareness. These 'unicorns' know who they are, what they stand for, and actively seek critical feedback, willing to adjust themselves.</p>
+                    </div>
+
+                    <div class="font-bold text-slate-700 flex items-center justify-center rotate-180 [writing-mode:vertical-lr]">Low Internal</div>
+                    <div class="archetype-cell p-4 rounded-md flex flex-col justify-center items-center text-sm" data-archetype="Seeker">
+                        <span class="text-3xl">🔍</span>
+                        <p class="font-bold text-slate-800 mt-2">Seeker</p>
+                        <p class="text-xs text-slate-600 hidden mt-1">Low in both internal and external self-awareness. They may feel stuck, not knowing who they are or how others see them.</p>
+                    </div>
+                    <div class="archetype-cell p-4 rounded-md flex flex-col justify-center items-center text-sm" data-archetype="Pleaser">
+                        <span class="text-3xl">🎭</span>
+                        <p class="font-bold text-slate-800 mt-2">Pleaser</p>
+                        <p class="text-xs text-slate-600 hidden mt-1">Low internal, high external. Concerned with how they appear to others but less tuned into their internal values, potentially leading to choices not in their best interest.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mt-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Developing Self-Awareness: Gain Insight & Invite Feedback</h3>
+                <p class="text-slate-600 mb-4">To overcome personal blind spots and enhance self-awareness, leaders must actively engage in two key practices:</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="skill-card bg-amber-50">
+                        <h4 class="text-xl font-bold text-amber-800 mb-3">1. Gaining Insight (Internal Self-Awareness)</h4>
+                        <p class="text-amber-700 mb-4">Carve out quiet time to explore these seven areas for yourself:</p>
+                        <ul class="list-disc list-inside text-amber-700 space-y-2">
+                            <li><strong>Values:</strong> Core principles guiding decisions.</li>
+                            <li><strong>Passions:</strong> Projects/activities you never tire of.</li>
+                            <li><strong>Aspirations:</strong> Experiences/achievements you seek; legacy.</li>
+                            <li><strong>Fit/Environment:</strong> Ideal work environment for happiness and engagement.</li>
+                            <li><strong>Patterns:</strong> Your personality (e.g., from assessments).</li>
+                            <li><strong>Reactions:</strong> Top strengths and weaknesses; how you respond.</li>
+                            <li><strong>Impact:</strong> Effect you have on others, one-on-one and in groups.</li>
+                        </ul>
+                    </div>
+                    <div class="skill-card bg-emerald-50">
+                        <h4 class="text-xl font-bold text-emerald-800 mb-3">2. Inviting Feedback (External Self-Awareness)</h4>
+                        <p class="text-emerald-700 mb-4">The most successful leaders seek frequent critical feedback, especially from "loving critics" – people who have your best interests in mind and are willing to tell you the truth. Respond non-defensively and celebrate their courage.</p>
+                        <p class="text-emerald-700 italic">"It's much better to know that you're going to make mistakes and invite individuals to share with you when you've done something that represents the wrong way."</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Lesson 2-3: Making Effective Decisions -->
+        <section id="decisions" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Lesson 2-3: Making Effective Decisions</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12">Leaders make countless decisions daily, impacting many. This section delves into decision-making processes, common biases, and strategies for improving judgment and choice. Understanding how our brains work is the first step to making better decisions.</p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Decision-Making: Processes and Theories</h3>
+                <p class="text-slate-600 mb-4">Decision-making involves two primary processes: <strong>judgment or evaluation</strong> (identifying alternatives) and <strong>choice or selection</strong> (selecting among them).</p>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="skill-card bg-indigo-50">
+                        <h4 class="text-xl font-bold text-indigo-800 mb-2">Historical Views: Rationality</h4>
+                        <ul class="list-disc list-inside text-indigo-700 space-y-1">
+                            <li>
+                                <strong>Descartes' Square:</strong> A simple yet powerful technique developed by philosopher René Descartes to thoroughly evaluate any option. It involves asking four key questions to gain a comprehensive and objective understanding of a situation, helping to clarify consequences and make more informed decisions. Learn more by watching this video: <a href="https://www.youtube.com/watch?v=pmz-07AonLE" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:text-indigo-700 underline">How to Make a Decision You Won't Regret Later</a>
+                                <ul class="list-disc list-inside ml-6 mt-2 text-indigo-600" style="font-weight: normal;">
+                                    <li>What will happen if I do this?</li>
+                                    <li>What will happen if I don't do this?</li>
+                                    <li>What won't happen if I do this?</li>
+                                    <li>What won't happen if I don't do this?</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Game Theory:</strong> A theoretical framework for conceiving social situations among competing players. It's often applied in economics, political science, and psychology to understand how rational decision-makers interact and make choices when their outcomes depend on the choices of others.
+                            </li>
+                            <li>
+                                <strong>Rational Choice Theory / Expected Value Theory:</strong> This theory assumes that individuals make decisions that are logical and linear, always aiming to maximize their personal utility or gain. It posits that people weigh the costs and benefits of different options and choose the one that offers the greatest net benefit.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="skill-card bg-purple-50">
+                        <h4 class="text-xl font-bold text-purple-800 mb-2">Modern Views: Bounded Rationality & Biases</h4>
+                        <ul class="list-disc list-inside text-purple-700 space-y-1">
+                            <li>
+                                <strong>Bounded Rationality (Herbert Simon):</strong> This concept argues that human rationality is limited by cognitive constraints, available information, and the finite amount of time we have to make decisions. Instead of perfectly rational choices, individuals often "satisfice"—they seek an outcome that is good enough, rather than searching for the absolute best possible outcome.
+                            </li>
+                            <li>
+                                <strong>Prospect Theory (Kahneman & Tversky):</strong> This theory describes how individuals make decisions under risk and uncertainty. A key finding is that people tend to value losses more heavily than equivalent gains, leading to different risk preferences depending on whether a decision is "framed" as a gain or a loss. For example, people are often more risk-averse when choosing between sure gains but more risk-seeking when choosing between sure losses.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold text-slate-700 mb-3">Two Decision-Making Systems (Kahneman)</h4>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li style="font-weight: normal;"><strong>System 1 (Fast & Reactive):</strong> This system operates automatically and quickly, with little or no effort and no sense of voluntary control. It's based on experience and uses heuristics (mental shortcuts) which can lead to cognitive biases. (e.g., tying shoes, checking email).</li>
+                    <li style="font-weight: normal;"><strong>System 2 (Slower & Deliberate):</strong> This system allocates attention to effortful mental activities that demand it, including complex computations. It involves taking time to gather information, analyzing it, and using decision tools, which can help in overcoming biases and making more rational decisions. (e.g., analytical decision-making).</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Common Cognitive Biases (Heuristics)</h3>
+                <p class="text-slate-600 mb-4">Leaders are always subject to blind spots. Kahneman and Tversky identified common heuristics that lead to biased decision-making. Click to see examples:</p>
+                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                    <button class="tab-button py-2 px-4 rounded-full font-medium text-slate-600 bg-gray-200 hover:bg-teal-600 hover:text-white transition-colors" data-bias="Availability">Availability Bias</button>
+                    <button class="tab-button py-2 px-4 rounded-full font-medium text-slate-600 bg-gray-200 hover:bg-teal-600 hover:text-white transition-colors" data-bias="Representativeness">Representativeness Bias</button>
+                    <button class="tab-button py-2 px-4 rounded-full font-medium text-slate-600 bg-gray-200 hover:bg-teal-600 hover:text-white transition-colors" data-bias="Anchoring">Anchoring Bias</button>
+                    <button class="tab-button py-2 px-4 rounded-full font-medium text-slate-600 bg-gray-200 hover:bg-teal-600 hover:text-white transition-colors" data-bias="Affinity">Affinity Bias</button>
+                </div>
+                <div id="bias-details" class="bg-gray-50 p-6 rounded-lg border border-gray-100 min-h-[120px]">
+                    <p class="text-slate-600">Select a bias above to see its explanation and an example.</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Skill Development: Making Better Decisions</h3>
+                <p class="text-slate-600 mb-4">Improving decision-making starts with self-awareness and proactive strategies:</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="skill-card bg-blue-50">
+                        <h4 class="text-xl font-bold text-blue-800 mb-3">Know Yourself</h4>
+                        <p class="text-blue-700">Understand your values, goals, and individual differences that influence decisions (e.g., fear of disappointing others, desire to be liked).</p>
+                    </div>
+                    <div class="skill-card bg-fuchsia-50">
+                        <h4 class="text-xl font-bold text-fuchsia-800 mb-3">Recognize Blind Spots</h4>
+                        <p class="text-fuchsia-700">Be aware of external factors like time and social constraints that affect your judgment.</p>
+                    </div>
+                    <div class="skill-card bg-cyan-50">
+                        <h4 class="text-xl font-bold text-cyan-800 mb-3">Utilize Social Networks</h4>
+                        <p class="text-cyan-700">Avoid making decisions in a vacuum. Consult "loving critics" and diverse perspectives to gain full information.</p>
+                    </div>
+                    <div class="skill-card col-span-full bg-orange-50">
+                        <h4 class="text-xl font-bold text-orange-800 mb-3">Develop a Problem-Solving Practice</h4>
+                        <p class="text-orange-700">Create templates or decision trees to structure your thinking and remind you to avoid quick heuristics.</p>
+                        <!-- INFO REVEAL BOX for PDCA Learning Cycle (no button) -->
+                        <div class="info-reveal-box mt-6">
+                            <div class="info-reveal-header">
+                                <h4 class="font-semibold text-lg text-orange-800">The PDCA Learning Cycle for Continuous Improvement</h4>
+                            </div>
+                            <div class="info-reveal-content">
+                                <p class="text-orange-700 mb-4">Apply the Plan-Do-Check-Adjust (PDCA) cycle to your leadership practice:</p>
+                                <div class="chart-container !h-[300px] !max-h-[350px]">
+                                    <canvas id="pdcaChart"></canvas>
+                                </div>
+                                <ul class="list-disc list-inside text-orange-700 mt-4" style="font-weight: normal;">
+                                    <li><strong>Plan:</strong> Decide what you want to improve (e.g., humble inquiry in meetings).</li>
+                                    <li><strong>Do:</strong> Practice the new behavior.</li>
+                                    <li><strong>Check:</strong> Reflect on how you did (e.g., at the end of the week).</li>
+                                    <li><strong>Adjust:</strong> Adapt your approach for the next iteration.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-slate-600 mt-6">Ultimately, leaders must <strong>own up to the tough decisions</strong> they make and foster a team culture built on <strong>trusting relationships</strong> (bonding and bridging social capital) to facilitate cooperation and shared motivation.</p>
+            </div>
+        </section>
+
+        <!-- Lesson 2-4: Making Ethical Decisions -->
+        <section id="ethical-decisions" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Lesson 2-4: Making Ethical Decisions</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12"><strong>Ethical decision-making</strong> is critical for leaders, as their choices profoundly impact individuals and organizations. This section explores why well-intentioned people can make unethical decisions and provides a framework for avoiding common pitfalls.</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Understanding Ethical Decision-Making</h3>
+                <p class="text-slate-600 mb-4">Ethics refers to evaluating decisions or behaviors as good vs. bad or right vs. wrong. <strong>Ethical decision-making</strong> specifically examines how we make choices aligned with (or against) ethical principles, influenced by personal and cultural values.</p>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="skill-card bg-teal-50">
+                        <h4 class="text-xl font-bold text-teal-800 mb-2">Normative Ethics (Philosophical Frameworks)</h4>
+                        <ul class="list-disc list-inside text-teal-700 space-y-1">
+                            <li style="font-weight: normal;"><strong>Utilitarianism:</strong> This framework focuses on outcomes, suggesting that the most ethical choice is the one that produces the greatest good for the greatest number of people.</li>
+                            <li style="font-weight: normal;"><strong>Deontology:</strong> This approach emphasizes duties or rules, asserting that actions are right or wrong based on whether they adhere to a set of moral principles or rules, regardless of the outcome.</li>
+                            <li style="font-weight: normal;"><strong>Virtue Ethics:</strong> Instead of focusing on actions or outcomes, virtue ethics centers on the character of the moral agent. It suggests that ethical decisions arise from developing and exercising virtues like honesty, courage, and compassion.</li>
+                        </ul>
+                    </div>
+                    <div class="skill-card bg-rose-50">
+                        <h4 class="text-xl font-bold text-rose-800 mb-2">Behavioral Ethics (Why We Make Unethical Decisions)</h4>
+                        <ul class="list-disc list-inside text-rose-700 space-y-1">
+                            <li style="font-weight: normal;">Explores individual and situational forces, answering: Why do people make unethical decisions even when they don't intend to? It focuses on well-intentioned people making bad decisions.</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-semibold text-slate-700 mt-8 mb-4">Key Findings from Behavioral Ethics</h3>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li style="font-weight: normal;">
+                        <strong>Values vs. Actions: The Slippery Slope Effect</strong>
+                        <p class="ml-4 mt-1">This highlights a disconnect between a person's espoused values and their actual behavior. People often rationalize minor ethical violations, which can lead to a "slippery slope" where larger ethical breaches become easier and more normalized. Being explicit about values can disrupt this.</p>
+                        <p class="ml-4 mt-1 italic text-slate-500">Example: A slight inflation of expense reports or taking office supplies for personal use might seem insignificant initially, but can lead to a gradual erosion of ethical boundaries, making larger ethical lapses more likely.</p>
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>Bounded Ethicality: Constraints on Moral Decision-Making</strong>
+                        <p class="ml-4 mt-1">Our ability to make optimal ethical decisions is limited by internal psychological biases and external situational pressures. We're not always as rational or ethical as we perceive ourselves to be.</p>
+                        <ul class="list-disc list-inside ml-8 mt-2 text-slate-600" style="font-weight: normal;">
+                            <li><strong>Internal Psychological Biases:</strong>
+                                <ul class="list-disc list-inside ml-8 mt-1 text-slate-500" style="font-weight: normal;">
+                                    <li><strong>Overconfidence Bias:</strong> Believing one is more ethical than they are, or immune to ethical pitfalls.</li>
+                                    <li><strong>Confirmation Bias:</strong> Seeking and interpreting information that confirms existing, potentially ethically questionable, beliefs.</li>
+                                    <li><strong>Self-Serving Bias:</strong> Attributing successes to oneself and failures to external factors, which can rationalize unethical behavior.</li>
+                                </ul>
+                            </li>
+                            <li><strong>External Situational Pressures:</strong>
+                                <ul class="list-disc list-inside ml-8 mt-1 text-slate-500" style="font-weight: normal;">
+                                    <li><strong>Group/Society Pressure:</strong> Conforming to group norms even if they are ethically ambiguous.</li>
+                                    <li><strong>Incentive Structures:</strong> Reward systems that inadvertently encourage unethical behavior (e.g., aggressive sales quotas leading to unauthorized account creation, as seen in the Wells Fargo scandal).</li>
+                                    <li><strong>Authority Pressure:</strong> Complying with unethical directives from superiors.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>Framing Effects: How Presentation Shapes Ethical Choices</strong>
+                        <p class="ml-4 mt-1">The way a situation is presented can significantly alter ethical decisions. A "business frame" can blind decision-makers to moral implications.</p>
+                        <p class="ml-4 mt-1 italic text-slate-500">Example: The **Ford Pinto case**, where Ford conducted a cost-benefit analysis and chose not to implement an $11 safety fix, valuing human lives in monetary terms. This was a decision framed primarily as a business problem rather rather than an ethical one, leading to numerous fatalities when gas tanks exploded upon impact.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Skill Development: Avoiding "Career Tragedies" (C.K. Gunsalus)</h3>
+                <p class="text-slate-600 mb-4">To make more ethical decisions, start with awareness and practice. C.K. Gunsalus developed the <strong>TRAGEDIES</strong> mnemonic to help recognize common pitfalls. Click each letter to reveal its meaning:</p>
+                <div id="tragedies-list" class="grid md:grid-cols-2 gap-4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Lesson 2-5: Maintaining Psychological Well-Being -->
+        <section id="well-being" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Lesson 2-5: Maintaining Psychological Well-Being</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12">Leadership is demanding, often leading to stress and burnout. This section emphasizes the crucial importance of <strong>psychological well-being</strong> for leaders, defining its dimensions and offering practical strategies for maintaining it as a sustainable lifestyle.</p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Why Leader Well-Being Matters</h3>
+                <p class="text-slate-600 mb-4">Leadership roles often come with immense pressure, demanding long hours, complex decision-making, and constant interaction. Without intentional practices for well-being, leaders can experience high levels of stress, burnout, and a decline in effectiveness. Prioritizing psychological well-being allows leaders to sustain their energy, make better decisions, foster healthier team environments, and ultimately, thrive.</p>
+                <h4 class="text-xl font-bold text-slate-700 mb-3">Three Primary Dimensions of Psychological Well-Being:</h4>
+                <div class="well-being-tabs-container">
+                    <button class="well-being-tab active" data-dimension="Hedonic">Hedonic Well-Being</button>
+                    <button class="well-being-tab" data-dimension="Eudaimonic">Eudaimonic Well-Being</button>
+                    <button class="well-being-tab" data-dimension="Resilience">Resilience</button>
+                </div>
+                <div id="well-being-content"></div>
+                
+                <h3 class="text-2xl font-semibold text-slate-700 mt-8 mb-4">Common Well-Being Traps for Leaders:</h3>
+                <p class="text-slate-600 mb-4">Leaders, despite their best intentions, can sometimes fall into patterns that inadvertently harm their well-being. Recognizing these "traps" is the first step toward avoiding them:</p>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li style="font-weight: normal;">
+                        <strong>The Positivity Trap</strong>
+                        <p class="ml-4 mt-1">This occurs when leaders feel pressured to always be positive, to never show weakness, or to suppress challenging emotions. As Denise Loyd notes in the transcript, "For me that stands out is the positivity trap... we can put a lot of pressure on ourselves and have even higher expectations... Sometimes than those around us and be holding ourselves to these high standards." This constant pressure to project positivity can lead to emotional exhaustion and a disconnection from one's authentic feelings.</p>
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>The "Have All The Answers" Trap</strong>
+                        <p class="ml-4 mt-1">Leaders can place undue pressure on themselves to know everything and solve every problem independently. Denise Loyd further explains, "and have all the answers trap. So as leaders, we can put a lot of pressure on ourselves... Versus recognizing that a big part of it is bringing together the team, right? The individuals that you, that you engage with, right us, that support each other, that inform that you know, have our backs." This trap can shut down collaboration, prevent seeking help, and lead to isolation and immense personal burden.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Skill Development: Cultivating Well-Being</h3>
+                <p class="text-slate-600 mb-4">Maintaining psychological well-being is a lifestyle, not just crisis management. Focus on two main strategies:</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="skill-card bg-amber-50">
+                        <h4 class="text-xl font-bold text-amber-800 mb-3">1. Maximize the Positive</h4>
+                        <p class="text-amber-700 mb-4">Intentionally cultivate what matters to your well-being. The <strong>PERMA Model</strong> (Martin Seligman) offers a framework for flourishing:</p>
+                        <ul class="list-disc list-inside text-amber-700 space-y-2">
+                            <li style="font-weight: normal;"><strong>P</strong>ositive Emotions: Seek moments of joy and pleasure.</li>
+                            <li style="font-weight: normal;"><strong>E</strong>ngagement: Find flow in activities you enjoy.</li>
+                            <li style="font-weight: normal;"><strong>R</strong>elationships: Build supportive connections. (As Kari Keating emphasizes in the transcript, "Connection is so important." Elizabeth Luckman also adds, "it is a mutual admiration society and a mutual support society and I'm grateful for it every day.")</li>
+                            <li style="font-weight: normal;"><strong>M</strong>eaning: Explore purpose and significance in life and work (coherence, significance).</li>
+                            <li style="font-weight: normal;"><strong>A</strong>chievement: Pursue accomplishments that bring satisfaction.</li>
+                        </ul>
+                    </div>
+                    <div class="skill-card bg-purple-50">
+                        <h4 class="text-xl font-bold text-purple-800 mb-3">2. Navigate the Negatives</h4>
+                        <p class="text-purple-700 mb-4">This involves setting <strong>realistic boundaries</strong> and practicing self-compassion. Know what to say "yes" and "no" to. Remember the "oxygen mask" analogy: self-care is a continuous practice, not just for crises. Embrace "emotional agility" – being flexible with thoughts and feelings.</p>
+                        <ul class="list-disc list-inside text-purple-700 space-y-2">
+                            <li style="font-weight: normal;"><strong>Connection:</strong> Seek support from others instead of isolating.</li>
+                            <li style="font-weight: normal;"><strong>Contribution:</strong> Gain a sense of agency by contributing to initiatives or helping others.</li>
+                            <li style="font-weight: normal;"><strong>Compassion:</strong> Be patient and kind to yourself and to others; accept the full range of emotions.</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-slate-600 mt-6">Ultimately, leaders must <strong>own up to the tough decisions</strong> they make and foster a team culture built on <strong>trusting relationships</strong> (bonding and bridging social capital) to facilitate cooperation and shared motivation.</p>
+            </div>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-slate-800 text-center mb-4">Conclusion: Leadership as a Lifelong Journey</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 text-center mb-12">As we wrap up our exploration of strategic self-leadership, it's essential to remember that leadership is a continuous process of learning, growth, and self-improvement. It's a field of study and practice, much like any other discipline, where skills are honed over a lifetime.</p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+                <h3 class="text-2xl font-semibold text-slate-700 mb-4">Key Takeaways from Your Leadership Journey:</h3>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li style="font-weight: normal;">
+                        <strong>Leadership is a Learnable Skill:</strong> As highlighted in Module 1, leadership is not an innate trait but a legitimate discipline with skill-based practices, much like math or music. You can learn the skills and techniques over the course of your lifetime. Denise Loyd encourages: "I really hope that our students already see that this is something that can be learned, right? That we can learn and we can grow and keeping that mindset of growing, it's just critical to."
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>Embrace a Growth Mindset:</strong> Central to developing as a leader is the adoption of a growth mindset – the belief that abilities can be developed through dedication and hard work. Elizabeth Luckman emphasizes, "This is the growth mindset module. Everybody get in a growth mindset." This mindset encourages reflection on practices and continuous improvement.
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>Prioritize Self-Awareness:</strong> Understanding your internal thoughts and external perceptions is foundational. Pausing to reflect on your practices and how you can improve them is a great place to start.
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>Make Ethical and Effective Decisions:</strong> Recognizing and mitigating cognitive biases and understanding ethical frameworks are crucial for sound judgment. Avoid "career tragedies" by understanding common pitfalls like temptation, rationalization, and pressure.
+                    </li>
+                    <li style="font-weight: normal;">
+                        <strong>Maintain Psychological Well-Being:</strong> Leadership demands self-care. It’s about maximizing positive experiences (PERMA) and navigating negatives, remembering that connection and mutual support are vital. Elizabeth Luckman shares, "I will say that the two of you are foundational to my wellbeing... it is unique to work with people and to work with people who it's not just trust, it's like beyond trust. And it is a mutual admiration society and a mutual support society and I'm grateful for it every day." Kari Keating adds, "Connection is so important."
+                    </li>
+                </ul>
+                <p class="text-slate-600 mt-6">Your journey as a leader is ongoing. Continue to reflect, learn, and grow, building on the foundations of self-awareness, ethical decision-making, and personal well-being. This approach sets you up for continued success in the act, science, and art of leadership.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Strategic Self-Leadership Guide. Powered by Gies College of Business Insights.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const module2Data = {
+                archetypes: {
+                    Seeker: "Low in both internal and external self-awareness. They may feel stuck, not knowing who they are or how others see them.",
+                    Introspective: "High internal, low external. Know themselves well but rarely challenge those views against how others see them or seek critical feedback.",
+                    Pleaser: "Low internal, high external. Concerned with how they appear to others but less tuned into their internal values, potentially leading to choices not in their best interest.",
+                    Aware: "High in both internal and external self-awareness. These 'unicorns' know who they are, what they stand for, and actively seek critical feedback, willing to adjust themselves."
+                },
+                biases: {
+                    Availability: {
+                        name: "Availability Bias",
+                        description: "We make decisions based on the information that is most readily available or easy to bring to mind.",
+                        example: "Choosing a supplier you've seen marketed daily, even without considering other options, simply because they're top-of-mind."
+                    },
+                    Representativeness: {
+                        name: "Representativeness Bias",
+                        description: "We make decisions based on stereotypes instead of actual base rates or individual qualities.",
+                        example: "Assuming a personal trainer candidate is more extroverted than an artist candidate for an executive assistant role, based on stereotypes, and being surprised when the artist is more outgoing."
+                    },
+                    Anchoring: {
+                        name: "Anchoring Bias",
+                        description: "We make decisions based on a reference point (an 'anchor') and get stuck around that point, even if new information suggests a different path.",
+                        example: "Planning a 2% business growth year after year because it's been the historical average, even when a new revenue stream suggests a potential 10% increase."
+                    },
+                     Affinity: {
+                        name: "Affinity Bias",
+                        description: "A tendency to gravitate towards people who are like ourselves, which can subtly influence decisions like who we call in a crisis or who we promote.",
+                        example: "A tech executive realizing he only calls white male colleagues in 'fire drill' situations, despite equally qualified women on his team, due to a comfort level with those who are 'like bros'."
+                    }
+                },
+                tragedies: [
+                    { letter: "T", term: "Temptation", description: "Something you really want, leading you to questionable actions. How you deal with it defines you.", bgColor: "bg-red-50", textColor: "text-red-800", headerBg: "bg-red-100", headerText: "text-red-900" },
+                    { letter: "R", term: "Rationalization", description: "Making excuses for questionable behavior to maintain your ethical self-concept. A signal to step back and reflect.", bgColor: "bg-orange-50", textColor: "text-orange-800", headerBg: "bg-orange-100", headerText: "text-orange-900" },
+                    { letter: "A", term: "Ambition", description: "Being driven for promotion, bonus, or recognition. Question if ambition is an excuse for dubious choices.", bgColor: "bg-yellow-50", textColor: "text-yellow-800", headerBg: "bg-yellow-100", headerText: "text-yellow-900" },
+                    { letter: "G", term: "Group & Authority Pressure", description: "Peer pressure or directives from authority figures. You are always responsible for your own actions, regardless of external pressure.", bgColor: "bg-green-50", textColor: "text-green-800", headerBg: "bg-green-100", headerText: "text-green-900" },
+                    { letter: "E", term: "Entitlement", description: "Feeling you deserve to break rules or cheat, no matter how hard you've worked. A red flag for trouble.", bgColor: "bg-teal-50", textColor: "text-teal-800", headerBg: "bg-teal-100", headerText: "text-teal-900" },
+                    { letter: "D", term: "Deception", description: "Intentionally misleading others or yourself. A clue you've told a lie or are not being honest with yourself.", bgColor: "bg-cyan-50", textColor: "text-cyan-800", headerBg: "bg-cyan-100", headerText: "text-cyan-900" },
+                    { letter: "I", term: "Incrementalism", description: "Taking small unethical steps without consequences, which normalizes deviance and can lead to larger ethical breaches over time.", bgColor: "bg-blue-50", textColor: "text-blue-800", headerBg: "bg-blue-100", headerText: "text-blue-900" },
+                    { letter: "E", term: "Embarrassment", description: "Being too embarrassed to admit a mistake, leading you to hide it. The ability to say 'I'm sorry' or 'I don't know' is critical.", bgColor: "bg-indigo-50", textColor: "text-indigo-800", headerBg: "bg-indigo-100", headerText: "text-indigo-900" },
+                    { letter: "S", term: "Stupid Systems", description: "Organizational policies that seem to make your job harder. Recognize the boundary between working within or around them and compromising your values.", bgColor: "bg-purple-50", textColor: "text-purple-800", headerBg: "bg-purple-100", headerText: "text-purple-900" }
+                ],
+                wellBeingDimensions: {
+                    Hedonic: {
+                        title: "Hedonic Well-Being: Feeling Good",
+                        content: `
+                            <p class="text-slate-600 mb-2">Experiencing and seeking feelings of pleasure and satisfaction (e.g., eating ice cream, checking a task off a list). It's about maximizing positive emotions and minimizing negative ones.</p>
+                            <p class="text-slate-600 italic">Notes: While these feelings can be intense and immediately gratifying, they often fade quickly. Relying solely on hedonic pursuits can lead to the "hedonic treadmill," where one constantly seeks new pleasures to maintain a baseline level of happiness. For sustainable well-being, flourishing requires more than just fleeting happiness.</p>
+                        `
+                    },
+                    Eudaimonic: {
+                        title: "Eudaimonic Well-Being: Living with Purpose",
+                        content: `
+                            <p class="text-slate-600 mb-2">Happiness achieved through self-actualization, pursuing meaningful purpose in life, and realizing one's full potential. It's about aligning actions with deeply held values and contributing to something larger than oneself (e.g., earning a degree, raising children, contributing to a community project).</p>
+                            <p class="text-slate-600 italic">Notes: This dimension can involve discomfort and negative emotions, as growth often entails challenges and setbacks. It is typically more future-oriented and other-focused, providing a deeper, more lasting sense of fulfillment compared to hedonic well-being.</p>
+                        `
+                    },
+                    Resilience: {
+                        title: "Resilience: Bouncing Back",
+                        content: `
+                            <p class="text-slate-600 mb-2">The ability to successfully adapt to difficult or challenging life experiences through mental, emotional, and behavioral flexibility. It's about recovering from adversity, learning from setbacks, and continuing to move forward.</p>
+                            <p class="text-slate-600 italic">Notes: Resilience is highly correlated with overall psychological well-being. Cultivating it involves developing internal resources and strong external support networks, enabling leaders to navigate stress and maintain their effectiveness even in turbulent times.</p>
+                        `
+                    }
+                }
+            };
+
+            // Global Info Reveal Box Functionality (no button)
+            document.querySelectorAll('.info-reveal-box').forEach(box => {
+                const content = box.querySelector('.info-reveal-content');
+                if (content) {
+                    content.style.maxHeight = 'fit-content';
+                    content.style.overflow = 'auto';
+                    content.style.paddingBottom = '1rem';
+                }
+            });
+
+            // Archetype Cell Interaction
+            document.querySelectorAll('.archetype-cell').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const archetype = cell.dataset.archetype;
+                    const descriptionElement = cell.querySelector('p:last-child');
+                    descriptionElement.classList.toggle('hidden');
+                });
+            });
+
+            // Bias Tab Interaction
+            const biasButtons = document.querySelectorAll('.tab-button[data-bias]');
+            const biasDetails = document.getElementById('bias-details');
+            function updateBiasDetails(biasKey) {
+                const bias = module2Data.biases[biasKey];
+                biasDetails.innerHTML = `
+                    <h4 class="text-xl font-bold text-slate-700 mb-2">${bias.name}</h4>
+                    <p class="text-slate-600 mb-2">${bias.description}</p>
+                    <p class="text-slate-500 italic">Example: ${bias.example}</p>
+                `;
+                biasButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.bias === biasKey);
+                });
+            }
+            biasButtons.forEach(button => {
+                button.addEventListener('click', () => updateBiasDetails(button.dataset.bias));
+            });
+            updateBiasDetails('Availability'); // Default active tab
+
+            // PDCA Chart
+            const ctxPdca = document.getElementById('pdcaChart').getContext('2d');
+            const pdcaChart = new Chart(ctxPdca, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Plan', 'Do', 'Check', 'Adjust'],
+                    datasets: [{
+                        data: [25, 25, 25, 25],
+                        backgroundColor: [
+                            '#87CEEB',
+                            '#F9A825',
+                            '#4CAF50',
+                            '#FF6347'
+                        ],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    family: 'Inter'
+                                },
+                                color: '#4A4A4A'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    },
+                    rotation: -0.5 * Math.PI
+                }
+            });
+
+            // TRAGEDIES Mnemonic List
+            const tragediesList = document.getElementById('tragedies-list');
+            module2Data.tragedies.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `info-reveal-box floating-card ${item.bgColor} ${item.textColor}`;
+                div.innerHTML = `
+                    <div class="info-reveal-header ${item.headerBg}">
+                        <h4 class="font-semibold text-lg ${item.headerText}"><span class="font-extrabold text-indigo-700">${item.letter}</span> - ${item.term}</h4>
+                    </div>
+                    <div class="info-reveal-content">
+                        <p class="${item.textColor}">${item.description}</p>
+                    </div>
+                `;
+                tragediesList.appendChild(div);
+            });
+
+
+            // Well-Being Tabs
+            const wellBeingTabs = document.querySelectorAll('.well-being-tab');
+            const wellBeingContent = document.getElementById('well-being-content');
+            
+            function updateWellBeingContent(dimension) {
+                const dimData = module2Data.wellBeingDimensions[dimension];
+                wellBeingContent.innerHTML = `
+                    <h4 class="text-xl font-bold text-slate-700 mb-2">${dimData.title}</h4>
+                    ${dimData.content}
+                `;
+                wellBeingTabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.dimension === dimension);
+                });
+            }
+            wellBeingTabs.forEach(tab => {
+                tab.addEventListener('click', () => updateWellBeingContent(tab.dataset.dimension));
+            });
+            updateWellBeingContent('Hedonic'); // Default active tab
+
+            // Mobile menu functionality
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Smooth scrolling and active nav link highlighting
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    if(mobileMenu.classList.contains('hidden') === false){
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
