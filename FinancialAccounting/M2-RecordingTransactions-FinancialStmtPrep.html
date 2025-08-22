@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recording Transactions and Financial Statement Preparation Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; color: #333; }
+        .container { max-width: 960px; }
+        .section-title { color: #1E40AF; border-bottom: 2px solid #BFDBFE; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .formula { background-color: #DBEAFE; color: #1E40AF; padding: 0.5rem 1rem; border-radius: 0.5rem; display: inline-block; margin-top: 0.75rem; margin-bottom: 0.75rem; font-weight: 600; font-size: 1.1em; border: 1px solid #93C5FD; }
+        .formula-highlight { background-color: #FFDE7A; padding: 1px 3px; border-radius: 3px; font-weight: bold;}
+        .example-card { background-color: #F0F9FF; border-left: 4px solid #3B82F6; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; margin-bottom: 1rem; }
+        .important-note { background-color: #FEF3C7; border-left: 4px solid #FBBF24; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; margin-bottom: 1rem; }
+        ul { list-style-type: disc; margin-left: 1.5rem; }
+        ol { list-style-type: decimal; margin-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: #1D4ED8; } /* Stronger blue for bold text */
+    </style>
+    <!-- MathJax for LaTeX rendering -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="antialiased leading-relaxed">
+    <header class="bg-blue-800 text-white py-4 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl font-bold">📚 Module 2: Financial Accounting Foundations Notes</h1>
+            <p class="text-blue-200 mt-2">Recording Transactions and Financial Statement Preparation</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+
+        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold section-title">Introduction to Recording Financial Transactions</h2>
+            <p class="mb-4">This module focuses on how to record financial transactions in accounting language and prepare the fundamental financial statements: the Balance Sheet and Income Statement.</p>
+            <div class="important-note">
+                <p class="font-semibold text-lg text-yellow-800">Key Principle: Fundamental Accounting Equation</p>
+                <p>The entire system of recording financial transactions revolves around maintaining the balance of the equation:</p>
+                <div class="formula">
+                    <span class="formula-highlight">Assets = Liabilities + Shareholders' Equity</span>
+                </div>
+                <p>For any period, this also means that changes in these components must balance:</p>
+                <div class="formula">
+                    <span class="formula-highlight">$$\Delta \text{Assets} = \Delta \text{Liabilities} + \Delta \text{Shareholders' Equity}$$</span>
+                </div>
+                <p>Where $\Delta$ (Delta) signifies "change."</p>
+            </div>
+            <h3 class="text-xl font-medium text-gray-700 mt-6 mb-3">Steps in Recording Financial Transactions:</h3>
+            <ol>
+                <li><strong>Identify accounts impacted:</strong> Determine which specific accounts (e.g., Cash, Fixed Assets, Bank Loan, Sales) are affected by a transaction.</li>
+                <li><strong>Determine the impact:</strong> Quantify the amount and direction (increase/decrease) of the impact on each identified account.</li>
+                <li><strong>Ensure the fundamental accounting equation holds:</strong> Verify that the total change in assets equals the total change in liabilities plus the total change in shareholders' equity.</li>
+            </ol>
+        </section>
+
+        <hr class="my-8 border-gray-300">
+
+        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold section-title">The Transaction Worksheet</h2>
+            <p class="mb-4">The transaction worksheet is a graphical representation of the fundamental accounting equation, used to record and track financial transactions.</p>
+            <p>It typically includes:</p>
+            <ul class="mb-4">
+                <li><strong>Opening Balance:</strong> The cumulative balance of each account at the start of the period.</li>
+                <li><strong>Transactions:</strong> Individual financial events recorded as they occur.</li>
+                <li><strong>Closing Balance:</strong> The sum of the opening balance and all transactions for the period.</li>
+            </ul>
+
+            <h3 class="text-xl font-medium text-gray-700 mt-6 mb-3">Examples of Recording Transactions:</h3>
+
+            <div class="example-card">
+                <p class="font-semibold text-blue-700">Example 1: Purchase a Truck</p>
+                <p>A firm purchases a truck for <code>$65,000</code> with a bank loan.</p>
+                <ul class="list-none pl-0">
+                    <li>➡️ <strong>Fixed Assets (Asset)</strong> increases by <code>$65,000</code></li>
+                    <li>➡️ <strong>Bank Loan (Liability)</strong> increases by <code>$65,000</code></li>
+                    <li><span class="font-semibold text-green-700">Equation Check:</span> $\Delta \text{Assets} (\$65,000) = \Delta \text{Liabilities} (\$65,000) + \Delta \text{Shareholders' Equity} (\$0)$ - Holds!</li>
+                </ul>
+            </div>
+
+            <div class="example-card">
+                <p class="font-semibold text-blue-700">Example 2: Sale of Goods</p>
+                <p>A firm sells goods (cost <code>$1,000</code>) for <code>$1,500</code> in cash.</p>
+                <ul class="list-none pl-0">
+                    <li><strong>Part 1 (Sale):</strong></li>
+                    <li>➡️ <strong>Cash (Asset)</strong> increases by <code>$1,500</code></li>
+                    <li>➡️ <strong>Income Statement (Shareholders' Equity)</strong> increases by <code>$1,500</code> (Revenue)</li>
+                    <li><strong>Part 2 (Cost of Sale):</strong></li>
+                    <li>➡️ <strong>Inventories (Asset)</strong> decreases by <code>($1,000)</code></li>
+                    <li>➡️ <strong>Income Statement (Shareholders' Equity)</strong> decreases by <code>($1,000)</code> (Cost of Goods Sold Expense)</li>
+                    <li><span class="font-semibold text-green-700">Equation Check:</span> $\Delta \text{Assets} (\$1,500 - \$1,000 = \$500) = \Delta \text{Liabilities} (\$0) + \Delta \text{Shareholders' Equity} (\$1,500 - \$1,000 = \$500)$ - Holds!</li>
+                </ul>
+            </div>
+
+            <div class="example-card">
+                <p class="font-semibold text-blue-700">Example 3: Utility Bill Received</p>
+                <p>A firm receives a utility bill of <code>$850</code> (not yet paid).</p>
+                <ul class="list-none pl-0">
+                    <li>➡️ <strong>Accounts Payable (Liability)</strong> increases by <code>$850</code></li>
+                    <li>➡️ <strong>Income Statement (Shareholders' Equity)</strong> decreases by <code>($850)</code> (Utility Expense)</li>
+                    <li><span class="font-semibold text-green-700">Equation Check:</span> $\Delta \text{Assets} (\$0) = \Delta \text{Liabilities} (\$850) + \Delta \text{Shareholders' Equity} (\$-850)$ - Holds!</li>
+                </ul>
+            </div>
+            <div class="important-note">
+                <p class="font-semibold text-lg text-yellow-800">Income Statement Mirroring on Retained Earnings</p>
+                <p>At the end of a period, the **net amount on the Income Statement column** is transferred (mirrored) to the **Retained Earnings column** (a Shareholders' Equity account). A positive net income increases retained earnings, while a net loss decreases it. This step is crucial for maintaining the fundamental accounting equation and preparing the balance sheet.</p>
+            </div>
+        </section>
+
+        <hr class="my-8 border-gray-300">
+
+        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold section-title">Individual Accounts Change Over Time</h2>
+            <p class="mb-4">All individual financial accounts follow a common framework for how their balances change over a period:</p>
+            <div class="formula">
+                <span class="formula-highlight">$$\text{Beginning Balance} + \text{Additions during the period} - \text{Reductions during the period} = \text{Ending Balance}$$</span>
+            </div>
+            <p>This formula can be rearranged to find any missing component.</p>
+            <div class="example-card">
+                <p class="font-semibold text-blue-700">Example: Cash Paid to Suppliers (Accounts Payable)</p>
+                <p>If:</p>
+                <ul>
+                    <li>Beginning Accounts Payable: <code>$1,000</code></li>
+                    <li>Additions (new credit purchases): <code>$10,000</code></li>
+                    <li>Ending Accounts Payable: <code>$3,000</code></li>
+                </ul>
+                <p>To find the <strong>Reductions during the period (Cash paid to suppliers)</strong>:</p>
+                <p class="formula">
+                    <span class="formula-highlight">$$\$1,000 + \$10,000 - \text{X} = \$3,000$$</span>
+                    <span class="formula-highlight">$$\text{X} = \$11,000 - \$3,000 = \$8,000$$</span>
+                </p>
+                <p>So, <code>$8,000</code> was paid to suppliers.</p>
+            </div>
+        </section>
+
+        <hr class="my-8 border-gray-300">
+
+        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold section-title">Accrual Accounting</h2>
+            <p class="mb-4">Accrual accounting is a fundamental concept in modern financial reporting. It aims to reflect the economic reality of a firm's performance, even when no cash is involved in a transaction.</p>
+            <div class="important-note">
+                <p class="font-semibold text-lg text-yellow-800">Core Principles of Accrual Accounting:</p>
+                <ul>
+                    <li><strong>Revenues are recognized when earned</strong>, regardless of when cash is received.</li>
+                    <li><strong>Expenses are recognized when incurred</strong>, regardless of when cash is paid.</li>
+                </ul>
+                <p>This means that under accrual accounting, **profits are generally NOT equal to the change in cash** over a period.</p>
+            </div>
+
+            <h3 class="text-xl font-medium text-gray-700 mt-6 mb-3">Key Concepts in Accrual Accounting:</h3>
+            <ul>
+                <li><strong>Accruals:</strong> Accounts like Prepaid Expenses (e.g., prepaid insurance, prepaid rent), Accounts Payable, and Accounts Receivable. These accounts track revenues earned but not yet received (receivables) or expenses incurred but not yet paid (payables), or payments made for future benefits (prepaid expenses).</li>
+                <li><strong>Adjusting Entries:</strong> These are entries made at the end of an accounting period to record revenues that have been earned but not yet recorded, and expenses that have been incurred but not yet recorded. They ensure that financial statements accurately reflect the economic activities of the period.</li>
+            </ul>
+
+            <div class="example-card">
+                <p class="font-semibold text-blue-700">Example: Prepaid Insurance</p>
+                <p>A company pays <code>$1,200</code> for an annual insurance policy covering July 2024 to June 2025. Fiscal year ends December 31, 2024.</p>
+                <ul>
+                    <li><strong>Initial Payment (July 2024):</strong></li>
+                    <li>➡️ Cash (Current Asset) decreases by <code>($1,200)</code>.</li>
+                    <li>➡️ Prepaid Insurance (Current Asset) increases by <code>$1,200</code>.</li>
+                    <li><strong>Adjustment (Dec 31, 2024):</strong> 3 months of insurance have been used (July, Aug, Sept).</li>
+                    <li>Monthly cost: $\frac{\text{\$1,200}}{\text{12 months}} = \text{\$100/month}$</li>
+                    <li>Insurance Expense incurred: <span class="formula-highlight">$$\text{3 months} \times \text{\$100/month} = \text{\$300}$$</span></li>
+                    <li>➡️ Insurance Expense (Income Statement/Shareholders' Equity) decreases by <code>($300)</code>.</li>
+                    <li>➡️ Prepaid Insurance (Current Asset) decreases by <code>($300)</code>.</li>
+                    <li>The remaining <code>$900</code> in Prepaid Insurance (for 9 months in 2025) remains an asset.</li>
+                </ul>
+            </div>
+            <div class="important-note">
+                <p class="font-semibold text-lg text-yellow-800">Accrual Accounting vs. Cash Accounting</p>
+                <ul class="list-disc pl-4">
+                    <li><strong>Cash Accounting:</strong> Simple, but doesn't reflect economic reality (e.g., sales are only recorded when cash is received).</li>
+                    <li><strong>Accrual Accounting:</strong> Reflects economic reality, but requires managerial judgment (e.g., estimating expenses or recognizing revenue before cash changes hands), which can potentially lead to earnings manipulation.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr class="my-8 border-gray-300">
+
+        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold section-title">Summary of Module 2</h2>
+            <ul class="list-disc">
+                <li>Learned to code business transactions using a transaction worksheet.</li>
+                <li>Used the transaction worksheet to prepare the balance sheet and income statement.</li>
+                <li>Compared accrual versus cash accounting, highlighting their strengths and weaknesses.</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer class="bg-blue-800 text-white mt-8 py-4 text-center shadow-inner">
+        <p class="text-sm opacity-90">Notes extracted from Module 2 Lecture Transcript: Financial Accounting Foundations.</p>
+        <p class="text-xs mt-1 opacity-80">&copy; 2025 Financial Accounting Notes. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
