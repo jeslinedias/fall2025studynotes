@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
+<head>    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recording Transactions and Financial Statement Preparation Notes</title>
@@ -21,21 +21,53 @@
         ol { list-style-type: decimal; margin-left: 1.5rem; }
         li { margin-bottom: 0.5rem; }
         strong { color: #1D4ED8; } /* Stronger blue for bold text */
+        .highlight { background-color: #FFDE7A; padding: 1px 3px; border-radius: 3px; }
+        .current-highlight { background-color: #FFB300; padding: 1px 3px; border-radius: 3px; }
+        /* Loading spinner for AI Analysis */
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
     <!-- MathJax for LaTeX rendering -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
 </head>
 <body class="antialiased leading-relaxed">
-    <header class="bg-blue-800 text-white py-4 shadow-lg">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl font-bold">📚 Module 2: Financial Accounting Foundations Notes</h1>
-            <p class="text-blue-200 mt-2">Recording Transactions and Financial Statement Preparation</p>
+    <header class="bg-blue-800 text-white py-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 flex items-center justify-between">
+            <button id="backToHome" onclick="window.location.href='FA-landing.html'" class="text-white hover:text-blue-200 focus:outline-none flex items-center space-x-1.5 font-medium transition-colors duration-200">
+                    <i class="fas fa-home text-xl"></i> <span class="hidden sm:inline">Home</span>
+                </button>
+            <h1 class="text-xl md:text-2xl font-extrabold text-white flex-grow text-center sm:text-left sm:ml-4">Recording Transactions & Financial Statement Preparation</h1>
+            <div class="hidden lg:flex items-center space-x-6 ml-auto mr-4">
+                <a href="#introduction" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Intro</a>
+                <a href="#worksheet" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Worksheet</a>
+                <a href="#accounts-change" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Accounts Change</a>
+                <a href="#accrual-accounting" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Accrual</a>
+                <a href="#summary" class="nav-link text-white hover:text-blue-200 border-b-2 border-transparent pb-1 font-medium text-sm">Summary</a>
+            </div>
+            <div class="flex items-center ml-auto sm:ml-0 space-x-2">
+                <label for="searchInput"></label><input type="text" id="searchInput" placeholder="Search..." class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm w-24 sm:w-36 md:w-48 transition-all duration-200 text-gray-800">
+                <button id="searchButton" class="bg-blue-300 text-blue-900 p-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-colors duration-200 shadow-md">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="prevMatch" class="px-2.5 py-1.5 bg-blue-300 text-blue-900 rounded-lg hover:bg-blue-400 hidden text-xs sm:text-sm border border-blue-400 transition-colors duration-200">Prev</button>
+                <button id="nextMatch" class="px-2.5 py-1.5 bg-blue-300 text-blue-900 rounded-lg hover:bg-blue-400 hidden text-xs sm:text-sm border border-blue-400 transition-colors duration-200">Next</button>
+            </div>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
 
-        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+        <section id="introduction" class="mb-8 p-6 bg-white rounded-lg shadow-md">
             <h2 class="text-2xl font-semibold section-title">Introduction to Recording Financial Transactions</h2>
             <p class="mb-4">This module focuses on how to record financial transactions in accounting language and prepare the fundamental financial statements: the Balance Sheet and Income Statement.</p>
             <div class="important-note">
@@ -60,7 +92,7 @@
 
         <hr class="my-8 border-gray-300">
 
-        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+        <section id="worksheet" class="mb-8 p-6 bg-white rounded-lg shadow-md scroll-mt-20">
             <h2 class="text-2xl font-semibold section-title">The Transaction Worksheet</h2>
             <p class="mb-4">The transaction worksheet is a graphical representation of the fundamental accounting equation, used to record and track financial transactions.</p>
             <p>It typically includes:</p>
@@ -113,7 +145,7 @@
 
         <hr class="my-8 border-gray-300">
 
-        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+        <section id="accounts-change" class="mb-8 p-6 bg-white rounded-lg shadow-md scroll-mt-20">
             <h2 class="text-2xl font-semibold section-title">Individual Accounts Change Over Time</h2>
             <p class="mb-4">All individual financial accounts follow a common framework for how their balances change over a period:</p>
             <div class="formula">
@@ -139,7 +171,7 @@
 
         <hr class="my-8 border-gray-300">
 
-        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+        <section id="accrual-accounting" class="mb-8 p-6 bg-white rounded-lg shadow-md scroll-mt-20">
             <h2 class="text-2xl font-semibold section-title">Accrual Accounting</h2>
             <p class="mb-4">Accrual accounting is a fundamental concept in modern financial reporting. It aims to reflect the economic reality of a firm's performance, even when no cash is involved in a transaction.</p>
             <div class="important-note">
@@ -183,7 +215,7 @@
 
         <hr class="my-8 border-gray-300">
 
-        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+        <section id="summary" class="mb-8 p-6 bg-white rounded-lg shadow-md scroll-mt-20">
             <h2 class="text-2xl font-semibold section-title">Summary of Module 2</h2>
             <ul class="list-disc">
                 <li>Learned to code business transactions using a transaction worksheet.</li>
@@ -198,6 +230,186 @@
         <p class="text-sm opacity-90">Notes extracted from Module 2 Lecture Transcript: Financial Accounting Foundations.</p>
         <p class="text-xs mt-1 opacity-80">&copy; 2025 Financial Accounting Notes. All rights reserved.</p>
     </footer>
+
+    <script>
+        let highlightedElements = [];
+        let currentHighlightIndex = -1;
+        let originalTextContentMap = new Map(); // To store original text for clearing highlights reliably
+
+        // Function to clear all highlights
+        function clearHighlights() {
+            highlightedElements.forEach(span => {
+                const originalText = originalTextContentMap.get(span);
+                if (originalText !== undefined) { // Check if originalText exists in map
+                    const textNode = document.createTextNode(originalText);
+                    if (span.parentNode) {
+                        span.parentNode.replaceChild(textNode, span);
+                    }
+                }
+            });
+
+            // Fallback for any remaining .highlight or .current-highlight spans
+            const remainingHighlights = document.querySelectorAll('.highlight, .current-highlight');
+            remainingHighlights.forEach(span => {
+                if (span.parentNode) {
+                    span.parentNode.replaceChild(document.createTextNode(span.textContent), span);
+                }
+            });
+
+            // Normalize the DOM to merge adjacent text nodes
+            document.querySelector('main').normalize();
+
+            highlightedElements = [];
+            originalTextContentMap.clear(); // Clear the map
+            currentHighlightIndex = -1;
+            document.getElementById('prevMatch').classList.add('hidden');
+            document.getElementById('nextMatch').classList.add('hidden');
+        }
+
+        // Function to perform the search and highlight
+        function performSearch() {
+            clearHighlights(); // Clear existing highlights first
+
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (!searchTerm) {
+                return; // Do nothing if search term is empty
+            }
+
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            const mainContent = document.querySelector('main');
+            const textNodes = [];
+
+            // First pass: Collect all relevant text nodes
+            const walker = document.createTreeWalker(mainContent, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while ((node = walker.nextNode())) {
+                // Exclude script, style, and the search input field itself
+                if (
+                    node.parentNode.tagName === 'SCRIPT' ||
+                    node.parentNode.tagName === 'STYLE' ||
+                    node.parentNode.closest('#searchInput') ||
+                    node.parentNode.closest('#searchButton') ||
+                    node.parentNode.closest('#prevMatch') ||
+                    node.parentNode.closest('#nextMatch')
+                ) {
+                    continue;
+                }
+                if (node.nodeValue.trim().length > 0 && regex.test(node.nodeValue)) {
+                    textNodes.push(node);
+                }
+            }
+
+            // Second pass: Replace text nodes with highlighted spans
+            textNodes.forEach(textNode => {
+                const originalText = textNode.nodeValue;
+                const parent = textNode.parentNode;
+                
+                const newContent = [];
+                let lastIndex = 0;
+
+                originalText.replace(regex, (match, p1, offset) => {
+                    if (offset > lastIndex) {
+                        newContent.push(document.createTextNode(originalText.substring(lastIndex, offset)));
+                    }
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
+                    span.textContent = match;
+                    highlightedElements.push(span);
+                    originalTextContentMap.set(span, match); // Store the original matched text for reliable un-highlighting
+                    newContent.push(span);
+                    lastIndex = offset + match.length;
+                    return match; // Return the match to keep replace working as expected (though we're building manually)
+                });
+
+                if (lastIndex < originalText.length) {
+                    newContent.push(document.createTextNode(originalText.substring(lastIndex)));
+                }
+
+                if (newContent.length > 0 && parent && parent.contains(textNode)) {
+                     // Check if parent still contains the original textNode before replacing
+                     // This handles cases where a node might have been replaced by a prior highlight operation in a nested element
+                     const fragment = document.createDocumentFragment();
+                     newContent.forEach(item => fragment.appendChild(item));
+                     parent.replaceChild(fragment, textNode);
+                }
+            });
+
+            if (highlightedElements.length > 0) {
+                document.getElementById('prevMatch').classList.remove('hidden');
+                document.getElementById('nextMatch').classList.remove('hidden');
+                scrollToMatch(0); // Highlight and scroll to the first match
+            } else {
+                // Show "No matches found" message
+                const messageBox = document.createElement('div');
+                messageBox.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50';
+                messageBox.innerHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <p class="text-lg font-semibold text-gray-800 mb-4">No matches found.</p>
+                        <button id="closeMessageBox" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(messageBox);
+                document.getElementById('closeMessageBox').addEventListener('click', () => {
+                    document.body.removeChild(messageBox);
+                });
+            }
+        }
+
+        // Function to scroll to and highlight a specific match
+        function scrollToMatch(index) {
+            if (highlightedElements.length === 0) return;
+
+            // Remove previous 'current-highlight'
+            if (currentHighlightIndex !== -1 && highlightedElements[currentHighlightIndex]) {
+                highlightedElements[currentHighlightIndex].classList.remove('current-highlight');
+                highlightedElements[currentHighlightIndex].classList.add('highlight');
+            }
+
+            // Calculate new index, ensuring it wraps around
+            currentHighlightIndex = (index + highlightedElements.length) % highlightedElements.length;
+            const targetElement = highlightedElements[currentHighlightIndex];
+
+            if (targetElement) {
+                targetElement.classList.remove('highlight');
+                targetElement.classList.add('current-highlight');
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main > section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            // Search functionality event listeners
+            document.getElementById('searchButton').addEventListener('click', performSearch);
+            document.getElementById('searchInput').addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            document.getElementById('prevMatch').addEventListener('click', () => scrollToMatch(currentHighlightIndex - 1));
+            document.getElementById('nextMatch').addEventListener('click', () => scrollToMatch(currentHighlightIndex + 1));
+
+            // Home button functionality
+            document.getElementById('backToHome').addEventListener('click', () => {
+                window.location.href='FA-landing.html'; // Ensure this navigates to the correct landing page
+            });
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
 
 </body>
 </html>

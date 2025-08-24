@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Accounting Foundations: Modules</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; color: #333; }
+        .module-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid #E5E7EB;
+        }
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .module-card.completed {
+            border-left: 5px solid #10B981; /* Green border for completed modules */
+        }
+    </style>
+</head>
+<body class="antialiased leading-relaxed">
+    <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">Financial Accounting Foundations</h1>
+            <p class="text-xl md:text-2xl text-blue-200 mt-3">Interactive Learning Modules</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <section class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Explore Our Modules</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Dive into the fundamentals of financial accounting with our structured learning modules. Start with the basics and build your expertise step by step.</p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Module 1: Introduction to Accounting (Linked to financial_accounting_spa_v3) -->
+            <a href="M1-IntroductionToFinancialAccounting.html" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-book-reader text-blue-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 1: Introduction to Accounting</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Understand the core concepts of financial accounting, the main financial statements (Balance Sheet, Income Statement, Cash Flow), and their importance for various stakeholders.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> View Module
+                </div>
+            </a>
+
+            <!-- Module 2: Recording Transactions and Financial Statements Preparation (Linked to module2_notes_webpage) -->
+            <a href="M2-RecordingTransactions-FinancialStmtPrep.html" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-pencil-alt text-green-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 2: Recording & Prep</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Learn the detailed process of recording financial transactions using a worksheet and preparing the Balance Sheet and Income Statement, including accrual accounting principles.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> View Module
+                </div>
+            </a>
+
+            <!-- Module 3: Accounting Concepts and Revenue Recognition -->
+            <a href="#" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-lightbulb text-purple-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 3: Accounting Concepts and Revenue Recognition</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Delve into the foundational accounting concepts, principles of revenue recognition, and how they impact financial reporting.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> Explore Module
+                </div>
+            </a>
+
+            <!-- Module 4: Short-Term Assets -->
+            <a href="#" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-coins text-yellow-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 4: Short-Term Assets</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Dive into the details of current assets, including cash and cash equivalents, accounts receivable, and inventory management.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> Explore Module
+                </div>
+            </a>
+
+            <!-- Module 5: Long-Term Assets -->
+            <a href="#" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-building text-red-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 5: Long-Term Assets</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Explore the various types of long-term assets, such as property, plant, equipment, and intangible assets like patents and goodwill.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> Explore Module
+                </div>
+            </a>
+
+            <!-- Module 6: Liabilities -->
+            <a href="#" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-hand-holding-usd text-indigo-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 6: Liabilities</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Understand current and long-term liabilities, including accounts payable, notes payable, bonds, and other financial obligations.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> Explore Module
+                </div>
+            </a>
+
+            <!-- Module 7: Shareholders' Equity -->
+            <a href="#" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-chart-pie text-pink-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 7: Shareholders' Equity</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Learn about the components of shareholders' equity, such as common stock, retained earnings, treasury stock, and comprehensive income.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> Explore Module
+                </div>
+            </a>
+
+            <!-- Module 8: Cash Flow Statement -->
+            <a href="#" class="module-card completed flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-exchange-alt text-teal-600 mr-3 text-2xl"></i>
+                        <h3 class="text-2xl font-semibold text-gray-900">Module 8: Cash Flow Statement</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">A deep dive into the Cash Flow Statement, analyzing cash flows from operating, investing, and financing activities.</p>
+                </div>
+                <div class="flex items-center text-blue-600 font-medium mt-4">
+                    <i class="fas fa-arrow-circle-right mr-2"></i> Explore Module
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <footer class="bg-blue-800 text-white mt-12 py-6 text-center shadow-inner">
+        <p class="text-sm opacity-90">&copy; 2025 Financial Accounting Foundations. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

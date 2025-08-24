@@ -1,0 +1,20 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Open FA-landing.html",
+            "file": "c:\\Users\\jesli\\OneDrive\\Documents\\MBA\\3-2025_Fall\\fall2025studynotes\\FinancialAccounting\\FA-landing.html"
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Open LeaderShip Hub.html",
+            "file": "c:\\Users\\jesli\\OneDrive\\Documents\\MBA\\3-2025_Fall\\fall2025studynotes\\Leadership\\LeaderShipDevelopmentHub.html"
+        }
+    ]
+}
