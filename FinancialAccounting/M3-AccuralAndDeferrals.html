@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Recognition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate Gray & Amber -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure to maximize user understanding and exploration. A sticky top navigation allows users to jump directly to key themes: Core Concepts, Accruals vs. Deferrals, Conservatism, Revenue Recognition, and interactive Case Studies. This is more user-friendly than a linear transcript as it allows users to focus on specific topics of interest. The "Accruals vs. Deferrals" section uses a side-by-side layout for direct comparison, with interactive charts to visualize the impact of transactions over time. The "Case Studies" section provides an interactive calculator and dynamic charts, turning passive examples into active learning tools. This structure was chosen to break down complex topics into digestible, interactive modules, facilitating a deeper understanding of the relationships between concepts. -->
+    <!-- Visualization & Content Choices: 
+        - Core Concepts: Report Info -> 5 fundamental principles. Goal -> Inform. Viz/Method -> Interactive HTML/CSS cards. Interaction -> Click to reveal details. Justification -> Clean, organized way to present definitions without cluttering the UI. Library -> Vanilla JS for toggle.
+        - Accruals vs. Deferrals: Report Info -> Examples of accrued revenue/liability and deferred revenue/expense. Goal -> Compare & Explain. Viz/Method -> Side-by-side text blocks and interactive Chart.js bar charts. Interaction -> Buttons to toggle chart view between years. Justification -> Direct comparison highlights the key differences in timing, and the charts provide a clear visual representation of how assets/liabilities change over time. Library -> Chart.js.
+        - Conservatism (Contingent Loss): Report Info -> Lawsuit example. Goal -> Illustrate change over time. Viz/Method -> Dynamic Chart.js bar chart. Interaction -> Buttons to switch between Year 1 (provision) and Year 2 (settlement). Justification -> Visually demonstrates the impact of conservatism and subsequent adjustments. Library -> Chart.js.
+        - Case Study (Costco): Report Info -> Deferred membership fee data. Goal -> Analyze change. Viz/Method -> Chart.js line chart. Interaction -> Hover for tooltips. Justification -> A line chart is ideal for showing trends over the three fiscal years. Library -> Chart.js.
+        - Case Study (The Economist): Report Info -> Deferred income formula. Goal -> Apply concept. Viz/Method -> Interactive calculator built with HTML inputs and JS. Interaction -> User inputs data to see results. Justification -> Engages the user in applying the formula, reinforcing the learning from the Costco example. Library -> Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #f59e0b; /* amber-500 */
+            border-bottom-color: #f59e0b;
+        }
+        .concept-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="FA-Landing.html" class="nav-link text-slate-600 hover:text-amber-500 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent mr-4">🏠 Home</a>
+                    <h1 class="text-xl font-bold text-slate-800">Revenue Recognition</h1>
+                </div>
+                <div class="hidden md:flex items-center">
+                    <div class="flex items-baseline space-x-4">
+                        <a href="#concepts" class="nav-link text-slate-600 hover:text-amber-500 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Core Concepts</a>
+                        <a href="#accruals" class="nav-link text-slate-600 hover:text-amber-500 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Accruals vs Deferrals</a>
+                        <a href="#conservatism" class="nav-link text-slate-600 hover:text-amber-500 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Conservatism</a>
+                        <a href="#revenue" class="nav-link text-slate-600 hover:text-amber-500 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Revenue Recognition</a>
+                        <a href="#cases" class="nav-link text-slate-600 hover:text-amber-500 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Case Studies</a>
+                    </div>
+                    <div class="ml-4">
+                        <input type="search" id="search-input" placeholder="Search..." class="px-3 py-1 rounded-full border border-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500 transition w-32 md:w-48">
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <section id="concepts" class="py-12">
+            <h2 class="text-3xl font-bold text-center text-slate-800 mb-4">Fundamental Accounting Concepts</h2>
+            <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">
+                Financial statements are built upon a foundation of core principles that ensure they are reliable, consistent, and comparable. Click on each card below to explore the five fundamental concepts that guide accountants in preparing financial reports.
+            </p>
+            <div id="concepts-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+        </section>
+
+        <section id="accruals" class="py-12 bg-white rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-slate-800 mb-4">Accruals vs. Deferrals</h2>
+            <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">
+                Accrual accounting is all about timing. It ensures that revenues and expenses are recognized when they are earned or incurred, not necessarily when cash changes hands. This section breaks down the two main applications of this principle: accruals and deferrals. Explore the examples to see how they impact a company's financial statements.
+            </p>
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div id="accrual-card" class="p-6 border border-slate-200 rounded-lg"></div>
+                <div id="deferral-card" class="p-6 border border-slate-200 rounded-lg"></div>
+            </div>
+        </section>
+
+        <section id="conservatism" class="py-12">
+            <h2 class="text-3xl font-bold text-center text-slate-800 mb-4">Conservatism in Practice: Provisions</h2>
+            <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">
+                The principle of conservatism guides accountants to be cautious, recognizing potential losses early while delaying the recognition of uncertain gains. A key tool for this is the use of provisions. This interactive example shows how a company accounts for a contingent loss from a lawsuit, from creating the provision to the final settlement.
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-xl font-semibold text-slate-700 mb-2">Example: Contingent Loss from a Lawsuit</h3>
+                <p class="text-slate-600 mb-4">A firm is sued for $1 million in Year 1. It settles for $0.5 million in Year 2. Use the buttons to see how the financial statements are affected in each year.</p>
+                <div class="text-center mb-4">
+                    <button id="provision-y1" class="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition">View Year 1</button>
+                    <button id="provision-y2" class="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600 transition">View Year 2</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="provisionChart"></canvas>
+                </div>
+                <div id="provision-explanation" class="mt-4 text-center text-slate-600 p-4 bg-slate-50 rounded-md">Select a year to see the details.</div>
+            </div>
+        </section>
+
+        <section id="revenue" class="py-12 bg-white rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-slate-800 mb-4">Revenue Recognition Principles</h2>
+             <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">
+                Recognizing revenue is one of the most critical activities in accounting, as it directly impacts a company's reported performance. The core principle is to recognize revenue when it has been earned and is measurable. This section outlines the two key criteria and provides real-world examples of how complex this can be.
+            </p>
+            <div id="revenue-recognition-content"></div>
+        </section>
+
+        <section id="cases" class="py-12">
+            <h2 class="text-3xl font-bold text-center text-slate-800 mb-4">Interactive Case Studies</h2>
+            <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">
+                Apply your knowledge with these interactive case studies based on real companies. See how deferred revenue works for subscription-based models and explore the relationship between cash collections, earned revenue, and liability balances.
+            </p>
+            <div class="space-y-12">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">Case Study 1: Costco's Membership Fees</h3>
+                    <p class="text-slate-600 mb-4">Costco defers its membership fee revenue over the one-year membership term. The chart below shows the trend in their deferred membership fees (a liability) over three fiscal years. This represents cash collected from members for services Costco still owes.</p>
+                    <div class="chart-container">
+                        <canvas id="costcoChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">Case Study 2: The Economist's Subscriptions Calculator</h3>
+                    <p class="text-slate-600 mb-4">Like Costco, The Economist defers subscription revenue. Use the calculator below to determine the total cash collected during the year based on the opening and closing deferred income balances and the revenue recognized. All values should be in thousands.</p>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="beginning-deferred" class="block text-sm font-medium text-slate-700">Beginning Deferred Income</label>
+                                <input type="number" id="beginning-deferred" value="128084" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="revenue-recognized" class="block text-sm font-medium text-slate-700">Revenue Recognized During Year</label>
+                                <input type="number" id="revenue-recognized" value="325039" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="ending-deferred" class="block text-sm font-medium text-slate-700">Ending Deferred Income</label>
+                                <input type="number" id="ending-deferred" value="130887" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <button id="calculate-collections" class="w-full bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition">Calculate</button>
+                        </div>
+                        <div class="text-center p-8 bg-slate-50 rounded-lg">
+                            <p class="text-slate-600 text-lg">Estimated Cash Collections:</p>
+                            <p id="collections-result" class="text-4xl font-bold text-amber-600 mt-2">£327,842</p>
+                            <p class="text-slate-500">thousand</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const data = {
+                concepts: [
+                    { title: 'Going Concern', icon: '🏢', description: 'The assumption that a business will continue operating for the foreseeable future. This is critical because if a firm is facing bankruptcy, its asset values are likely overstated and liabilities understated, making financial statements unreliable.' },
+                    { title: 'Conservatism', icon: '🧐', description: 'This principle advises caution. Revenues and assets should only be recognized when their existence is certain. In contrast, expenses and liabilities should be recorded even if there is just a reasonable certainty, leading to an understatement of net income.' },
+                    { title: 'Matching', icon: '🔗', description: 'This principle dictates that expenses must be recorded in the same period as the revenues they helped generate. For example, the cost of goods sold is recognized at the same time as the revenue from their sale.' },
+                    { title: 'Consistency', icon: '🔄', description: 'Firms should use the same accounting methods from one period to the next. This ensures that financial statements are comparable over time and across different companies within the same industry.' },
+                    { title: 'Accruals', icon: '📝', description: 'The core of modern accounting. It states that transactions are recorded when they occur (revenue earned, expense incurred), not necessarily when cash is exchanged. This provides a more accurate picture of a company\'s financial performance.' }
+                ],
+                accrualDeferral: {
+                    accrual: {
+                        title: 'Accruals: Do the Work, Get Paid Later',
+                        description: 'Accruals are for revenues earned or expenses incurred *before* cash is exchanged.',
+                        examples: [
+                            { 
+                                title: 'Accrued Revenue', 
+                                scenario: 'A firm provides a $500 service in Nov 2024, payable in Apr 2025.',
+                                chartData: {
+                                    y2024: { labels: ['Accounts Receivable', 'Retained Earnings'], values: [500, 500] },
+                                    y2025: { labels: ['Cash', 'Retained Earnings'], values: [500, 500] }
+                                },
+                                explanation: 'In 2024, revenue is earned, creating an Account Receivable. In 2025, cash is collected, clearing the receivable.'
+                            },
+                            { 
+                                title: 'Accrued Liability', 
+                                scenario: 'A firm receives a $250 utility bill in Dec 2024, payable in Jan 2025.',
+                                chartData: {
+                                    y2024: { labels: ['Utility Payable', 'Retained Earnings'], values: [250, -250] },
+                                    y2025: { labels: ['Cash', 'Retained Earnings'], values: [-250, -250] }
+                                },
+                                explanation: 'In 2024, the expense is incurred, creating a Payable. In 2025, the bill is paid, reducing cash and clearing the payable.'
+                            }
+                        ]
+                    },
+                    deferral: {
+                        title: 'Deferrals: Get Paid, Do the Work Later',
+                        description: 'Deferrals are for cash exchanged *before* revenues are earned or expenses are incurred.',
+                        examples: [
+                            { 
+                                title: 'Deferred Revenue', 
+                                scenario: 'A firm receives a $1,000 advance in Oct 2024 for a job in Dec 2024.',
+                                chartData: {
+                                    y2024_oct: { labels: ['Cash', 'Unearned Revenue'], values: [1000, 1000] },
+                                    y2024_dec: { labels: ['Cash', 'Retained Earnings'], values: [1000, 1000] }
+                                },
+                                explanation: 'In Oct, the cash receipt creates a liability (Unearned Revenue). In Dec, the revenue is earned, clearing the liability and increasing equity.'
+                            },
+                            { 
+                                title: 'Deferred Expense', 
+                                scenario: 'A firm pays $1,500 in Jan 2024 for two years\' rent.',
+                                chartData: {
+                                    y2024_jan: { labels: ['Cash', 'Prepaid Rent'], values: [-1500, 1500] },
+                                    y2024_dec: { labels: ['Cash', 'Prepaid Rent', 'Retained Earnings'], values: [-1500, 750, -750] }
+                                },
+                                explanation: 'In Jan, the payment creates an asset (Prepaid Rent). By Dec, half the rent is used, so it becomes an expense, reducing the asset and equity.'
+                            }
+                        ]
+                    }
+                },
+                provision: {
+                    y1: {
+                        labels: ['Provision (Liability)', 'Retained Earnings'],
+                        data: [1000000, -1000000],
+                        explanation: 'In Year 1, the firm creates a $1M provision (liability) and recognizes a $1M expense, reducing retained earnings. This is conservatism in action.'
+                    },
+                    y2: {
+                        labels: ['Cash', 'Retained Earnings', 'Gain on IS'],
+                        data: [-500000, -500000, 500000],
+                        explanation: 'In Year 2, cash decreases by the $0.5M settlement. The $1M provision is removed. The $0.5M difference is recognized as a gain, increasing retained earnings to a final balance of -$0.5M.'
+                    }
+                },
+                revenueRecognition: {
+                    criteria: [
+                        { title: '1. Revenue is Earned', description: 'The company has substantially completed its obligation to the customer by delivering the goods or services.' },
+                        { title: '2. Revenue is Measurable', description: 'The amount of revenue can be determined based on objective and verifiable evidence.' }
+                    ],
+                    examples: [
+                        { company: 'Apple & MacBook Sales', issue: 'When a customer buys a MacBook, they get hardware, software, and the right to future updates. Apple recognizes revenue for the hardware/software when shipped but must defer a portion of the sale price for future updates, recognizing it over the product\'s life.' },
+                        { company: 'Sunbeam (Fraud Example)', issue: 'Sunbeam improperly recognized revenue by shipping goods to its own warehouses, not to customers. Since the goods were never delivered to a customer, control was not transferred, and revenue was not earned, leading to a massive accounting fraud.' }
+                    ]
+                },
+                costco: {
+                    labels: ['Aug 29, 2021', 'Aug 28, 2022', 'Sep 3, 2023'],
+                    data: [2042, 2174, 2337]
+                }
+            };
+
+            const conceptsGrid = document.getElementById('concepts-grid');
+            data.concepts.forEach(concept => {
+                const card = document.createElement('div');
+                card.className = 'concept-card bg-white p-6 rounded-lg shadow-md cursor-pointer';
+                card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">${concept.icon}</span>
+                        <h3 class="text-xl font-semibold text-slate-700">${concept.title}</h3>
+                    </div>
+                    <div class="details hidden text-slate-600">
+                        <p>${concept.description}</p>
+                    </div>
+                `;
+                conceptsGrid.appendChild(card);
+                card.addEventListener('click', () => {
+                    card.querySelector('.details').classList.toggle('hidden');
+                });
+            });
+            
+            function createAccrualDeferralSection(containerId, data) {
+                const container = document.getElementById(containerId);
+                let content = `<h3 class="text-2xl font-semibold text-slate-700 mb-2">${data.title}</h3><p class="text-slate-600 mb-6">${data.description}</p>`;
+                data.examples.forEach((ex, index) => {
+                    const chartId = `${containerId}-chart-${index}`;
+                    content += `
+                        <div class="mb-8">
+                            <h4 class="font-semibold text-slate-700">${ex.title}</h4>
+                            <p class="text-sm text-slate-500 mb-2">${ex.scenario}</p>
+                            <div class="chart-container" style="height: 250px;">
+                                <canvas id="${chartId}"></canvas>
+                            </div>
+                            <p class="text-xs text-center mt-2 text-slate-500">${ex.explanation}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = content;
+
+                data.examples.forEach((ex, index) => {
+                    const chartId = `${containerId}-chart-${index}`;
+                    const ctx = document.getElementById(chartId).getContext('2d');
+                    const initialData = Object.values(ex.chartData)[0];
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: initialData.labels,
+                            datasets: [{
+                                label: 'Balance Sheet Impact',
+                                data: initialData.values,
+                                backgroundColor: initialData.values.map(v => v > 0 ? 'rgba(59, 130, 246, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
+                                borderColor: initialData.values.map(v => v > 0 ? 'rgba(59, 130, 246, 1)' : 'rgba(239, 68, 68, 1)'),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            indexAxis: 'y',
+                            scales: { x: { beginAtZero: true } },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                });
+            }
+
+            createAccrualDeferralSection('accrual-card', data.accrualDeferral.accrual);
+            createAccrualDeferralSection('deferral-card', data.accrualDeferral.deferral);
+
+            const provisionCtx = document.getElementById('provisionChart').getContext('2d');
+            let provisionChart = new Chart(provisionCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Financial Impact ($)',
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
+                        borderWidth: 1
+                    }]
+                },
+                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+
+            function updateProvisionChart(yearData) {
+                provisionChart.data.labels = yearData.labels;
+                provisionChart.data.datasets[0].data = yearData.data;
+                const colors = yearData.data.map(v => v > 0 ? 'rgba(59, 130, 246, 0.7)' : 'rgba(239, 68, 68, 0.7)');
+                provisionChart.data.datasets[0].backgroundColor = colors;
+                provisionChart.data.datasets[0].borderColor = colors.map(c => c.replace('0.7', '1'));
+                provisionChart.update();
+                document.getElementById('provision-explanation').textContent = yearData.explanation;
+            }
+            
+            document.getElementById('provision-y1').addEventListener('click', () => updateProvisionChart(data.provision.y1));
+            document.getElementById('provision-y2').addEventListener('click', () => updateProvisionChart(data.provision.y2));
+            updateProvisionChart(data.provision.y1);
+
+
+            const revenueContainer = document.getElementById('revenue-recognition-content');
+            let revenueContent = `
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+            `;
+            data.revenueRecognition.criteria.forEach(c => {
+                revenueContent += `
+                    <div class="bg-slate-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-slate-700 mb-2">${c.title}</h3>
+                        <p class="text-slate-600">${c.description}</p>
+                    </div>
+                `;
+            });
+            revenueContent += `</div><h3 class="text-xl font-semibold text-center text-slate-700 mb-6">Real-World Complications</h3><div class="grid md:grid-cols-2 gap-8">`;
+            data.revenueRecognition.examples.forEach(e => {
+                revenueContent += `
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                        <h4 class="font-semibold text-slate-700 mb-2">${e.company}</h4>
+                        <p class="text-slate-600">${e.issue}</p>
+                    </div>
+                `;
+            });
+            revenueContent += `</div>`;
+            revenueContainer.innerHTML = revenueContent;
+
+            const costcoCtx = document.getElementById('costcoChart').getContext('2d');
+            new Chart(costcoCtx, {
+                type: 'line',
+                data: {
+                    labels: data.costco.labels,
+                    datasets: [{
+                        label: 'Deferred Membership Fees (in millions)',
+                        data: data.costco.data,
+                        fill: false,
+                        borderColor: '#f59e0b',
+                        tension: 0.1
+                    }]
+                },
+                options: { maintainAspectRatio: false }
+            });
+            
+            const calculateBtn = document.getElementById('calculate-collections');
+            const resultDisplay = document.getElementById('collections-result');
+            calculateBtn.addEventListener('click', () => {
+                const beginning = parseFloat(document.getElementById('beginning-deferred').value) || 0;
+                const recognized = parseFloat(document.getElementById('revenue-recognized').value) || 0;
+                const ending = parseFloat(document.getElementById('ending-deferred').value) || 0;
+                const collections = ending - beginning + recognized;
+                resultDisplay.textContent = `£${collections.toLocaleString()}`;
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            const searchInput = document.getElementById('search-input');
+
+            // Function to update active nav link on scroll
+            const updateNavOnScroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', updateNavOnScroll);
+
+            // Function to handle search filtering
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                sections.forEach(section => {
+                    const sectionId = section.getAttribute('id');
+                    const link = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+                    
+                    if (section.textContent.toLowerCase().includes(searchTerm)) {
+                        section.style.display = 'block';
+                        if (link) {
+                            link.style.display = 'block';
+                        }
+                    } else {
+                        section.style.display = 'none';
+                        if (link) {
+                            link.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
