@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developing as a Leader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Focus -->
+    <!-- Application Structure Plan: A thematic SPA with a main interactive section for the '3 C's' and a practical 'Experiment Planner' tool. This non-linear structure allows users to explore core concepts in any order and actively apply the 'scientific lab' methodology, which is more engaging and effective for skill development than a linear text presentation. -->
+    <!-- Visualization & Content Choices: Report Info: The 3 C's framework. Goal: Organize & Inform. Viz/Method: Interactive cards linked to a central Chart.js Doughnut chart. Interaction: Clicking a card updates the text content and highlights the corresponding chart segment. Justification: Visually connects the three concepts and allows for focused, user-driven exploration. Report Info: 'Scientific Lab' concept. Goal: Engage & Apply. Viz/Method: HTML form as an 'Experiment Planner'. Interaction: User fills out form fields to plan their own leadership experiment. Justification: Translates an abstract idea into a tangible, personal action plan. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D405B;
+        }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #81B29A;
+        }
+        .active-tab {
+            border-color: #81B29A !important;
+            color: #3D405B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .content-card {
+            transition: all 0.5s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .content-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .highlight {
+            background-color: #fde68a; /* Tailwind yellow-300 */
+            border-radius: 4px;
+            padding: 2px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-2">
+                <a href="#intro" class="block text-2xl font-bold text-gray-800 no-underline"><h1>Developing as a Leader</h1></a>
+            </div>
+            <div class="flex-1 hidden md:flex space-x-8 justify-center">
+                <a href="LeadershipDevelopmentHub.html" class="nav-link active">Home</a>
+                <a href="#three-cs" class="nav-link text-gray-600">The 3 C's</a>
+                <a href="#practice" class="nav-link text-gray-600">The Practice</a>
+                <a href="#takeaway" class="nav-link text-gray-600">Key Takeaway</a>
+            </div>
+            <div class="flex items-center space-x-2 w-full md:w-auto">
+                <div class="relative w-full md:w-auto">
+                    <input type="text" id="searchInput" placeholder="Search..." class="w-full md:w-48 px-3 py-2 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-teal-500">
+                    <button id="searchButton" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 space-y-2">
+            <a href="#three-cs" class="block nav-link text-gray-600">The 3 C's</a>
+            <a href="#practice" class="block nav-link text-gray-600">The Practice</a>
+            <a href="#takeaway" class="block nav-link text-gray-600">Key Takeaway</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Leadership is a Practice</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">This experience explores the core idea that leadership is not a fixed trait, but a continuous process of growth and development. Discover the key components that foster this journey and learn how to actively practice becoming a more effective leader.</p>
+        </section>
+
+        <section id="three-cs" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">The Three C's of Leadership Growth</h2>
+                <p class="max-w-2xl mx-auto mt-2 text-gray-600">Effective leadership development rests on three interconnected pillars: Curiosity, Courage, and Commitment. Select a concept below to explore its role in your growth and see how they work together in a continuous cycle.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="w-full lg:w-1/2">
+                     <div class="chart-container">
+                        <canvas id="threeCsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-1/2">
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+                        <button data-content="curiosity" class="tab-btn flex-1 py-3 px-4 bg-white rounded-lg shadow-sm border-2 border-transparent font-semibold transition-all duration-300 ease-in-out active-tab">Curiosity</button>
+                        <button data-content="courage" class="tab-btn flex-1 py-3 px-4 bg-white rounded-lg shadow-sm border-2 border-transparent font-semibold transition-all duration-300 ease-in-out">Courage</button>
+                        <button data-content="commitment" class="tab-btn flex-1 py-3 px-4 bg-white rounded-lg shadow-sm border-2 border-transparent font-semibold transition-all duration-300 ease-in-out">Commitment</button>
+                    </div>
+                    
+                    <div id="content-display" class="relative">
+                        <!-- Content will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="practice" class="mb-20 py-16 bg-white rounded-xl shadow-lg">
+             <div class="text-center mb-12 px-6">
+                <h2 class="text-3xl font-bold">The Practice: Your Leadership Lab</h2>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">Leadership growth happens through intentional action. Treat your development like a scientific experiment: form a hypothesis, test it with a small action, and reflect on the results. **"I love thinking about ourselves as little scientific labs that are running experiments all the time and that's what's helping us grow."** Use the planner below to design your next leadership experiment.</p>
+            </div>
+            <div class="max-w-2xl mx-auto px-6">
+                <div class="bg-gray-50 p-8 rounded-lg border border-gray-200">
+                     <div class="mb-6">
+                        <label for="skill" class="block text-sm font-bold text-gray-700 mb-2">1. Identify a Skill to Develop</label>
+                        <input type="text" id="skill" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 'Practice more vulnerability' or 'Give clearer feedback'">
+                    </div>
+                     <div class="mb-6">
+                        <label for="experiment" class="block text-sm font-bold text-gray-700 mb-2">2. Design a Small Experiment</label>
+                        <textarea id="experiment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 'In the next team meeting, I will share one small mistake I made and what I learned from it.'"></textarea>
+                    </div>
+                     <div class="mb-6">
+                        <label for="reflection" class="block text-sm font-bold text-gray-700 mb-2">3. Plan for Reflection</label>
+                        <textarea id="reflection" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 'After the meeting, I will jot down how the team reacted and how I felt. Did it open up conversation?'"></textarea>
+                    </div>
+                    <div class="text-right">
+                        <button id="reset-planner-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition-colors">Reset Planner</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="takeaway" class="text-center">
+            <h2 class="text-3xl font-bold mb-4">A Way of Being</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">Ultimately, leadership is not a set of rules to memorize, but a skill to be honed. It's a way of practicing and being, with the goal of developing yourself to unlock the full power and potential within others. Your growth journey is continuous, built one experiment at a time.</p>
+        </section>
+    </main>
+    
+    <footer class="text-center py-8 mt-12 border-t border-gray-200">
+        <p class="text-gray-500">Interactive experience based on "Leading Teams: Developing as a Leader" by Gies College of Business.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentData = {
+                curiosity: {
+                    index: 0,
+                    title: '1. Curiosity: The Foundation of Growth',
+                    description: 'Curiosity is about seeking to understand. It involves being open, asking questions, and being willing to explore different perspectives—including your own. It is the essential first step in self-development.',
+                    highlights: [
+                        '<strong>Self-Curiosity:</strong> Look inward to understand your own strengths and weaknesses.',
+                        '<strong>Curiosity about Others:</strong> Engage with your team to build empathy and trust.',
+                        '<strong>Curiosity about the World:</strong> Stay informed to anticipate challenges and opportunities.'
+                    ],
+                    quote: 'We have to be curious about ourselves first.'
+                },
+                courage: {
+                    index: 1,
+                    title: '2. Courage: The Catalyst for Action',
+                    description: 'Courage is the willingness to act in the face of uncertainty or fear. In leadership, this means having difficult conversations, taking risks, and being vulnerable to build trust and psychological safety.',
+                    highlights: [
+                        '<strong>Vulnerability:</strong> Admitting mistakes and showing humanity builds deep trust.',
+                        '<strong>Addressing Challenges:</strong> Confronting difficult issues head-on prevents them from escalating.',
+                        '<strong>Experimentation:</strong> Having the courage to try new approaches and accept potential failure.'
+                    ],
+                    quote: 'Courage is the first of human qualities because it is the quality which guarantees all others.'
+                },
+                commitment: {
+                    index: 2,
+                    title: '3. Commitment: Sustaining the Journey',
+                    description: 'Commitment is the discipline required to stick with your growth process, even when it’s challenging. It’s the dedication to consistent practice and continuous improvement through reflection and adaptation.',
+                     highlights: [
+                        '<strong>Daily Practice:</strong> Leadership development is a marathon, not a sprint.',
+                        '<strong>The Scientific Process:</strong> Consistently observe, reflect, and adapt your approach.',
+                        '<strong>Consistency Over Intensity:</strong> Small, regular efforts lead to lasting change.'
+                    ],
+                    quote: 'It\'s a way of being, it\'s a way of practicing, a way of being, a way of developing oneself, and recognizing the power and potential in other people.'
+                }
+            };
+            
+            const contentDisplay = document.getElementById('content-display');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            let currentContent = 'curiosity';
+
+            function renderContent(key) {
+                const data = contentData[key];
+                if (!data) return;
+                
+                const existingCard = contentDisplay.querySelector('.content-card');
+                if(existingCard) {
+                    existingCard.classList.remove('visible');
+                }
+
+                setTimeout(() => {
+                    contentDisplay.innerHTML = `
+                        <div class="content-card bg-white p-8 rounded-lg shadow-lg border border-gray-100">
+                            <h3 class="text-2xl font-bold mb-3">${data.title}</h3>
+                            <p class="text-gray-600 mb-4">${data.description}</p>
+                            <ul class="space-y-2 mb-6 list-inside">
+                                ${data.highlights.map(item => `<li class="flex items-start"><span class="text-teal-500 mr-2 mt-1">&#10003;</span><span>${item}</span></li>`).join('')}
+                            </ul>
+                            <blockquote class="border-l-4 border-teal-500 pl-4 py-2 bg-teal-50 text-gray-700 italic">
+                                "${data.quote}"
+                            </blockquote>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        contentDisplay.querySelector('.content-card').classList.add('visible');
+                    }, 50);
+                }, 250);
+            }
+
+            const chartColors = {
+                base: ['#E0E7FF', '#FEF3C7', '#E0F2F1'],
+                active: ['#6366F1', '#F59E0B', '#14B8A6'],
+                hover: ['#818CF8', '#FBBF24', '#2DD4BF']
+            };
+
+            const ctx = document.getElementById('threeCsChart').getContext('2d');
+            const threeCsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Curiosity', 'Courage', 'Commitment'],
+                    datasets: [{
+                        label: 'The Three C\'s',
+                        data: [1, 1, 1],
+                        backgroundColor: [chartColors.active[0], chartColors.base[1], chartColors.base[2]],
+                        hoverBackgroundColor: [chartColors.hover[0], chartColors.hover[1], chartColors.hover[2]],
+                        borderColor: '#F8F7F4',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '50%',
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                             enabled: true,
+                             callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                             }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
+                    }
+                }
+            });
+
+            function updateActiveState(key) {
+                currentContent = key;
+                const activeIndex = contentData[key].index;
+
+                tabButtons.forEach(btn => {
+                    if (btn.dataset.content === key) {
+                        btn.classList.add('active-tab');
+                    } else {
+                        btn.classList.remove('active-tab');
+                    }
+                });
+
+                const newBackgrounds = chartColors.base.map((color, index) => 
+                    index === activeIndex ? chartColors.active[index] : color
+                );
+                threeCsChart.data.datasets[0].backgroundColor = newBackgrounds;
+                threeCsChart.update();
+
+                renderContent(key);
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const contentKey = button.dataset.content;
+                    updateActiveState(contentKey);
+                });
+            });
+
+            document.getElementById('reset-planner-btn').addEventListener('click', () => {
+                document.getElementById('skill').value = '';
+                document.getElementById('experiment').value = '';
+                document.getElementById('reflection').value = '';
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    if(!mobileMenu.classList.contains('hidden')){
+                       mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Search functionality
+            let originalContent = document.querySelector('main').innerHTML;
+            
+            function highlightText(query) {
+                clearHighlights(); // Clear previous highlights
+                if (!query) return;
+
+                let content = document.querySelector('main');
+                let found = false;
+                const regex = new RegExp(`(${query})`, 'gi');
+
+                function traverseAndReplace(node) {
+                    if (node.nodeType === 3) { // Node is a text node
+                        const text = node.nodeValue;
+                        if (regex.test(text)) {
+                            found = true;
+                            const newHtml = text.replace(regex, `<span class="highlight">$1</span>`);
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = newHtml;
+                            while (tempDiv.firstChild) {
+                                node.parentNode.insertBefore(tempDiv.firstChild, node);
+                            }
+                            node.parentNode.removeChild(node);
+                        }
+                    } else if (node.nodeType === 1) { // Node is an element
+                        if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
+                            Array.from(node.childNodes).forEach(traverseAndReplace);
+                        }
+                    }
+                }
+                
+                traverseAndReplace(content);
+                
+                if (found) {
+                    // Scroll to the first highlight
+                    const firstHighlight = document.querySelector('.highlight');
+                    if(firstHighlight) {
+                        firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
+
+            function clearHighlights() {
+                const highlights = document.querySelectorAll('.highlight');
+                highlights.forEach(span => {
+                    const parent = span.parentNode;
+                    parent.replaceChild(document.createTextNode(span.textContent), span);
+                    parent.normalize(); // Merges adjacent text nodes
+                });
+            }
+
+            document.getElementById('searchButton').addEventListener('click', () => {
+                const query = document.getElementById('searchInput').value.trim();
+                highlightText(query);
+            });
+
+            document.getElementById('searchInput').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    const query = event.target.value.trim();
+                    highlightText(query);
+                }
+            });
+
+            updateActiveState('curiosity');
+        });
+    </script>
+</body>
+</html>

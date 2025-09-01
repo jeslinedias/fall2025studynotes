@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leading Teams: Developing as a Leader - Professional Notes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (e.g., search, home) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8fafc; /* Lighter background */
+            line-height: 1.7;
+            color: #334155; /* Slate-700 for body text */
+        }
+        .container {
+            max-width: 1024px;
+        }
+        .main-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0; /* Light border */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            justify-content: space-between;
+            align-items: center;
+        }
+        .main-header .site-title {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.75rem; /* text-2xl */
+            font-weight: 700;
+            color: #16a34a; /* Emerald-600 */
+        }
+        .main-header .nav-links a,
+        .main-header .nav-icons a {
+            color: #64748b; /* Slate-500 */
+            padding: 0.5rem 0.75rem;
+            transition: color 0.2s;
+        }
+        .main-header .nav-links a:hover,
+        .main-header .nav-icons a:hover {
+            color: #16a34a; /* Emerald-600 on hover */
+        }
+        /* Adjusted for search bar within header */
+        .main-header .search-area {
+            display: flex;
+            align-items: center;
+            flex-grow: 1; /* Allow search to take available space */
+            max-width: 300px; /* Limit search bar width */
+            margin-left: 1rem; /* Space from nav links */
+            margin-right: 1rem; /* Space from nav icons */
+        }
+        .main-header .search-area input {
+            border: 1px solid #cbd5e0; /* Gray-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .main-header .search-area input:focus {
+            border-color: #16a34a; /* Emerald-600 */
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); /* Focus ring */
+        }
+        .page-intro {
+            background-color: #e0f2f7; /* Light cyan background */
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border-radius: 0.75rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .page-intro h1 {
+            font-family: 'Lato', sans-serif;
+            font-size: 3rem; /* text-5xl */
+            font-weight: 700;
+            color: #0c4a6e; /* Cyan-800 */
+            margin-bottom: 0.75rem;
+        }
+        .page-intro p {
+            font-size: 1.125rem; /* text-lg */
+            color: #294a5c; /* Darker cyan */
+        }
+
+        .section-title {
+            background-color: #f1f5f9; /* Light slate background */
+            padding: 1.25rem 1.5rem;
+            margin-top: 2rem; /* More space above sections */
+            margin-bottom: 1.5rem;
+            border-left: 6px solid #16a34a; /* Emerald border */
+            color: #1a202c; /* Darker title color */
+            font-family: 'Lato', sans-serif;
+            font-size: 2rem; /* text-3xl */
+            font-weight: 700;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .note-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0; /* Subtle border */
+        }
+        .sub-section-title {
+            color: #0f766e; /* Teal-700 */
+            font-family: 'Lato', sans-serif;
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-bottom: 2px dashed #e0f2f7; /* Dashed subtle separator */
+            padding-bottom: 0.5rem;
+            margin-top: 2rem; /* Space before sub-sections */
+        }
+        ul.list-disc, ul.list-circle {
+            padding-left: 1.5rem;
+            margin-top: 0.75rem;
+            color: #475569; /* Slate-600 */
+        }
+        strong {
+            color: #0d9488; /* Teal-600 for strong text */
+        }
+        /* Style for highlighted search results */
+        .highlight {
+            background-color: #fff9c4; /* Light yellow */
+            padding: 0.1em 0;
+            border-radius: 0.2em;
+        }
+        /* No results message */
+        #no-results {
+            display: none; /* Hidden by default */
+            text-align: center;
+            font-size: 1.25rem;
+            color: #ef4444; /* Red-500 */
+            margin-top: 2rem;
+            font-weight: 500;
+        }
+
+        /* Responsive adjustments for header */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .main-header .site-title {
+                margin-bottom: 1rem;
+            }
+            .main-header .nav-links {
+                display: none; /* Hide nav links on small screens */
+            }
+            .main-header .search-area {
+                width: 100%;
+                max-width: none;
+                margin-left: 0;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            .main-header .nav-icons {
+                width: 100%;
+                justify-content: flex-end; /* Align icons to the right */
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="site-title flex items-center">
+            <i class="fas fa-seedling mr-2 text-green-500"></i>
+            <span>Leadership Insights</span>
+        </div>
+        <nav class="nav-links space-x-4 hidden md:flex">
+            <a href="LeadershipDevelopmentHub.html" class="hover:underline">Home</a>
+            <a href="#module-intro" class="hover:underline">Introduction</a>
+            <a href="#emotional-intelligence" class="hover:underline">Emotional Intelligence</a>
+            <a href="#building-trust" class="hover:underline">Building Trust</a>
+            <a href="#power-influence" class="hover:underline">Power & Influence</a>
+            <a href="#negotiation-conflict" class="hover:underline">Negotiation & Conflict</a>
+        </nav>
+        <div class="search-area">
+            <input type="text" id="searchInput" placeholder="Search notes..." class="flex-grow">
+        </div>
+        <div class="nav-icons space-x-4">
+            <!-- Search icon is now integrated with the input field visually, leaving this as a placeholder for other future icons if needed -->
+            <!-- <a href="#"><i class="fas fa-search"></i></a> -->
+            <!-- Removed mobile menu button as per the instruction for now, can be added later if needed -->
+        </div>
+    </header>
+
+    <div class="container mx-auto p-6">
+        <div class="page-intro">
+            <h1 class="flex items-center justify-center">
+                <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+                Leading Teams
+            </h1>
+            <h1 class="flex items-center justify-center mb-2">
+                <span class="text-xl font-normal text-gray-700 ml-2">Developing as a Leader</span>
+            </h1>
+            <p class="text-sm mt-2 text-blue-900 opacity-75">Professor Elizabeth A. Luckman, Kari Keating & Denise Lewin Lloyd</p>
+        </div>
+
+        <div id="no-results">
+            No results found for your search query.
+        </div>
+
+        <!-- Module 3 Introduction -->
+        <section id="module-intro">
+            <h2 class="section-title">Module 3 Introduction: Leadership and Relationships</h2>
+            <div class="note-card">
+                <p>Leadership is fundamentally about <strong>relationships with other people</strong>.</p>
+                <p><strong>Kari Keating:</strong> Leadership comes down to interpersonal relations, especially <strong>one-on-ones</strong> and the ongoing effort of <strong>building and cultivating trust</strong>.</p>
+                <p><strong>Elizabeth Luckman:</strong> Trust is the <strong>foundation</strong>. It's crucial for navigating both good and bad situations and for building <strong>psychologically safe environments</strong>.</p>
+                <p><strong>Trust Development:</strong> Built in "drops" over time, but lost in "buckets." It's an ongoing, never-ending process.</p>
+                <p><strong>Individual Relationships:</strong> Even in a team of ten, a leader has unique relationships with each person, requiring individual building, not just treating the team as a collective unit.</p>
+                <p><strong>Ted Lasso Example:</strong> Illustrates building different types of trust with individual team members and owning up to mistakes to prevent losing trust.</p>
+                <p><strong>Conflict:</strong> Natural part of human interaction due to different perspectives. Trust helps navigate conflict better, fostering innovation and creativity.</p>
+                <p><strong>Summary:</strong> Leadership is an interaction based on trust. Acknowledge when you diverge from your "best self," engage vulnerably, and use these moments to strengthen relationships and navigate conflict for group performance.</p>
+            </div>
+        </section>
+
+        <!-- Lesson 1: Leading with Emotional Intelligence -->
+        <section id="emotional-intelligence">
+            <h2 class="section-title">Lesson 1: Leading with Emotional Intelligence (EQ)</h2>
+            <div class="note-card">
+                <h3 class="sub-section-title">What is Emotional Intelligence (EQ)?</h3>
+                <p><strong>EQ vs. IQ:</strong> While cognitive intelligence (IQ) is important, emotional intelligence (EQ), or socio-emotional skills, is <strong>foundational to building trusting relationships</strong> and effective, ethical leadership.</p>
+                <p><strong>Definition (Salovey & Mayer, 1990s):</strong> EQ is "an ability to monitor the feelings of ourselves and others, to discriminate among those feelings, and to use this information to guide thinking and action."</p>
+
+                <h3 class="sub-section-title">Four Branches of EQ (in order of complexity):</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>1. Emotional Perception & Expression:</strong> Identifying emotions in self and others (facial expression, tone, body language, cultural artifacts) and expressing emotional needs. Essential first step.</li>
+                    <li><strong>2. Using Emotion to Facilitate Thinking:</strong> Emotions prioritize attention. Understanding optimal emotional states for targeted outcomes helps adapt to situations.</li>
+                    <li><strong>3. Emotional Understanding:</strong> Ability to understand and differentiate emotional states, recognizing the relationship between words/emotions, causes, interpretations, and predictions of emotions.</li>
+                    <li><strong>4. Emotional Management (Self & Others):</strong> Most advanced skill. Remaining open to a wide range of emotions (pleasant/unpleasant) and reflectively regulating emotions for emotional and intellectual growth.</li>
+                </ul>
+
+                <h3 class="sub-section-title">Case Study: Mora's Story (Lack of EQ)</h3>
+                <p>Mora, a senior manager, poorly communicated a new Saturday work requirement from her VP to her team, resulting in frustration and a breakdown of trust due to her lack of EQ.</p>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Perception & Expression:</strong> Mora failed to perceive and express her own emotions regarding the VP's news and ignored her team's emotional cues (sinking faces, crossed arms, sighs).</li>
+                    <li><strong>Using Emotion:</strong> Did not use her own (frustration, injustice, shame) or her team's emotions to foster connection or problem-solve. She adopted an assertive, defensive stance.</li>
+                    <li><strong>Understanding:</strong> Misinterpreted her managers' feelings as an "angry mob" instead of confusion, injustice, curiosity, or fear. Lacked empathy.</li>
+                    <li><strong>Management:</strong> Slammed hands, shouted, and stormed out, failing to stay open to unpleasant feelings and missing chances to build trust, manage conflict, and foster team culture.</li>
+                </ul>
+                <p class="mt-2"><strong>Cognitive Override:</strong> In "fight, flight, freeze" situations, leaders need to consciously suspend impulsive behaviors to maintain a calm, open, and curious approach.</p>
+
+                <h3 class="sub-section-title">Importance of Emotions in the Workplace:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li>Traditional view of checking emotions at the door is <strong>ineffective</strong>.</li>
+                    <li>Research shows we are <strong>emotional creatures</strong>; burying emotions leads to resentment, inauthenticity, and conflict.</li>
+                    <li>Leaders must <strong>model transparency and authenticity</strong> about their feelings, including vulnerability, to create psychological safety for others.</li>
+                </ul>
+
+                <h3 class="sub-section-title">Benefits of EQ:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li>Works with IQ to <strong>impact job performance</strong>.</li>
+                    <li>Correlated with <strong>organizational citizenship behavior</strong> (e.g., helping colleagues, showing resilience).</li>
+                    <li>Linked to <strong>employee satisfaction, leader authenticity, better mental/physical health, well-being, and happiness</strong>.</li>
+                    <li><strong>Contagious</strong> due to the brain's limbic system; a leader's mood impacts those around them and the organization's bottom line.</li>
+                    <li>Fosters <strong>innovation and creativity</strong> by enabling deeper trust and real conversations.</li>
+                </ul>
+
+                <h3 class="sub-section-title">Developing EQ:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li>EQ is an <strong>ability, not a fixed trait</strong>, so it can be developed through practice.</li>
+                    <li><strong>Experts & Tools:</strong> Marc Brackett ("Permission to Feel"), Susan David ("Emotional Agility"), Brené Brown ("Dare to Lead," "Atlas of the Heart"), Daniel Goleman ("The Emotionally Intelligent Leader"), Richard Boyatzis, Annie McKee, Fran Johnston ("Becoming a Resonant Leader").</li>
+                    <li><strong>Methods:</strong> Personal reflection, awareness, understanding nuances of emotions, labeling emotions, identifying triggers.</li>
+                    <li><strong>Oscar Ybarra:</strong> EQ models need to be more user-friendly. With practice, emotional responses can become more automatic, freeing up cognitive resources. Context and social situations significantly influence EQ application.</li>
+                    <li>Despite chaotic leadership environments, making time for <strong>reflection and practice</strong> of EQ skills leads to well-trained routines that are more likely to be used under pressure, enhancing leadership potential.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Lesson 2: Building Trusting Relationships -->
+        <section id="building-trust">
+            <h2 class="section-title">Lesson 2: Building Trusting Relationships</h2>
+            <div class="note-card">
+                <p><strong>Trust</strong> is a relational factor that leaders can develop to increase <strong>employee satisfaction, commitment, and meaningful engagement</strong>.</p>
+                <p><strong>Jeffrey Loewenstein:</strong> Trust aligns goals, fosters cooperation, and eases work. Low trust requires monitoring, contracts, and controls. High trust leads to familiarity, informality, open sharing, and optimal solutions without holding back information.</p>
+                <p>Organizations with high trust cultures show <strong>high quality work outcomes, less stress, more energy, and increased productivity</strong>.</p>
+
+                <h3 class="sub-section-title">Defining Interpersonal Trust:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li>Confidence that another will <strong>not harm you</strong>.</li>
+                    <li>Corresponding <strong>willingness to be vulnerable</strong> with that person.</li>
+                    <li><strong>Foundational</strong> to successful interpersonal relationships at work.</li>
+                    <li>Comprises <strong>warmth/positivity</strong>, <strong>predictability</strong>, and <strong>vulnerability</strong> (trusting they won't use it to tear you down).</li>
+                </ul>
+
+                <h3 class="sub-section-title">The ABI Model of Trust (Ability, Benevolence, Integrity):</h3>
+                <p>Individuals are more likely to trust someone if they perceive these three skills:</p>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Ability:</strong> Perceived <strong>competence</strong> of a leader; delivering results, having training/experience, self-awareness of what they know/don't know, and curiosity for learning.</li>
+                    <li><strong>Benevolence:</strong> Perceived <strong>concern for the well-being of others</strong>. Leaders should demonstrate care, avoid belittling, and be responsible for employees' mental health and support when "chips are down."</li>
+                    <li><strong>Integrity:</strong> Perceived <strong>consistency of behavior</strong>; doing what they promised. Following through on commitments builds future trust.</li>
+                </ul>
+                <p class="mt-2">This model is <strong>iterative</strong>, with each skill reinforcing the others.</p>
+
+                <h3 class="sub-section-title">Why Leaders Should Focus on Trust:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li>Improves <strong>communication, cooperation, and willingness to share information</strong> (foundational to problem-solving).</li>
+                    <li>Correlated with <strong>employee satisfaction, well-being, and leader effectiveness</strong>.</li>
+                    <li>Related to higher <strong>organizational citizenship behaviors</strong> (discretionary value-adding actions).</li>
+                    <li>Decreased <strong>turnover</strong> and increased <strong>team stability</strong>.</li>
+                    <li>Facilitates vulnerability, openness, reduced monitoring, and decreased uncertainty.</li>
+                    <li><strong>Physiological Impact:</strong> Higher oxytocin (bonding hormone), lower cortisol (stress hormone).</li>
+                </ul>
+
+                <h3 class="sub-section-title">Neuroscientific Underpinnings (Paul Zak - Neuro-economics):</h3>
+                <p class="mt-2"><strong>Oxytocin:</strong> A hormone and neurotransmitter linked to empathy, relationship building, reduced depression/anxiety, and highly correlated with interpersonal trust. Leaders can leverage this through basic interpersonal communication.</p>
+
+                <h3 class="sub-section-title">Developing Trusting Relationships - Skill Development:</h3>
+                <p>Trust doesn't occur naturally; it requires <strong>intentional development</strong>.</p>
+                <p class="mt-2"><strong>Oscar Ybarra:</strong> We're often prepared <em>not</em> to trust, being skeptical. Developing trust is hard work and involves taking risks (vulnerability, time, effort). It's crucial for organizations to function.</p>
+
+                <h3 class="sub-section-title">Conversational Intelligence (Judith Glaser):</h3>
+                <p>Trust can be developed or destroyed through everyday conversations. Three levels:</p>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>1. Transactional Conversations:</strong> Straightforward information exchange (e.g., meeting time, file location). Informational, basic.</li>
+                    <li><strong>2. Positional Conversations:</strong> Taking a side, trying to influence, making a case, seeking specific answers. One side often expected to conform.</li>
+                    <li><strong>3. Transformational Conversations (Co-creating):</strong> Driven by curiosity and interest. Ideas collected, new ideas emerge, diverse voices contribute, leading to deeper insights and trust.</li>
+                </ul>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Hormonal Impact of Conversations:</h4>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Higher Oxytocin (Transformational):</strong> Concern for others, mutual interest, honesty, curiosity, openness to difficult conversations, painting mutual success.</li>
+                    <li><strong>Increased Cortisol (Positional/Transactional):</strong> Pretending to listen, failing to understand, focusing on convincing, distrusting intentions, emotions detracting from listening.</li>
+                </ul>
+                <p class="mt-2">Transformational conversations facilitate empathy and understanding through deep investment, eye contact, and physical/neurological connection.</p>
+
+                <h3 class="sub-section-title">Practicing Transformational Conversations:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Active Listening:</strong> Understanding verbal and nonverbal cues without judgment or evaluation, integrating what's learned, and reflecting it back to confirm understanding.
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li><strong>Turn off the script:</strong> Listen without judgment, don't formulate your response while listening.</li>
+                            <li><strong>Listen beyond words:</strong> Pay attention to tone, body language, facial expressions.</li>
+                            <li><strong>Reflect back:</strong> "I heard you say XYZ. Have I captured that correctly?"</li>
+                            <li>Reduces power distance, stress hormones, increases bonding hormones, fosters open communication.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Humble Inquiry:</strong> Asking questions to build trust and elicit effective communication. Four types (Ed Schein):
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li><strong>1. Confrontational Inquiry:</strong> Inserts own ideas in question (e.g., "Didn't you agree?"). Can gain consensus or be coercive.</li>
+                            <li><strong>2. Diagnostic Inquiry:</strong> Tries to understand what the other person is thinking/feeling at the moment (e.g., "How do you feel about that?").</li>
+                            <li><strong>3. Process Inquiry:</strong> Questions about the conversation process itself (e.g., "Are we at a good stopping point?").</li>
+                            <li><strong>4. Humble or Pure Inquiry:</strong> Accessing one's own lack of knowledge; total curiosity without judgment (e.g., "Why?", "Tell me more."). Demonstrates respect.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="mt-2"><strong>Jim Luckman:</strong> Practice asking open-ended, humble questions to understand others' perspectives, rather than telling them solutions.</p>
+                <p class="mt-2"><strong>Effective Communication:</strong> Stay in the moment, actively engage, and ask relevant questions to encourage effective answers and develop trust.</p>
+
+                <h3 class="sub-section-title">Seeing Humanity in Others:</h3>
+                <p><strong>Jeffrey Loewenstein:</strong> Avoid seeing others as "tools" or "means" to achieve outcomes, which is dehumanizing. This reduces effort, initiative, productivity, and belonging. Instead, engage as humans, acknowledging their beliefs, desires, joys, and despair. This builds respect and trust, leading to a strong, effective, and productive culture.</p>
+                <p>Trust is about recognizing everyone's humanity, that we are all learning, and are worthy of trust and respect. This is powerful for leadership relationships.</p>
+            </div>
+        </section>
+
+        <!-- Lesson 3: Using Power and Influence Ethically -->
+        <section id="power-influence">
+            <h2 class="section-title">Lesson 3: Using Power and Influence Ethically</h2>
+            <div class="note-card">
+                <p>Leaders have <strong>formal authority/power</strong> or influence others. Effective leaders understand power/influence, how to harness it, and use it <strong>ethically</strong>.</p>
+                <p><strong>Kari Keating:</strong> Leadership is at its core <strong>influence</strong>. Everyone has the capacity to influence. Influential people listen empathetically and offer human-to-human guidance/coaching.</p>
+                <p>Any relationship has a <strong>power dynamic</strong> (formal, positional, or shifting influence). Power is a <strong>responsibility</strong> and can be abused, even unintentionally.</p>
+
+                <h3 class="sub-section-title">French & Raven's Five Bases of Power (plus one added later):</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>1. Legitimate Power:</strong> From a formal role or title (power inherent to the position).</li>
+                    <li><strong>2. Reward Power:</strong> Control over resources to reward others (tangible: pay, bonuses; intangible: gratitude, thanks).</li>
+                    <li><strong>3. Coercive Power:</strong> Uses manipulation and threats to force behavior.</li>
+                    <li><strong>4. Expert Power:</strong> Unique expertise, particular skills, or experience (doesn't require a title).</li>
+                    <li><strong>5. Referent Power:</strong> Comes from being respected, liked, and trusted (cultivated by anyone).</li>
+                    <li><strong>6. Informational Power:</strong> Unique access to information or knowledge others need (added later).</li>
+                </ul>
+                <p class="mt-2">This model helps understand how power can be manifested.</p>
+
+                <h3 class="sub-section-title">Psychological Effects of Power (Adam Galinsky & Joe Magee Study):</h3>
+                <p>Simply <strong>feeling powerful impacts how we think and behave</strong> towards others, regardless of its source.</p>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>"E" on Forehead Experiment:</strong> Powerful individuals write "E" for themselves to read, showing <strong>self-focus</strong> and less focus on others' perspectives.</li>
+                    <li><strong>Mirror Neurons:</strong> When feeling powerful, mirror neurons (which activate similarly to another person's neurons when observing a task) work differently, reducing our ability to connect with others.</li>
+                </ul>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Positive Effects of Feeling Powerful:</h4>
+                <p>Confidence, willingness to be vulnerable with opinions, optimism, willingness to initiate/support change.</p>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Negative Effects of Feeling Powerful (Counter to Ethical Leadership):</h4>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li>More likely to pursue <strong>self-serving rewards</strong>.</li>
+                    <li><strong>Ignore others' perspectives</strong>.</li>
+                    <li><strong>Speak over others</strong>.</li>
+                    <li>Difficulty <strong>reading others' emotions</strong>.</li>
+                </ul>
+                <p class="mt-2">Power, whether formal, informal, or psychological, shapes our behavior and how we treat others.</p>
+
+                <h3 class="sub-section-title">How Power Can Undermine Effective Leadership:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Reduced Information Seeking:</strong> Leaders feel like experts, reducing need for others' opinions.</li>
+                    <li><strong>Fear of Vulnerability:</strong> Fear of showing weakness, leading to closing off and avoiding connection.</li>
+                    <li><strong>Command-and-Control Leadership:</strong> Telling instead of empowering problem-solving (e.g., Jim Luckman's abusive boss example).</li>
+                    <li><strong>Inhibited Inclusivity/Belonging:</strong> Power makes leaders turn inward, reducing perspective-taking and empathy. Leaders must explicitly create opportunities for others to voice opinions.</li>
+                    <li><strong>Fear of Losing Power:</strong> Viewing power as a valuable resource leads to putting up "armor" to protect it, pushing people away, and failing to build trust or be empathic (Jeffrey Loewenstein's "armor" analogy).</li>
+                </ul>
+                <p class="mt-2">Harnessing power ethically requires understanding its manifestations and being self-aware of its psychological effects.</p>
+
+                <h3 class="sub-section-title">Using Power and Influence Ethically - Skill Development:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Understand Your Influence:</strong> Practice lowering "armor," opening perspective-taking, and building better relationships. Be aware of the types of power you have.</li>
+                    <li><strong>Psychological Safety (Amy Edmondson):</strong> An aspect of leader-employee relationships where individuals feel safe to be their authentic selves without fear of punishment.
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li>Creates a <strong>culture of belonging</strong> where people feel they can speak up, show up, and speak out (LaTonya Wilkins' manager example).</li>
+                            <li>Essential for taking <strong>risky business</strong> and innovation.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Treat Others with Respect & Consideration:</strong> These are distinct from trust but equally important. Fostering respect means:
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li>Providing information to understand what's happening and why.</li>
+                            <li>Having consistent and fair processes.</li>
+                            <li>Distributing outcomes/rewards in principled ways.</li>
+                            <li>Makes people feel committed, valued, and that they have social standing (Jeffrey Loewenstein).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Own Your Ability to Influence:</strong> Recognize influence as a gift and a responsibility for ethical use. Be accountable (Ron Myers).</li>
+                    <li><strong>Observe Power Dynamics:</strong> Develop a practice to observe yourself and others, ensuring you contribute and use influence to help others voice perspectives (Jack Goncalo's brainstorming column idea).</li>
+                    <li><strong>Explicitly Apply Understanding:</strong> Relate concepts of power and influence to your own experiences for observation, learning, and adaptation.</li>
+                </ul>
+                <p class="mt-2">Power dynamics exist interpersonally; leaders must use power with self-awareness and ethically.</p>
+            </div>
+        </section>
+
+        <!-- Lesson 4: Navigating Differences of Opinion: Negotiation and Conflict -->
+        <section id="negotiation-conflict">
+            <h2 class="section-title">Lesson 4: Navigating Differences of Opinion: Negotiation and Conflict</h2>
+            <div class="note-card">
+                <p>Organizations are made of diverse individuals; <strong>disagreements and conflict are normal and natural</strong> parts of group process.</p>
+                <p>Leader's job: Understand disagreements and help others navigate differences productively.</p>
+                <p><strong>Denise Lewin Loyd:</strong> Strong leadership is <strong>inclusive</strong>, recognizing and incorporating diverse perspectives (departments, backgrounds) and individual motivations.</p>
+                <p>This section explores <strong>negotiation</strong> and <strong>managing conflict</strong> as foundational concepts.</p>
+
+                <h3 class="sub-section-title">Negotiation:</h3>
+                <p>Broader than just haggling for price. It occurs "when we are trying to <strong>interdependently reach a decision</strong>" (Jeffrey Loewenstein).</p>
+                <p class="mt-2">Examples: Deciding dinner with a friend, team project strategy, projects with supervisor, even parent/child interactions ("eat your broccoli").</p>
+                <p class="mt-2">Principles of negotiation can apply to virtually any interdependent decision-making process.</p>
+
+                <h3 class="sub-section-title">Three Primary Goals of Negotiation (Jeffrey Loewenstein):</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>1. Create Value:</strong> Expand the "pie" by understanding each party's <strong>interests</strong> (what's important), not just positions (what they say they want). Making trade-offs based on interests (e.g., orange story: one wants peel, other wants fruit). Effective negotiation starts with understanding everyone's interests to find a decision that provides more value.</li>
+                    <li><strong>2. Claim Value:</strong> Deciding who gets which part of the expanded "pie." Conflict may arise here. Claiming value is more effective when parties first focus on creating value.</li>
+                    <li><strong>3. Cultivate Relationships & Reputation:</strong> Recognize that interdependent decision-making requires <strong>trusting relationships</strong>. Hard bargaining tactics (bluffing, manipulation) are ineffective long-term as they destroy trust. Honest negotiation fosters transparency and better future outcomes.</li>
+                </ul>
+
+                <h3 class="sub-section-title">Conflict:</h3>
+                <p>At its core, conflict is simply when <strong>two people disagree</strong>. Can be problematic or productive if managed correctly.</p>
+                <p>Effective leaders create inclusive environments by providing space for <strong>healthy and productive conflict</strong>.</p>
+                <p class="mt-2"><strong>Ron Myers:</strong> Conflict is not necessarily bad. We often fail at conflict because we don't dialogue. Leaders have a responsibility to create a <strong>safe space for dialogue</strong>, which resolves conflict by taking away dehumanization and focusing on shared understandings, even if agreeing to disagree.</p>
+
+                <h3 class="sub-section-title">Three Types of Conflict:</h3>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>1. Task-Based Conflict:</strong> Differences of opinion on work tasks (e.g., project decisions, hiring candidates).
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li>Often stems from underlying assumptions or different goals.</li>
+                            <li>Helpful to allow perspective sharing and address underlying assumptions.</li>
+                        </ul>
+                    </li>
+                    <li><strong>2. Relationship Conflict:</strong> Stems from individual differences (personalities, communication styles, conflict management styles).
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li>Focus on commonalities: shared experiences, goals, or tendencies.</li>
+                        </ul>
+                    </li>
+                    <li><strong>3. Values-Based Conflict:</strong> Differences in individual values, deeply held assumptions (cultural, ethical, political, religious views).
+                        <ul class="list-circle list-inside ml-8 mt-2 space-y-1">
+                            <li>Not solved by logical discussion.</li>
+                            <li>Requires dialogue and respect for unique perspectives.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="mt-2"><strong>Lois Boxill:</strong> Damaging people by failing to see their differences. Inclusive leadership means recognizing individual differences and not lumping people together; checking biases by paying attention to the person in front of you.</p>
+                <p class="mt-2">Navigating differences starts by recognizing everyone is different, even when appearing the same.</p>
+            </div>
+        </section>
+
+        <!-- Navigating Differences of Opinion - Skill Development -->
+        <section id="negotiation-conflict-skill-dev">
+            <h2 class="section-title">Navigating Differences of Opinion - Skill Development</h2>
+            <div class="note-card">
+                <p>Effective navigation of differences involves: <strong>self-awareness</strong>, <strong>communication strategies (trust-building)</strong>, and <strong>focusing on interests (not positions)</strong>.</p>
+
+                <h3 class="sub-section-title">1. Self-Awareness (How you approach negotiation/conflict):</h3>
+                <p>Understand your emotional stance and assumptions before a "hard conversation."</p>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Thomas-Kilmann Instrument (TKI) - Five Conflict Management Styles:</h4>
+                <p>Based on two dimensions: <strong>Assertiveness</strong> (satisfy own needs) and <strong>Cooperativeness</strong> (satisfy others' needs).</p>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Avoiding (Low Assertiveness, Low Cooperation):</strong> Leaves discussion, sidesteps issues, placating.</li>
+                    <li><strong>Accommodating (Low Assertiveness, High Cooperation):</strong> Ignores own concerns to satisfy others; overly generous.</li>
+                    <li><strong>Competing (High Assertiveness, Low Cooperation):</strong> Focus on own concerns, defending position, manipulating.</li>
+                    <li><strong>Collaborating (High Assertiveness, High Cooperation):</strong> Pays attention to both concerns, explores interests, seeks win-win solutions, creative problem-solving.</li>
+                    <li><strong>Compromising (Moderate Assertiveness, Moderate Cooperation):</strong> Finds a "good enough" solution for both; less creative than collaborating.</li>
+                </ul>
+                <p class="mt-2">The goal isn't to pick one style, but to develop <strong>self-awareness</strong> of your natural tendencies and adapt your style based on situational factors.</p>
+                <p class="mt-4"><strong>Oscar Ybarra:</strong> Acknowledge potential miscommunication when working with diverse backgrounds (e.g., engineer vs. marketing). Awareness of initial challenges and eventual benefits of diverse perspectives is crucial.</p>
+                <p>Observe your <strong>tone</strong> (calm, patient, aggressive, curious) as it conveys a lot of information.</p>
+
+                <h3 class="sub-section-title">2. Communication Strategies (Asking Questions & Sharing):</h3>
+                <p>An open dialogue requires both <strong>asking questions</strong> and <strong>sharing vulnerabilities</strong> to demonstrate a willingness to work together.</p>
+                <p class="mt-2"><strong>Aravinda Garimella:</strong> Actively ask about <strong>interests</strong> to learn unspoken thoughts, and also to give people opportunities to reflect on what they want (as they may not know themselves).</p>
+
+                <h3 class="sub-section-title">3. Focusing on Interests, Not Positions:</h3>
+                <p>Remember the person you disagree with is a human being with hopes, values, and goals.</p>
+                <p>Leaders need to help others see the capacity to work through differences together.</p>
+                <p class="mt-2"><strong>Jeffrey Loewenstein:</strong> Today's status quo is an <strong>achievement</strong> built on shared understanding and routines. Psychological safety lowers the threshold for vulnerability and allows for risky debate/discussion about "the song" (the task) without threatening individual standing or relationships.</p>
+                <p class="mt-2">Practice over time builds relationships, develops norms for creating value, and encourages honest communication, making discussions easier.</p>
+
+                <h3 class="sub-section-title">Module Wrap-up: Ongoing Leadership Journey</h3>
+                <p>Leadership involves heavy and critical topics: emotions, power, influence, and ethics. It's a continuous journey requiring a <strong>growth mindset</strong>.</p>
+                <ul class="list-disc list-inside ml-5 space-y-2">
+                    <li><strong>Kari Keating:</strong> Continuously <strong>ask for feedback</strong> (even mid-career) to check how you're "showing up" and to use power/influence ethically and develop EQ. Seek "loving critics."</li>
+                    <li><strong>Elizabeth Luckman:</strong> Focus on <strong>"loving critics"</strong> (trusted individuals with your best interests at heart) for both positive and negative feedback, using it as a mirror for growth rather than isolated criticism.</li>
+                    <li><strong>Denise Lewin Loyd:</strong> Cultivate a <strong>self-critical voice that comes from a space of self-love</strong>, focusing on objectives and constructive feedback. Recognize the inherent difficulty and vulnerability in giving/receiving feedback, especially across different cultural norms.</li>
+                    <li><strong>Dean Brown (interviewed by E. Luckman):</strong> Leaders must learn to <strong>navigate criticism</strong> because it's a constant part of holding authority. Vulnerability means recognizing you'll "mess up" and seeking help to improve.</li>
+                </ul>
+                <p class="mt-2">Leadership is a "weird dance" requiring constant processing of information, vulnerability, self-awareness, and a growth mindset.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const sections = document.querySelectorAll('section');
+            const noResultsMessage = document.getElementById('no-results');
+
+            let originalContent = new Map(); // Store original content to restore highlights
+
+            // Helper function to escape special characters in a string for use in a RegExp
+            function escapeRegExp(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+            }
+
+            // Store original content of note cards once
+            sections.forEach(section => {
+                const noteCards = section.querySelectorAll('.note-card');
+                noteCards.forEach(card => {
+                    originalContent.set(card, card.innerHTML);
+                });
+            });
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim().toLowerCase();
+                let foundResults = false;
+                let firstMatchScrolled = false; // Flag to scroll only once
+
+                // Reset all highlights and visibility
+                sections.forEach(section => {
+                    const noteCards = section.querySelectorAll('.note-card');
+                    noteCards.forEach(card => {
+                        card.innerHTML = originalContent.get(card); // Restore original content
+                        card.style.display = 'block'; // Show all cards initially
+                    });
+                     // Always show section titles when resetting, as they are not part of individual note card content
+                    const sectionTitle = section.querySelector('.section-title');
+                    if (sectionTitle) {
+                        sectionTitle.style.display = 'block';
+                    }
+                });
+
+                if (searchTerm.length === 0) {
+                    noResultsMessage.style.display = 'none';
+                    return; // Exit if search term is empty
+                }
+
+                // Escape the search term to handle special regex characters
+                const escapedSearchTerm = escapeRegExp(searchTerm);
+                const regex = new RegExp(`(${escapedSearchTerm})`, 'gi'); // Case-insensitive, global
+
+                sections.forEach(section => {
+                    const noteCards = section.querySelectorAll('.note-card');
+                    let sectionHasMatch = false;
+
+                    noteCards.forEach(card => {
+                        let cardHtml = originalContent.get(card); // Get original HTML for this card
+
+                        if (cardHtml.toLowerCase().includes(searchTerm)) {
+                            cardHtml = cardHtml.replace(regex, `<span class="highlight">$1</span>`);
+                            card.innerHTML = cardHtml;
+                            card.style.display = 'block'; // Ensure card is visible
+                            sectionHasMatch = true;
+                            foundResults = true;
+
+                            if (!firstMatchScrolled) {
+                                // Scroll to the first highlighted term
+                                const firstHighlight = card.querySelector('.highlight');
+                                if (firstHighlight) {
+                                    firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    firstMatchScrolled = true;
+                                }
+                            }
+                        } else {
+                            card.style.display = 'none'; // Hide card if no match
+                        }
+                    });
+
+                    // If no card in a section matches, hide the section title as well.
+                    // Only hide if there are note cards that were potentially filtered.
+                    const sectionTitle = section.querySelector('.section-title');
+                    if (sectionTitle) {
+                        if (!sectionHasMatch && noteCards.length > 0) {
+                            sectionTitle.style.display = 'none';
+                        } else {
+                            sectionTitle.style.display = 'block'; // Ensure section title is visible if its cards are or if no cards to filter
+                        }
+                    }
+                });
+
+                if (!foundResults) {
+                    noResultsMessage.style.display = 'block';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
