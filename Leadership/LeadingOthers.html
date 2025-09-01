@@ -323,6 +323,16 @@
                     }
                 });
             });
+            
+            // Set default selected state for Emotional Intelligence section
+            const defaultEiNode = document.getElementById('ei-node-sa');
+            const defaultEiData = eiData['sa'];
+            if (defaultEiNode && defaultEiData) {
+                defaultEiNode.classList.add('selected');
+                eiTitle.textContent = defaultEiData.title;
+                eiDescription.textContent = defaultEiData.description;
+                eiPoint.classList.add('hidden'); // Ensure point is hidden if not present
+            }
 
             // Power & Influence Interaction
             const powerTabs = document.querySelectorAll('.power-tab');
