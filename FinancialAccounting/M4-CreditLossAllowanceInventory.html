@@ -1,0 +1,759 @@
+<!DOCTYPE: html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Notes: Short-Term Assets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chosen Palette: "Warm Neutral Harmony" - A calming palette using beige, slate, and a subtle terracotta accent. -->
+    <!-- Application Structure Plan: The application is structured into three distinct, thematic sections accessible via top navigation: 1) Accounts Receivable Explorer, 2) Inventory Costing Simulator, and 3) LIFO/FIFO Conversion Calculator. This structure was chosen to transform passive notes into an active learning experience. Instead of a linear document, users can jump to a specific topic and engage with interactive tools designed for that concept. For example, the Inventory Simulator visually demonstrates the abstract differences between FIFO and LIFO, while the Conversion Calculator turns a static case study into a hands-on tool. This task-oriented design promotes better understanding and retention than simply reading the original notes. -->
+    <!-- Visualization & Content Choices: 
+        1. Accounts Receivable: Goal is to inform and apply. Presented using HTML cards and an interactive panel. Interaction: User adjusts sliders/inputs to see the 'Allowance for Uncollectible Accounts' calculated in real-time. Justification: Makes the abstract concept of bad debt allowances tangible. Method: Vanilla JS.
+        2. Inventory Costing: Goal is to compare and show change. Viz: A dynamic bar chart (Chart.js) compares COGS and Ending Inventory across FIFO, LIFO, and Weighted Average methods. Interaction: 'Sell Unit' button triggers updates to the chart and a corresponding data table. Justification: Visually demonstrates the financial impact of different accounting assumptions, which is difficult to grasp from text alone. Library: Chart.js and Vanilla JS.
+        3. LIFO/FIFO Conversion: Goal is to apply a formula. Presented as a calculator UI based on the Kroger case study. Interaction: Pre-filled inputs can be modified to see how changes affect the final converted COGS. Justification: Turns a static example into a dynamic, exploratory tool. Method: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active {
+            color: #D97706; /* Amber-600 */
+            border-bottom-color: #D97706;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #F3F4F6;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .btn {
+            transition: all 0.2s ease;
+            transform: translateY(0);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 450px;
+            padding-top: 60px;   /* Add space for top widget */
+            padding-bottom: 60px; /* Add space for bottom widget */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+                padding-top: 70px;
+                padding-bottom: 70px;
+            }
+        }
+        /* Formula display fix */
+        #formulaDisplay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 0 0 0.75rem 0.75rem;
+            box-sizing: border-box;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #D97706;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #D97706;
+            cursor: pointer;
+            border-radius: 50%;
+             border: 2px solid white;
+        }
+        /* Table style for summary of effects */
+        .styled-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .styled-table th, .styled-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        .styled-table thead {
+            background-color: #f3f4f6;
+        }
+        .styled-table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .styled-table th {
+            font-weight: 600;
+            color: #374151;
+        }
+        .styled-table td {
+            color: #4a4a4a;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex justify-between items-center">
+                    <a href="FA-Landing.html" class="text-2xl font-bold text-gray-800 hover:text-amber-600 transition-colors">Home</a>
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#receivables" class="nav-link text-gray-600 hover:text-amber-600 font-medium pb-1">Accounts Receivable</a>
+                        <a href="#inventory" class="nav-link text-gray-600 hover:text-amber-600 font-medium pb-1">Inventory Costing</a>
+                        <a href="#conversion" class="nav-link text-gray-600 hover:text-amber-600 font-medium pb-1">LIFO/FIFO Conversion</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+            <section id="receivables" class="content-section space-y-8 pt-0">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Accounts Receivable Explorer</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">This section breaks down the key components of managing accounts receivable. We'll explore how companies account for early payment discounts, returns, and the unfortunate reality of bad debts. Interact with the "Bad Debt Estimator" to see how accounting principles are applied to real-world scenarios.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Cash Discounts</h3>
+                        <p class="text-gray-600 mb-4">Companies offer discounts to encourage prompt payment. A common term is "2/10, n/30", meaning a 2% discount if paid in 10 days, otherwise the full amount is due in 30 days.</p>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-mono text-center text-amber-800">Example: 2/10, n/30</p>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Sales Returns & Allowances</h3>
+                        <p class="text-gray-600">When customers return goods, a <span class="font-semibold font-bold bg-amber-100 p-1 rounded-md">contra-revenue account</span> called "Sales Returns and Allowances" is used to track these events, reducing the total reported sales.</p>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Bad Debts</h3>
+                        <p class="text-gray-600">Companies must estimate and account for receivables they don't expect to collect. The <span class="font-semibold font-bold bg-amber-100 p-1 rounded-md">Allowance Method</span> matches this expense to the period the sale was made.</p>
+                    </div>
+                    <div class="card p-6 md:col-span-2 lg:col-span-3">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">What is a Contra Account?</h3>
+                        <p class="text-gray-600">A <span class="font-semibold font-bold bg-amber-100 p-1 rounded-md">contra account</span> is an account with a balance that is opposite to the normal balance of its related account. Contra accounts are used to reduce the value of a related account.</p>
+                        <ul class="list-disc list-inside mt-4 text-gray-600 space-y-2">
+                            <li><span class="font-semibold font-bold bg-amber-100 p-1 rounded-md">Allowance for Uncollectible Accounts</span> is a contra-asset account, reducing Accounts Receivable.</li>
+                            <li><span class="font-semibold font-bold bg-amber-100 p-1 rounded-md">Sales Returns and Allowances</span> is a contra-revenue account, reducing Sales Revenue.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card p-6 lg:p-8 mt-0">
+                    <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">Interactive Bad Debt Estimator</h3>
+                    <div class="mb-4 text-center">
+                         <p class="text-gray-600 mb-2">The <span class="font-semibold font-bold bg-amber-100 p-1 rounded-md">Percentage of Accounts Receivable</span> method estimates bad debt expense using the following formula:</p>
+                        <p class="text-xl font-bold text-gray-800 mb-4">
+                            $$\text{Bad Debt Expense} = \text{Accounts Receivable} \times \text{Estimated Uncollectible \%}$$
+                        </p>
+                        <p class="text-gray-600 mb-2">The Net Realizable Value (NRV) is the amount a company expects to collect. It's calculated with the formula:</p>
+                        <p class="text-xl font-bold text-gray-800">
+                            $$\text{Net Realizable Value} = \text{Total Accounts Receivable} - \text{Allowance for Uncollectible Accounts}^{\text{1}}$$
+                        </p>
+                         <p class="text-xs text-gray-500 text-center mt-2">
+                            <sup>1</sup> The **Allowance for Uncollectible Accounts** is a contra-asset account on the balance sheet. Its balance is determined by the following formula:
+                            $$\text{Allowance for Uncollectible Accounts} = \text{Bad Debt Expense} + \text{Sales Returns} + \text{Sales Discounts}$$
+                        </p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <div class="mb-6">
+                                <label for="totalAR" class="block font-medium text-gray-700 mb-2">Total Accounts Receivable ($)</label>
+                                <input type="number" id="totalAR" value="500000" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="uncollectiblePercent" class="block font-medium text-gray-700 mb-2">Estimated Uncollectible Percentage (%)</label>
+                                <input type="range" id="uncollectiblePercent" min="1" max="15" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="text-center font-semibold text-amber-600 mt-2 text-lg"><span id="uncollectiblePercentValue">5</span>%</div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg border">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Balance Sheet Impact</h4>
+                            <div class="space-y-3 text-lg">
+                                <div class="flex justify-between">
+                                    <span>Accounts Receivable:</span>
+                                    <span id="arValue" class="font-mono font-semibold">$500,000</span>
+                                </div>
+                                <div class="flex justify-between text-red-600">
+                                    <span>Less: Allowance:</span>
+                                    <span id="allowanceValue" class="font-mono font-semibold">($25,000)</span>
+                                </div>
+                                <hr class="my-2">
+                                <div class="flex justify-between font-bold text-gray-800">
+                                    <span>Net Realizable Value:</span>
+                                    <span id="netValue" class="font-mono text-green-700">$475,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="inventory" class="content-section space-y-8 hidden">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Inventory Costing Simulator</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">When inventory costs change, companies must assume which costs flow to the income statement. This simulator visualizes how FIFO, LIFO, and Weighted Average methods impact Cost of Goods Sold (COGS) and Ending Inventory. Click "Sell One Unit" to see the financial outcome of each method in a rising price environment.</p>
+                </div>
+                <div class="card lg:p-8 p-4">
+                    <div class="w-full max-w-full px-0">
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div class="lg:col-span-1 p-4 rounded-lg bg-gray-50 border">
+                                <h3 class="text-xl font-semibold mb-4 text-center">Inventory Purchases</h3>
+                                <div id="inventoryStatus" class="space-y-2"></div>
+                                <div class="mt-6 flex flex-col items-center space-y-3">
+                                    <button id="sellUnitBtn" class="btn bg-amber-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-amber-700">Sell One Unit</button>
+                                    <button id="resetInventoryBtn" class="btn bg-gray-500 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-gray-600">Reset</button>
+                                    <p id="salesCounter" class="text-sm text-gray-500 font-medium">Units Sold: 0</p>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-1 p-4 rounded-lg bg-gray-50 border">
+                                <h3 class="text-xl font-semibold mb-4 text-center">Financial Summary</h3>
+                                <!-- <div class="space-y-4 text-lg">
+                                    <div class="flex justify-between">
+                                        <span>COGS (FIFO):</span>
+                                        <span id="fifoCogs" class="font-mono font-semibold">$0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Ending Inventory (FIFO):</span>
+                                        <span id="fifoInv" class="font-mono font-semibold">$0</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex justify-between">
+                                        <span>COGS (LIFO):</span>
+                                        <span id="lifoCogs" class="font-mono font-semibold">$0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Ending Inventory (LIFO):</span>
+                                        <span id="lifoInv" class="font-mono font-semibold">$0</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex justify-between">
+                                        <span>COGS (Weighted Avg):</span>
+                                        <span id="avgCogs" class="font-mono font-semibold">$0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Ending Inventory (Weighted Avg):</span>
+                                        <span id="avgInv" class="font-mono font-semibold">$0</span>
+                                    </div>
+                                </div> -->
+                            <div class="lg:col-span-2">
+                                <div class="chart-container relative">
+                                    <canvas id="inventoryChart"></canvas>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="lg:col-span-2 p-4 rounded-lg bg-gray-50 border width-full">
+                                <h3 class="text-xl font-semibold mb-4 text-center">Current Values & Formulas</h3>
+                                <div class="space-y-4 text-lg">
+                                    <div class="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0">
+                                        <div class="md:w-1/2" style="position:relative;">
+                                            <div id="chartValues" class="relative top-0 left-1/2 -translate-x-1/2 bg-white bg-opacity-95 rounded-lg shadow p-4 text-sm space-y-2 z-10 border border-gray-200 w-11/12 md:w-auto mx-auto mb-4">
+                                                <div class="font-bold text-gray-800 mb-1 text-center">Current Values</div>
+                                                <div class="grid grid-cols-3 gap-2 text-center">
+                                                    <div><span class="font-semibold text-amber-700">FIFO:</span><br>COGS: <span id="fifoCogsVal"></span><br>Inv: <span id="fifoInvVal"></span></div>
+                                                    <div><span class="font-semibold text-amber-700">LIFO:</span><br>COGS: <span id="lifoCogsVal"></span><br>Inv: <span id="lifoInvVal"></span></div>
+                                                    <div><span class="font-semibold text-amber-700">W. Avg:</span><br>COGS: <span id="avgCogsVal"></span><br>Inv: <span id="avgInvVal"></span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="md:w-1/2" style="position:relative;">
+                                            <div id="formulaDisplay" class="w-full bg-white bg-opacity-95 rounded-b-lg shadow p-4 text-xs z-10 border border-gray-200 mx-auto">
+                                                <div class="font-bold text-gray-800 mb-1 text-center">Formula Calculations</div>
+                                                <div id="fifoFormula" class="mb-1"></div>
+                                                <div id="lifoFormula" class="mb-1"></div>
+                                                <div id="avgFormula" class="mb-1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="card p-6 lg:p-8 mt-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Inventory Write-downs: LCNRV</h3>
+                    <p class="text-gray-600 mb-4">When the value of inventory falls below its historical cost, companies are required to write down the value to its <strong>Net Realizable Value (NRV)</strong>. This is known as the <strong>Lower of Cost or Net Realizable Value (LCNRV)</strong> rule.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Net Realizable Value (NRV) Formula</h4>
+                            <p class="text-gray-600 mb-4">NRV is the estimated selling price of the inventory in the ordinary course of business, minus the estimated costs to sell the inventory.</p>
+                            <p class="text-xl font-bold text-gray-800 text-center">
+                                $$\text{NRV} = \text{Selling Price} - \text{Costs to Sell}$$
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Inventory Valuation Rule</h4>
+                            <p class="text-gray-600 mb-4">The inventory is reported on the balance sheet at the lower of its original cost or its newly calculated NRV.</p>
+                            <p class="text-xl font-bold text-gray-800 text-center">
+                                $$\text{Inventory Value} = \min(\text{Cost}, \text{NRV})$$
+                            </p>
+                        </div>
+                    </div>
+                    <hr class="my-6">
+                    <div>
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">Journal Entry for a Write-down</h4>
+                        <p class="text-gray-600 mb-4">A write-down is recorded as an expense on the income statement, reducing reported profit. The most common method is to debit <strong>Cost of Goods Sold</strong> for the amount of the loss and credit <strong>Inventory</strong> to reduce its book value.</p>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="font-mono font-semibold text-gray-800">Debit: Cost of Goods Sold (COGS) ... $XXX</p>
+                            <p class="font-mono font-semibold text-gray-800">Credit: Inventory .................... $XXX</p>
+                        </div>
+                    </div>
+                </div>
+            </section> 
+
+            <!-- NEW SECTION FOR FORMULA EXPLANATIONS -->
+            <section id="conversion" class="content-section space-y-8 hidden">
+
+            
+                <div class="card p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Cost Flow Assumption Formulas</h3>
+                    <p class="text-gray-600 mb-6">The choice of a cost flow assumption affects both the <span class="font-semibold">Cost of Goods Sold (COGS)</span> on the income statement and the value of <span class="font-semibold">Ending Inventory</span> on the balance sheet. Here are the principles behind each method:</p>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">FIFO (First-In, First-Out)</h4>
+                            <p class="text-gray-600 mb-4">Assumes the first units purchased are the first units sold. In a period of rising prices, this results in lower COGS and higher ending inventory.</p>
+                            <p class="text-sm text-gray-600 font-semibold">Cost of Goods Sold (COGS):</p>
+                            <p class="text-lg font-bold">
+                                $$\text{COGS}_{\text{FIFO}} = \text{Cost of oldest inventory}$$
+                            </p>
+                            <p class="text-sm text-gray-600 font-semibold mt-2">Ending Inventory:</p>
+                            <p class="text-lg font-bold">
+                                $$\text{Ending Inventory}_{\text{FIFO}} = \text{Cost of most recent inventory}$$
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">LIFO (Last-In, First-Out)</h4>
+                            <p class="text-gray-600 mb-4">Assumes the last units purchased are the first units sold. In a period of rising prices, this results in higher COGS and lower ending inventory.</p>
+                            <p class="text-sm text-gray-600 font-semibold">Cost of Goods Sold (COGS):</p>
+                            <p class="text-lg font-bold">
+                                $$\text{COGS}_{\text{LIFO}} = \text{Cost of most recent inventory}$$
+                            </p>
+                            <p class="text-sm text-gray-600 font-semibold mt-2">Ending Inventory:</p>
+                            <p class="text-lg font-bold">
+                                $$\text{Ending Inventory}_{\text{LIFO}} = \text{Cost of oldest inventory}$$
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Weighted Average</h4>
+                            <p class="text-gray-600 mb-4">Calculates a single average cost for all available inventory, regardless of purchase date. This average cost is then used for both COGS and ending inventory.</p>
+                            <p class="text-sm text-gray-600 font-semibold">Weighted Average Cost:</p>
+                            <p class="text-lg font-bold">
+                                $$\text{Average Cost} = \frac{\text{Total cost}}{\text{Total units}}$$
+                            </p>
+                             <p class="text-sm text-gray-600 font-semibold mt-2">Cost of Goods Sold (COGS) & Ending Inventory:</p>
+                            <p class="text-lg font-bold">
+                                $$\text{Total Cost} = \text{Average Cost} \times \text{Units}$$
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- New Section for FIFO/LIFO Effects Table -->
+                <div class="card p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Summary of Effects: FIFO vs. LIFO</h3>
+                    <p class="text-gray-600 mb-6 text-center max-w-2xl mx-auto">In a period of <strong>rising prices</strong>, the choice of inventory costing method significantly impacts the financial statements.</p>
+                    <div class="overflow-x-auto">
+                        <table class="styled-table rounded-lg">
+                            <thead>
+                                <tr>
+                                    <th>Cost Flow Assumption</th>
+                                    <th>Effect on COGS</th>
+                                    <th>Effect on Ending Inventory</th>
+                                    <th>Effect on Net Income</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold">FIFO</td>
+                                    <td style="color:#dc2626;" class="font-semibold">Lower</td>
+                                    <td style="color:#16a34a;" class="font-semibold">Higher</td>
+                                    <td style="color:#16a34a;" class="font-semibold">Higher</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">LIFO</td>
+                                    <td style="color:#16a34a;" class="font-semibold">Higher</td>
+                                    <td style="color:#dc2626;" class="font-semibold">Lower</td>
+                                    <td style="color:#dc2626;" class="font-semibold">Lower</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>    
+
+
+                <!-- New Section for Retail vs. Manufacturing -->
+                <div class="card p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Retail vs. Manufacturing COGS</h3>
+                    <p class="text-gray-600 mb-6 max-w-2xl mx-auto">The calculation of Cost of Goods Sold (COGS) differs significantly between a retail firm, which buys finished products, and a manufacturing firm, which produces them. This is because a manufacturer must account for costs at each stage of production.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Retail Firm (e.g., Target, Walmart)</h4>
+                            <p class="text-gray-600 mb-4">Retailers purchase finished goods and sell them to customers. The calculation of their COGS is relatively straightforward, based on the cost of the goods they acquired during the period.</p>
+                            <p class="text-sm text-gray-600 font-semibold mt-2">Cost of Goods Sold Formula:</p>
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <p class="text-lg font-bold text-gray-800 text-center">
+                                    $$\text{COGS} = \text{Beginning Inventory} + \text{Purchases} - \text{Ending Inventory}$$
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Manufacturing Firm (e.g., Ford, Nike)</h4>
+                            <p class="text-gray-600 mb-4">Manufacturers create products from raw materials. Their inventory includes raw materials, work-in-progress, and finished goods. The calculation of COGS requires an intermediate step to determine the total cost of goods manufactured (COGM) during the period.</p>
+                            <p class="text-sm text-gray-600 font-semibold mt-2">Two-Step COGS Calculation:</p>
+                            <div class="p-4 bg-gray-50 rounded-lg space-y-4">
+                                <div>
+                                    <p class="text-sm font-semibold">Step 1: Calculate Cost of Goods Manufactured (COGM)</p>
+                                    <p class="text-lg font-bold text-gray-800 text-center">
+                                        $$\text{COGM} = \text{Beginning WIP} + \text{Total Manufacturing Costs} - \text{Ending WIP}$$
+                                    </p>
+                                </div>
+                                <hr class="my-2">
+                                <div>
+                                    <p class="text-sm font-semibold">Step 2: Calculate Cost of Goods Sold</p>
+                                    <p class="text-lg font-bold text-gray-800 text-center">
+                                        $$\text{COGS} = \text{Beginning Finished Goods} + \text{COGM} - \text{Ending Finished Goods}$$
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW SECTION FOR LCNRV AND INVENTORY WRITE-DOWNS -->
+                
+
+                <div class="card p-6 lg:p-8">
+                    <h3 class="text-2xl font-semibold text-center text-gray-800 mb-2">Kroger Case Study (FY 2020)</h3>
+                    <p class="text-center text-gray-600 mb-6 max-w-2xl mx-auto">A <span class="font-semibold font-bold">LIFO Liquidation</span> occurs when a company sells older, lower-cost inventory, which can distort profits. Kroger's 2020 liquidation decreased their COGS by $76M.</p>
+                    <div class="grid md:grid-cols-2 gap-8 items-start">
+                        <div class="space-y-4">
+                             <div>
+                                <label for="cogsLIFO" class="block font-medium text-gray-700">COGS (LIFO) ($M)</label>
+                                <input type="number" id="cogsLIFO" value="124223" class="mt-1 w-full p-2 border border-gray-300 rounded-md">
+                            </div>
+                             <div>
+                                <label for="beginLIFOReserve" class="block font-medium text-gray-700">Beginning LIFO Reserve ($M)</label>
+                                <input type="number" id="beginLIFOReserve" value="1570" class="mt-1 w-full p-2 border border-gray-300 rounded-md">
+                            </div>
+                             <div>
+                                <label for="endLIFOReserve" class="block font-medium text-gray-700">Ending LIFO Reserve ($M)</label>
+                                <input type="number" id="endLIFOReserve" value="2196" class="mt-1 w-full p-2 border border-gray-300 rounded-md">
+                            </div>
+                            <button id="calculateFIFO" class="btn w-full bg-amber-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-amber-700">Calculate FIFO COGS</button>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg border h-full">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Conversion Results</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">Change in LIFO Reserve</p>
+                                    <p id="lifoReserveChange" class="text-xl font-bold font-mono text-gray-800">$626 M</p>
+                                </div>
+                                <hr>
+                                <div>
+                                    <p class="text-sm text-gray-600">COGS (FIFO)</p>
+                                    <p id="cogsFIFO" class="text-2xl font-bold font-mono text-green-700">$123,597 M</p>
+                                </div>
+                                <p class="text-xs text-gray-500 pt-4">Formulas:</p>
+                                <div class="text-sm text-gray-600">
+                                    <p>$$\text{Change in LIFO Reserve} = \text{Ending LIFO Reserve} - \text{Beginning LIFO Reserve}$$</p>
+                                    <p class="mt-3 font-semibold">LIFO to FIFO (used above):</p>
+                                    <p>$$\text{COGS}_{\text{FIFO}} = \text{COGS}_{\text{LIFO}} - \text{Change in LIFO Reserve}$$</p>
+                                    <p class="mt-3 font-semibold">FIFO to LIFO:</p>
+                                    <p>$$\text{COGS}_{\text{LIFO}} = \text{COGS}_{\text{FIFO}} + \text{Change in LIFO Reserve}$$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            const activateLink = (hash) => {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.hash === hash);
+                });
+                sections.forEach(section => {
+                    section.classList.toggle('hidden', `#${section.id}` !== hash);
+                });
+            };
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    history.pushState(null, null, e.target.hash);
+                    activateLink(e.target.hash);
+                });
+            });
+
+            const currentHash = window.location.hash || '#receivables';
+            activateLink(currentHash);
+
+            const formatCurrency = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+            const formatMillions = (value) => new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+
+
+            const arSection = () => {
+                const totalARInput = document.getElementById('totalAR');
+                const percentInput = document.getElementById('uncollectiblePercent');
+                const percentValue = document.getElementById('uncollectiblePercentValue');
+                const arValue = document.getElementById('arValue');
+                const allowanceValue = document.getElementById('allowanceValue');
+                const netValue = document.getElementById('netValue');
+
+                const updateARValues = () => {
+                    const totalAR = parseFloat(totalARInput.value) || 0;
+                    const percent = parseFloat(percentInput.value) || 0;
+                    const allowance = totalAR * (percent / 100);
+                    const net = totalAR - allowance;
+
+                    percentValue.textContent = percent;
+                    arValue.textContent = formatCurrency(totalAR);
+                    allowanceValue.textContent = `(${formatCurrency(allowance)})`;
+                    netValue.textContent = formatCurrency(net);
+                };
+
+                totalARInput.addEventListener('input', updateARValues);
+                percentInput.addEventListener('input', updateARValues);
+                updateARValues();
+            };
+            arSection();
+
+            let inventoryChart;
+            const inventorySection = () => {
+                const inventoryStatusEl = document.getElementById('inventoryStatus');
+                const sellUnitBtn = document.getElementById('sellUnitBtn');
+                const resetInventoryBtn = document.getElementById('resetInventoryBtn');
+                const salesCounterEl = document.getElementById('salesCounter');
+                
+                const initialPurchases = [
+                    { units: 1, cost: 10 },
+                    { units: 1, cost: 12 },
+                    { units: 1, cost: 15 },
+                    { units: 1, cost: 18 },
+                ];
+
+                let state = {};
+
+                const resetState = () => {
+                    state = {
+                        fifo: { inventory: JSON.parse(JSON.stringify(initialPurchases)), cogs: 0 },
+                        lifo: { inventory: JSON.parse(JSON.stringify(initialPurchases)), cogs: 0 },
+                        avg: { inventory: JSON.parse(JSON.stringify(initialPurchases)), cogs: 0 },
+                        unitsSold: 0,
+                    };
+                    updateDisplay();
+                };
+
+                const calculateEndingInventory = (inventory) => inventory.reduce((sum, item) => sum + (item.units * item.cost), 0);
+                
+                const updateDisplay = () => {
+                    inventoryStatusEl.innerHTML = initialPurchases.map((p, i) => `
+                        <div class="flex justify-between items-center p-2 rounded-md ${i < state.unitsSold ? 'bg-gray-200 text-gray-400' : 'bg-green-100'}">
+                            <span>Purchase #${i + 1}: 1 unit @ $${p.cost}</span>
+                            ${i < state.unitsSold ? '<span class="text-xs font-bold text-red-500">SOLD</span>' : ''}
+                        </div>
+                    `).join('');
+
+                    salesCounterEl.textContent = `Units Sold: ${state.unitsSold}`;
+                    sellUnitBtn.disabled = state.unitsSold >= initialPurchases.length;
+
+                    updateChart();
+                };
+
+                const sellUnit = () => {
+                    if (state.unitsSold >= initialPurchases.length) return;
+
+                    let fifoCost = 0;
+                    if (state.fifo.inventory.length > 0) {
+                        const soldItem = state.fifo.inventory.shift();
+                        fifoCost = soldItem.cost;
+                    }
+                    state.fifo.cogs += fifoCost;
+
+                    let lifoCost = 0;
+                    if (state.lifo.inventory.length > 0) {
+                        const soldItem = state.lifo.inventory.pop();
+                        lifoCost = soldItem.cost;
+                    }
+                    state.lifo.cogs += lifoCost;
+                    
+                    const totalUnits = initialPurchases.length;
+                    const totalCost = initialPurchases.reduce((sum, p) => sum + p.cost, 0);
+                    const avgCost = totalCost / totalUnits;
+                    state.avg.cogs = avgCost * (state.unitsSold + 1);
+
+                    state.unitsSold++;
+                    updateDisplay();
+                };
+                
+                const createChart = () => {
+                    const ctx = document.getElementById('inventoryChart').getContext('2d');
+                    inventoryChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['FIFO', 'LIFO', 'Weighted Average'],
+                            datasets: [
+                                {
+                                    label: 'Cost of Goods Sold (COGS)',
+                                    data: [],
+                                    backgroundColor: 'rgba(217, 119, 6, 0.7)',
+                                    borderColor: 'rgba(217, 119, 6, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Ending Inventory',
+                                    data: [],
+                                    backgroundColor: 'rgba(75, 85, 99, 0.7)',
+                                    borderColor: 'rgba(75, 85, 99, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Impact of Cost Flow Assumptions',
+                                    font: { size: 18 }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '$' + value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                };
+                
+                const updateChart = () => {
+                    const totalUnits = initialPurchases.length;
+                    const totalCost = initialPurchases.reduce((sum, p) => sum + p.cost, 0);
+                    const avgCost = totalCost / totalUnits;
+
+                    const fifoEndingInv = calculateEndingInventory(state.fifo.inventory);
+                    const lifoEndingInv = calculateEndingInventory(state.lifo.inventory);
+                    const avgEndingInv = totalCost - state.avg.cogs;
+
+                    // Update chart data
+                    inventoryChart.data.datasets[0].data = [state.fifo.cogs, state.lifo.cogs, state.avg.cogs];
+                    inventoryChart.data.datasets[1].data = [fifoEndingInv, lifoEndingInv, avgEndingInv];
+                    inventoryChart.update();
+
+                    // Update Current Values
+                    document.getElementById('fifoCogsVal').innerText = `$${state.fifo.cogs}`;
+                    document.getElementById('fifoInvVal').innerText = `$${fifoEndingInv}`;
+                    document.getElementById('lifoCogsVal').innerText = `$${state.lifo.cogs}`;
+                    document.getElementById('lifoInvVal').innerText = `$${lifoEndingInv}`;
+                    document.getElementById('avgCogsVal').innerText = `$${state.avg.cogs}`;
+                    document.getElementById('avgInvVal').innerText = `$${avgEndingInv}`;
+
+                    // Update Formula Calculations
+                    document.getElementById('fifoFormula').innerText = `FIFO: COGS = sum of oldest costs sold = $${state.fifo.cogs}, Ending Inv = sum of remaining = $${fifoEndingInv}`;
+                    document.getElementById('lifoFormula').innerText = `LIFO: COGS = sum of newest costs sold = $${state.lifo.cogs}, Ending Inv = sum of remaining = $${lifoEndingInv}`;
+                    document.getElementById('avgFormula').innerText = `Weighted Avg: Avg Cost = $${avgCost.toFixed(2)}, COGS = Avg Cost × Units Sold = $${state.avg.cogs}, Ending Inv = $${avgEndingInv}`;
+                };
+
+                sellUnitBtn.addEventListener('click', sellUnit);
+                resetInventoryBtn.addEventListener('click', resetState);
+                
+                createChart();
+                resetState();
+            };
+            inventorySection();
+
+            const conversionSection = () => {
+                const cogsLIFOInput = document.getElementById('cogsLIFO');
+                const beginLIFOReserveInput = document.getElementById('beginLIFOReserve');
+                const endLIFOReserveInput = document.getElementById('endLIFOReserve');
+                const calculateBtn = document.getElementById('calculateFIFO');
+                const lifoReserveChangeEl = document.getElementById('lifoReserveChange');
+                const cogsFIFOEl = document.getElementById('cogsFIFO');
+
+                const calculateConversion = () => {
+                    const cogsLIFO = parseFloat(cogsLIFOInput.value) || 0;
+                    const beginReserve = parseFloat(beginLIFOReserveInput.value) || 0;
+                    const endReserve = parseFloat(endLIFOReserveInput.value) || 0;
+
+                    const change = endReserve - beginReserve;
+                    const cogsFIFO = cogsLIFO - change;
+
+                    lifoReserveChangeEl.textContent = `$${formatMillions(change)} M`;
+                    cogsFIFOEl.textContent = `$${formatMillions(cogsFIFO)} M`;
+                };
+
+                calculateBtn.addEventListener('click', calculateConversion);
+                cogsLIFOInput.addEventListener('input', calculateConversion);
+                beginLIFOReserveInput.addEventListener('input', calculateConversion);
+                endLIFOReserveInput.addEventListener('input', calculateConversion);
+                calculateConversion();
+            };
+            conversionSection();
+        });
+    </script>
+</body>
+</html>
