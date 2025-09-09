@@ -177,11 +177,36 @@
         document.addEventListener('DOMContentLoaded', function() {
             const data = {
                 concepts: [
-                    { title: 'Going Concern', icon: '🏢', description: 'The assumption that a business will continue operating for the foreseeable future. This is critical because if a firm is facing bankruptcy, its asset values are likely overstated and liabilities understated, making financial statements unreliable.' },
-                    { title: 'Conservatism', icon: '🧐', description: 'This principle advises caution. Revenues and assets should only be recognized when their existence is certain. In contrast, expenses and liabilities should be recorded even if there is just a reasonable certainty, leading to an understatement of net income.' },
-                    { title: 'Matching', icon: '🔗', description: 'This principle dictates that expenses must be recorded in the same period as the revenues they helped generate. For example, the cost of goods sold is recognized at the same time as the revenue from their sale.' },
-                    { title: 'Consistency', icon: '🔄', description: 'Firms should use the same accounting methods from one period to the next. This ensures that financial statements are comparable over time and across different companies within the same industry.' },
-                    { title: 'Accruals', icon: '📝', description: 'The core of modern accounting. It states that transactions are recorded when they occur (revenue earned, expense incurred), not necessarily when cash is exchanged. This provides a more accurate picture of a company\'s financial performance.' }
+                    { 
+                        title: 'Going Concern', 
+                        icon: '🏢', 
+                        description: 'The assumption that a business will continue operating for the foreseeable future. This is critical because if a firm is facing bankruptcy, its asset values are likely overstated and liabilities understated, making financial statements unreliable.',
+                        transactionExample: '<p>This is an assumption, not a direct transaction. However, if it\'s violated (e.g., bankruptcy), assets are revalued. A machine with a book value of $10,000 might be written down to a liquidation value of $2,000:</p><code class="font-mono block mt-1 bg-white/50 p-2 rounded">Dr. Loss on Impairment $8,000<br>Cr. Machinery $8,000</code>'
+                    },
+                    { 
+                        title: 'Conservatism', 
+                        icon: '🧐', 
+                        description: 'This principle advises caution. Revenues and assets should only be recognized when their existence is certain. In contrast, expenses and liabilities should be recorded even if there is just a reasonable certainty, leading to an understatement of net income.',
+                        transactionExample: '<p>A company is sued and estimates a probable loss of $50,000. It must record a provision:</p><code class="font-mono block mt-1 bg-white/50 p-2 rounded">Dr. Lawsuit Expense $50,000<br>Cr. Provision for Lawsuit $50,000</code><p class="mt-2">Conversely, an expected gain from winning a lawsuit is not recorded until it is certain.</p>'
+                    },
+                    { 
+                        title: 'Matching', 
+                        icon: '🔗', 
+                        description: 'This principle dictates that expenses must be recorded in the same period as the revenues they helped generate. For example, the cost of goods sold is recognized at the same time as the revenue from their sale.',
+                        transactionExample: '<p>A firm sells a product for $100 cash that cost $60. Two entries are made to match revenue with its cost:</p><p class="mt-2"><b>1. Record the sale:</b></p><code class="font-mono block bg-white/50 p-2 rounded">Dr. Cash $100<br>Cr. Revenue $100</code><p class="mt-2"><b>2. Record the cost:</b></p><code class="font-mono block bg-white/50 p-2 rounded">Dr. Cost of Goods Sold $60<br>Cr. Inventory $60</code>'
+                    },
+                    { 
+                        title: 'Consistency', 
+                        icon: '🔄', 
+                        description: 'Firms should use the same accounting methods from one period to the next. This ensures that financial statements are comparable over time and across different companies within the same industry.',
+                        transactionExample: '<p>This is a principle of application, not a single transaction. E.g., if a firm uses straight-line depreciation, it must do so consistently. For a $30k asset with a 5-year life, the entry each year is:</p><code class="font-mono block mt-1 bg-white/50 p-2 rounded">Dr. Depreciation Expense $6,000<br>Cr. Accumulated Depreciation $6,000</code>'
+                    },
+                    { 
+                        title: 'Accruals', 
+                        icon: '📝', 
+                        description: 'The core of modern accounting. It states that transactions are recorded when they occur (revenue earned, expense incurred), not necessarily when cash is exchanged. This provides a more accurate picture of a company\'s financial performance.',
+                        transactionExample: '<p>In December, a company provides a $2,000 service but will be paid in January. The revenue is earned and recorded in December:</p><code class="font-mono block mt-1 bg-white/50 p-2 rounded">Dr. Accounts Receivable $2,000<br>Cr. Service Revenue $2,000</code>'
+                    }
                 ],
                 accrualDeferral: {
                     accrual: {
@@ -247,8 +272,8 @@
                 },
                 revenueRecognition: {
                     criteria: [
-                        { title: '1. Revenue is Earned', description: 'The company has substantially completed its obligation to the customer by delivering the goods or services.' },
-                        { title: '2. Revenue is Measurable', description: 'The amount of revenue can be determined based on objective and verifiable evidence.' }
+                        { title: '1. Revenue is Earned', description: 'The company has substantially completed its obligation to the customer by delivering the goods or services.', transactionExample: '<p>A customer pays $1,200 for a 12-month subscription in Jan. The cash is received, but revenue is only earned monthly.</p><p class="mt-2"><b>End-of-month adjusting entry:</b></p><code class="font-mono block mt-1 bg-white p-2 rounded">Dr. Unearned Revenue $100<br>Cr. Subscription Revenue $100</code><p class="mt-2">This entry is made each month to recognize the "earned" portion.</p>' },
+                        { title: '2. Revenue is Measurable', description: 'The amount of revenue can be determined based on objective and verifiable evidence.', transactionExample: '<p>A law firm agrees to a $10,000 fee plus a $5,000 bonus if they win a case. Initially, only the certain amount is measurable.</p><p class="mt-2"><b>When the case is won (revenue becomes measurable):</b></p><code class="font-mono block mt-1 bg-white p-2 rounded">Dr. Accounts Receivable $15,000<br>Cr. Service Revenue $15,000</code><p class="mt-2">Revenue is only recorded when the total amount is known and collectible.</p>' }
                     ],
                     examples: [
                         { company: 'Apple & MacBook Sales', issue: 'When a customer buys a MacBook, they get hardware, software, and the right to future updates. Apple recognizes revenue for the hardware/software when shipped but must defer a portion of the sale price for future updates, recognizing it over the product\'s life.' },
@@ -272,6 +297,12 @@
                     </div>
                     <div class="details hidden text-slate-600">
                         <p>${concept.description}</p>
+                        ${concept.transactionExample ? `
+                        <h4 class="font-semibold text-slate-700 mt-4 mb-2">Transaction Example:</h4>
+                        <div class="bg-slate-100 p-3 rounded-md text-sm">
+                            ${concept.transactionExample}
+                        </div>
+                        ` : ''}
                     </div>
                 `;
                 conceptsGrid.appendChild(card);
@@ -367,6 +398,14 @@
                     <div class="bg-slate-50 p-6 rounded-lg">
                         <h3 class="font-semibold text-slate-700 mb-2">${c.title}</h3>
                         <p class="text-slate-600">${c.description}</p>
+                        ${c.transactionExample ? `
+                        <div class="mt-4 pt-4 border-t border-slate-200">
+                            <h4 class="font-semibold text-slate-600 text-sm mb-2">Transaction Example:</h4>
+                            <div class="bg-white/70 p-3 rounded-md text-sm">
+                                ${c.transactionExample}
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             });
