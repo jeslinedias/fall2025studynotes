@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Leadership Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .tab-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .tab-button.active {
+            font-weight: 600;
+            color: #0f766e;
+            border-color: #0f766e;
+        }
+        .content-section {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+        .highlight {
+            background-color: #e0f2f1;
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+        }
+        .points-to-remember {
+            background-color: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.5rem;
+        }
+        .search-highlight {
+            background-color: #fcd34d;
+            border-radius: 0.25rem;
+            padding: 0.1rem 0.2rem;
+        }
+    </style>
+</head>
+<body class="bg-stone-50">
+
+    <div class="main-container">
+        <header class="relative text-center mb-8">
+            <a href="#" class="absolute top-0 left-0 mt-8 ml-8 py-2 px-4 text-slate-500 font-semibold hover:text-teal-600 transition-colors duration-200 ease-in-out rounded-lg">Home</a>
+            <div class="absolute top-0 right-0 mt-8 mr-8">
+                <input type="text" id="searchInput" placeholder="Search..." class="px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-sm">
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Leading Teams: Building Effective Team Cultures</h1>
+            <p class="mt-2 text-lg text-slate-600">Comprehensive notes from Module 1</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="flex justify-center border-b-2 border-slate-200 mb-8">
+            <button data-tab="culture" class="tab-button active flex-1 py-3 px-6 text-center border-b-4 border-transparent text-slate-500 hover:text-teal-600 hover:border-teal-600">
+                Team Culture
+            </button>
+            <button data-tab="principles" class="tab-button flex-1 py-3 px-6 text-center border-b-4 border-transparent text-slate-500 hover:text-teal-600 hover:border-teal-600">
+                Effective Teamwork
+            </button>
+            <button data-tab="leading" class="tab-button flex-1 py-3 px-6 text-center border-b-4 border-transparent text-slate-500 hover:text-teal-600 hover:border-teal-600">
+                Leading Teams
+            </button>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="tab-culture" class="content-section">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Module 1: Team Culture Defined</h2>
+            <hr class="border-slate-200 my-6">
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-slate-700 mb-2">What is a Team?</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                    <li>A formal definition of a team is a group of individuals working interdependently for a collective goal.</li>
+                    <li>The human dynamics within a team are always present and are important to understand for more effective outcomes.</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-slate-700 mb-2">What is Team Culture?</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                    <li>Informally, culture is <span class="highlight">"the way things are done around here"</span> or "how people behave at work".</li>
+                    <li>Culture is a pattern of basic assumptions that a group has developed while coping with problems of external adaptation and internal integration.</li>
+                    <li>Culture can be a <span class="highlight">competitive advantage</span>.</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-lg font-semibold text-slate-700 mb-2">Examples of Team Culture:</h4>
+                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                    <li><strong>Relaxed Culture:</strong> Team meetings start with informal chat.</li>
+                    <li><strong>Rigid/Efficient Culture:</strong> Team members are punctual and follow the agenda rigorously.</li>
+                    <li><strong>Learning Culture:</strong> The team embraces mistakes as opportunities to learn.</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-lg font-semibold text-slate-700 mb-2">Schein's Model (The Iceberg Model):</h4>
+                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                    <li><strong>Artifacts and Behaviors:</strong> The visible things anyone can observe.</li>
+                    <li><strong>Espoused Values:</strong> The shared, stated values and norms.</li>
+                    <li><strong>Assumptions:</strong> The underlying, unquestioned beliefs.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="tab-principles" class="content-section hidden">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Principles of Effective Teamwork</h2>
+            <hr class="border-slate-200 my-6">
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-slate-700 mb-2">Three Qualities of Effective Teams:</h3>
+                <ul class="list-decimal list-inside space-y-1 text-slate-600">
+                    <li><strong>The team performs well.</strong> Measured by the value of its output to the recipient.</li>
+                    <li><strong>Team members benefit from the experience.</strong> Measured by satisfaction, knowledge, and skill development.</li>
+                    <li><strong>The team improves its capacity to work together over time.</strong> Effective teams get better as they learn and adapt.</li>
+                </ul>
+                <p class="mt-4 text-slate-600">
+                    To improve over time, teams must be willing to encourage the flow of new information and discuss alternatives, even if it creates temporary "friction."
+                </p>
+            </div>
+        </div>
+
+        <div id="tab-leading" class="content-section hidden">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Leading Teams</h2>
+            <hr class="border-slate-200 my-6">
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-slate-700 mb-2">The Role of a Leader</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                    <li>An effective leader's success is tied to how they manage their team.</li>
+                    <li>A leader's role is to create an identity or culture that allows every employee to see themselves within it.</li>
+                    <li>Leaders should empower team members to make decisions and solve problems on their own.</li>
+                    <li>A leader's job is to hold the <span class="highlight">"umbrella"</span> for their "superstars" so they can do their best work.</li>
+                </ul>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-slate-700 mb-2">Key Leadership Behaviors and Concepts</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                    <li><strong>Modeling Behavior:</strong> Leaders serve as models for others; their actions are emulated.</li>
+                    <li><strong>Humility:</strong> A key element of great leaders, demonstrated through actions that speak louder than words.</li>
+                    <li><strong>Valuing People:</strong> Leaders spend time getting to know their people and ensuring they feel seen and valued.</li>
+                    <li><strong>Learning from Failure:</strong> Leaders should create a culture where failure is a learning opportunity, not a source of blame.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Points to Remember Section - Visually distinct -->
+        <div class="mt-8 points-to-remember rounded-lg">
+            <h2 class="text-xl font-bold text-blue-800 mb-2">Points to Remember</h2>
+            <ul class="list-disc list-inside space-y-2 text-blue-700">
+                <li>Leaders play a crucial role in creating a positive team culture.</li>
+                <li>Instead of focusing on "bad apples," a leader should focus on changing the <span class="font-bold">"barrel"</span>—the context or culture in which people work.</li>
+                <li>A team that "gets along" doesn't necessarily mean it is an effective team.</li>
+                <li>Leaders should ensure every team member knows the "why" behind their tasks.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const sections = {
+                culture: document.getElementById('tab-culture'),
+                principles: document.getElementById('tab-principles'),
+                leading: document.getElementById('tab-leading')
+            };
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.getAttribute('data-tab');
+
+                    // Deactivate all tabs and hide all sections
+                    tabs.forEach(t => t.classList.remove('active', 'text-teal-600', 'border-teal-600'));
+                    Object.values(sections).forEach(s => s.classList.add('hidden'));
+
+                    // Activate the clicked tab and show the corresponding section
+                    tab.classList.add('active', 'text-teal-600', 'border-teal-600');
+                    sections[targetTab].classList.remove('hidden');
+                });
+            });
+
+            // Text Search Functionality
+            const searchInput = document.getElementById('searchInput');
+            const contentSections = document.querySelectorAll('.content-section, .points-to-remember');
+            let originalContent = {};
+
+            // Store original content on load
+            contentSections.forEach(section => {
+                originalContent[section.id] = section.innerHTML;
+            });
+
+            searchInput.addEventListener('input', (event) => {
+                const searchTerm = event.target.value.trim();
+                
+                // Clear previous highlights
+                contentSections.forEach(section => {
+                    section.innerHTML = originalContent[section.id];
+                });
+
+                if (searchTerm.length > 0) {
+                    const regex = new RegExp(searchTerm, 'gi');
+                    contentSections.forEach(section => {
+                        let html = section.innerHTML;
+                        // Replace matches, but avoid nested replacements in existing tags
+                        const highlightedHtml = html.replace(regex, (match) => {
+                            return `<span class="search-highlight">${match}</span>`;
+                        });
+                        section.innerHTML = highlightedHtml;
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
