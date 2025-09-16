@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Accounting: Long-Term Assets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chosen Palette: "Warm Neutral Harmony" - A calming palette using beige, slate, and a subtle terracotta accent. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .container {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1.5rem;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #F3F4F6;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .section-title {
+            color: #2D3748;
+            border-bottom: 2px solid #D97706;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        .input-group label {
+            font-weight: 500;
+        }
+        input[type="number"] {
+            border-radius: 0.5rem;
+            border: 1px solid #E5E7EB;
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #D97706;
+        }
+
+        /* Table Styling */
+        .accounting-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .accounting-table th, .accounting-table td {
+            border: 1px solid #E5E7EB;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .accounting-table th {
+            background-color: #F3F4F6;
+            font-weight: 600;
+            color: #4B5563;
+        }
+        .accounting-table tr:nth-child(even) {
+            background-color: #F9FAFB;
+        }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #FDFBF8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="sticky-header">
+        <div class="container flex flex-col md:flex-row items-center justify-between">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2 md:mb-0">Long-Term Assets</h1>
+            <nav class="mt-4 md:mt-0">
+                <ul class="flex flex-wrap justify-center md:justify-end gap-2 text-sm md:text-base">
+                    <li><a href="#overview-recognition" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Overview</a></li>
+                    <li><a href="#fixed-assets" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Fixed Assets</a></li>
+                    <li><a href="#acquisition-post-acquisition" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Acquisition Costs</a></li>
+                    <li><a href="#allocation-costs" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Depreciation</a></li>
+                    <li><a href="#depreciation-book-value" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Book Value</a></li>
+                    <li><a href="#impairment" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Impairment</a></li>
+                    <li><a href="#transaction-worksheet-impairment" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Worksheet</a></li>
+                    <li><a href="#intangible-assets" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Intangible Assets</a></li>
+                    <li><a href="#disposal-ppe" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Disposal of PPE</a></li>
+                    <li><a href="#gross-net-ppe" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Gross vs Net</a></li>
+                    <li><a href="#additions-ppe" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Additions</a></li>
+                    <li><a href="#fixed-assets-solver" class="bg-[#F3F4F6] text-gray-600 px-3 py-1 rounded-full hover:bg-amber-100 transition-colors">Solver</a></li>
+                </ul>
+            </nav>
+            <input type="text" id="searchInput" placeholder="Search sections..." class="mt-4 md:mt-0 md:ml-4 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-200" />
+        </div>
+    </header>
+
+    <div class="container py-8">
+        <section id="overview-recognition" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Overview and Asset Recognition Criteria</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">What are Long-Term Assets?</h3>
+                    <p class="text-gray-600">Long-term assets are <strong>investments a company makes to generate profit in the coming years.</strong> They are not intended for sale to customers in the normal course of business. These assets are categorized on the balance sheet as non-current assets.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Recognition Criteria</h3>
+                    <p class="text-gray-600">For an item to be recognized as an asset on the balance sheet, it must meet three criteria:</p>
+                    <ul class="list-disc list-inside mt-4 space-y-2 text-gray-600">
+                        <li>The company must <strong>control</strong> the asset.</li>
+                        <li>The company must expect a <strong>future economic benefit</strong> from the asset.</li>
+                        <li>The company must be able to <strong>reliably measure</strong> the value of the asset.</li>
+                    </ul>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Practical Examples</h3>
+                    <ul class="list-disc list-inside mt-4 space-y-3 text-gray-600">
+                        <li><strong>Control:</strong> A delivery truck with the company's name on it. The company holds legal title and decides how it is used.</li>
+                        <li><strong>Future Benefit:</strong> A factory machine that manufactures products to be sold to customers for revenue.</li>
+                        <li><strong>Reliable Measurement:</strong> A patent that a company purchases from an inventor for a specific price. The cost is a verifiable number.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card p-6 mt-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Expense vs. Asset</h3>
+                <p class="text-gray-600 mb-4">The determination of whether an item is an asset or an expense depends on whether it meets the three recognition criteria above. Below are examples of both.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Examples of Assets</h4>
+                        <ul class="list-disc list-inside mt-2 space-y-2 text-gray-600">
+                            <li><strong>Land:</strong> This is an asset because it is controlled, provides future benefit (a place for the factory), and can be reliably measured by its purchase price.</li>
+                            <li><strong>Building:</strong> An asset for the same reasons as land.</li>
+                            <li><strong>Equipment:</strong> An asset because it provides a future benefit by creating products or services.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Examples of Expenses</h4>
+                        <ul class="list-disc list-inside mt-2 space-y-2 text-gray-600">
+                            <li><strong>Salaries and Wages:</strong> Paid in the current period for work already performed. They do not provide a future benefit that can be separated from the employee.</li>
+                            <li><strong>Utilities:</strong> Used and consumed in the current period.</li>
+                            <li><strong>Minor Repairs:</strong> For minor repairs and maintenance, the benefit is in the current period, so it is an expense.</li>
+                            <li><strong>Training Costs:</strong> These are expensed immediately because a company cannot <strong>control</strong> the employee, who may leave the company after being trained. Therefore, the future economic benefit is not certain.</li>
+                            <li><strong>Research and Development (R&D):</strong> R&D costs are expensed as incurred because the future economic benefit from a project is too uncertain. It's not possible to <strong>reliably measure</strong> whether a specific R&D project will lead to a marketable product or patent.</li>
+                            <li><strong>Marketing Costs:</strong> These are expensed immediately because the future economic benefit from a marketing campaign is uncertain and difficult to reliably measure. A company cannot control whether the marketing will lead to future sales.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fixed-assets" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Fixed Assets (PPE)</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Basket Purchases</h3>
+                    <p class="text-gray-600">When multiple assets are acquired for a single lump-sum price, this is a <strong>basket purchase</strong>. The total cost must be allocated to each asset based on its relative fair value.</p>
+                    <p class="text-gray-600 mt-4 font-bold text-center">
+                        $$\text{Allocation to Asset A} = \text{Total Cost} \times \left( \frac{\text{Fair Value}_A}{\text{Total Fair Value}} \right)$$
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="acquisition-post-acquisition" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Acquisition and Post-Acquisition Expenditures</h2>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Acquisition Costs (Capitalized)</h3>
+                <p class="text-gray-600 mb-4">The cost of a fixed asset includes all expenditures necessary to get the asset ready for its intended use. These costs are capitalized, meaning they are recorded on the balance sheet as part of the asset's value.</p>
+                <ul class="list-disc list-inside mt-4 space-y-2 text-gray-600">
+                    <li><strong>Purchase price</strong></li>
+                    <li><strong>Taxes, duties, and tariffs</strong></li>
+                    <li><strong>Freight and delivery costs</strong></li>
+                    <li><strong>Installation and setup fees</strong></li>
+                    <li><strong>Testing costs</strong></li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Post-Acquisition Expenditures</h3>
+                <p class="text-gray-600 mb-4">Expenditures after an asset is acquired are classified as either an asset or an expense based on their impact. If they increase the asset's useful life or productivity, they are capitalized. If they simply maintain the asset, they are expensed.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Capitalized Expenditures</h4>
+                        <ul class="list-disc list-inside mt-2 space-y-2 text-gray-600">
+                            <li><strong>Major Overhauls:</strong> A complete engine replacement in a delivery truck that extends its useful life by several years.</li>
+                            <li><strong>Significant Upgrades:</strong> Adding new components to a machine that significantly increases its output capacity.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Expensed Expenditures</h4>
+                        <ul class="list-disc list-inside mt-2 space-y-2 text-gray-600">
+                            <li><strong>Routine Maintenance:</strong> Changing the oil or tires on a company vehicle.</li>
+                            <li><strong>Minor Repairs:</strong> Fixing a small dent or replacing a broken light bulb. These costs simply maintain the asset in its current state.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="allocation-costs" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Depreciation, Depletion, and Amortization</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">These three terms are methods for allocating the cost of a long-term asset to expense over its useful life. They are a core application of the matching principle, which states that expenses should be recognized in the same period as the revenues they help generate.</p>
+                <div class="grid md:grid-cols-3 gap-8 mt-4">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Depreciation</h4>
+                        <p class="text-gray-600">This is the allocation of the cost of <strong>tangible assets</strong>, such as buildings and equipment, to expense over their useful lives. It reflects the gradual consumption of the asset's economic benefits.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Depletion</h4>
+                        <p class="text-gray-600">This is the allocation of the cost of <strong>natural resources</strong>, such as timber, minerals, and oil, to expense as the resource is extracted or consumed. It is a form of depreciation specific to wasting assets.</p>
+                        <p class="text-gray-600 mt-2"><strong>Example:</strong> A company buys a coal mine for $1,000,000 with an estimated 100,000 tons of coal. As it extracts and sells 10,000 tons, it would record a depletion expense of $100,000 (10 per ton).</p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Amortization</h4>
+                        <p class="text-gray-600">This is the allocation of the cost of <strong>intangible assets</strong> with a finite useful life, such as patents and copyrights, to expense over their useful lives. Intangible assets with indefinite useful lives, like trademarks, are not amortized.</p>
+                        <p class="text-gray-600 mt-2"><strong>Example:</strong> A company acquires a patent for $50,000 that has a remaining legal life of 10 years. It would record an annual amortization expense of $5,000 to spread the cost over its useful life.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="depreciation-book-value" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Depreciation and Book Value</h2>
+            <div class="card p-6">
+                <h5 class="text-md font-semibold text-gray-800 mb-2">Straight-Line Depreciation Method</h5>
+                <p class="text-gray-600">The most common method, straight-line depreciation, allocates an equal amount of expense to each period of an asset's useful life. The formula is as follows:</p>
+                <p class="text-gray-600 mt-2 font-bold text-center">
+                    $$\text{Annual Depreciation Expense} = \frac{\text{Cost} - \text{Salvage Value}}{\text{Useful Life}}$$
+                </p>
+                <p class="text-gray-600 mt-4">Once you calculate the annual depreciation, you can find the asset's book value at any point in time.</p>
+
+                <h5 class="text-md font-semibold text-gray-800 mt-4 mb-2">Book Value</h5>
+                <p class="text-gray-600">An asset's <strong>book value</strong> (also known as net book value or carrying amount) is its original cost minus all accumulated depreciation recorded to date. This is the value at which the asset is reported on the balance sheet.</p>
+                <p class="text-gray-600 mt-2 font-bold text-center">
+                    $$\text{Book Value} = \text{Cost} - \text{Accumulated Depreciation}$$
+                </p>
+                
+                <h5 class="text-md font-semibold text-gray-800 mt-4 mb-2">Example</h5>
+                <p class="text-gray-600">A company purchases a machine for $100,000 with an estimated useful life of 10 years and a salvage value of $10,000.</p>
+                <p class="text-gray-600 mt-2">Annual Depreciation:
+                    $$\frac{100,000 - 10,000}{10 \text{ years}} = 9,000 \text{ per year}$$
+                </p>
+                <p class="text-gray-600 mt-2">Journal Entry for each year:</p>
+                <div class="bg-gray-50 p-4 rounded-lg mt-2">
+                    <p class="font-mono text-gray-700">Debit: Depreciation Expense: $9,000</p>
+                    <p class="font-mono text-gray-700">Credit: Accumulated Depreciation: $9,000</p>
+                </div>
+                <p class="text-gray-600 mt-4">Book Value at the end of Year 1:</p>
+                <p class="text-center font-bold text-gray-800">
+                    $$100,000 - 9,000 = 91,000$$
+                </p>
+                <p class="text-gray-600 mt-2">Book Value at the end of Year 2:</p>
+                <p class="text-center font-bold text-gray-800">
+                    $$100,000 - (9,000 \times 2) = 82,000$$
+                </p>
+                <p class="text-gray-600 mt-2">At the end of its useful life (Year 10), the book value will equal the salvage value:</p>
+                 <p class="text-center font-bold text-gray-800">
+                    $$100,000 - (9,000 \times 10) = 10,000$$
+                </p>
+            </div>
+        </section>
+
+        <section id="impairment" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Accounting for Asset Impairments</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">An asset is considered <strong>impaired</strong> if its book value is greater than its recoverable amount. This means the company cannot recover the full value of the asset from its future cash flows. Companies are required to perform an impairment test whenever events or changes in circumstances indicate the book value may not be recoverable.</p>
+                <div class="mt-4">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">The Two-Step Impairment Test</h3>
+                    <p class="text-gray-600 mb-4">A two-step process is used to determine if a long-term asset is impaired and to calculate the impairment loss.</p>
+                    <ul class="list-decimal list-inside space-y-4 text-gray-600">
+                        <li>
+                            <p class="font-semibold text-gray-800">Step 1: Test for Impairment (Recoverability Test)</p>
+                            <p class="text-gray-600 mt-1">Compare the asset's <strong>book value</strong> with the <strong>undiscounted future cash flows</strong> expected to be generated by the asset. If the undiscounted future cash flows are less than the book value, the asset is considered impaired, and you proceed to Step 2.</p>
+                            <div class="bg-gray-50 p-3 rounded-lg mt-2">
+                                <p class="text-sm font-mono text-gray-700 text-center">
+                                    <strong>If</strong> Book Value > Undiscounted Future Cash Flows, <strong>Then</strong> Impairment exists.
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <p class="font-semibold text-gray-800">Step 2: Calculate Impairment Loss</p>
+                            <p class="text-gray-600 mt-1">If the asset is impaired, the impairment loss is calculated as the difference between the <strong>book value</strong> and the asset's <strong>fair value</strong> (which is the discounted future cash flows or the market price).</p>
+                            <div class="bg-gray-50 p-3 rounded-lg mt-2">
+                                <p class="text-sm font-mono text-gray-700 text-center">
+                                    <strong>Impairment Loss</strong> = Book Value - Fair Value
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Example of Impairment</h3>
+                    <p class="text-gray-600 mb-4">A company has a machine with a book value of $200,000. The company determines that the undiscounted future cash flows from the machine are only $180,000, and its fair value is $150,000.</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li><strong>Step 1:</strong> Since the book value ($200,000) is greater than the undiscounted future cash flows ($180,000), the asset is impaired.</li>
+                        <li><strong>Step 2:</strong> The impairment loss is the difference between the book value and the fair value:
+                            $$\text{Loss} = 200,000 - 150,000 = 50,000$$
+                        </li>
+                    </ul>
+                    <div class="bg-gray-50 p-4 rounded-lg mt-4">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Journal Entry</h4>
+                        <p class="font-mono text-gray-700">Debit: Impairment Loss: $50,000</p>
+                        <p class="font-mono text-gray-700">Credit: Accumulated Depreciation: $50,000</p>
+                        <p class="text-sm text-gray-500 mt-2">The debit to Impairment Loss decreases net income, and the credit to Accumulated Depreciation decreases the asset's book value on the balance sheet.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="transaction-worksheet-impairment" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Transaction Worksheet: Impairment Loss</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">Here is how an impairment loss transaction is recorded and how it affects the balance sheet, income statement, and statement of cash flows.</p>
+                <table class="accounting-table">
+                    <thead>
+                        <tr>
+                            <th>Account Name</th>
+                            <th>Transaction (Debit/Credit)</th>
+                            <th>Balance Sheet Impact</th>
+                            <th>Income Statement Impact</th>
+                            <th>Statement of Cash Flows Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Accumulated Depreciation</td>
+                            <td>Credit $50,000</td>
+                            <td>Increases by $50,000</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Impairment Loss</td>
+                            <td>Debit $50,000</td>
+                            <td>N/A</td>
+                            <td>Increases by $50,000</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">Total Impact</td>
+                            <td></td>
+                            <td class="font-bold">Total Assets decrease by $50,000</td>
+                            <td class="font-bold">Net Income decreases by $50,000</td>
+                            <td class="font-bold">No cash flow impact</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text-sm text-gray-500 mt-4"><strong>Note:</strong> The accumulated depreciation account is a contra-asset account, so an increase in its balance (credit) results in a decrease in the overall asset value on the balance sheet. This is why the impairment loss, a non-cash expense, reduces both the book value of the asset and net income.</p>
+            </div>
+        </section>
+
+        <section id="intangible-assets" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Intangible Assets</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">Intangible assets are long-term assets that lack physical substance. They provide a future economic benefit through legal rights or control of intellectual property. Like tangible assets, they must meet the three recognition criteria to be capitalized on the balance sheet.</p>
+                <div class="grid md:grid-cols-3 gap-8 mt-4">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Patents</h4>
+                        <p class="text-gray-600">A patent gives a company the exclusive right to a product or process for a certain period. It is an asset because it is controlled (legal protection), provides a future economic benefit (exclusive use and revenue generation), and its cost can be reliably measured (purchase price or legal fees).</p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Copyrights</h4>
+                        <p class="text-gray-600">A copyright provides the exclusive right to reproduce and sell an artistic or literary work. It is an asset because the company has legal control, it provides a future benefit through sales of the protected work, and the cost of obtaining the copyright can be reliably measured.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Trademarks</h4>
+                        <p class="text-600">A trademark is an exclusive right to a name, logo, or symbol. It is an asset because the company controls the mark, it provides future economic benefit by building brand recognition and loyalty, and its cost is reliably measured by its purchase price or legal fees.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="disposal-ppe" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Disposal of Property, Plant, and Equipment</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">When a company disposes of a long-term asset, they must remove the asset from the books and recognize any resulting gain or loss. This involves removing the original cost of the asset and its accumulated depreciation from the balance sheet.</p>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Example Journal Entry</h4>
+                    <p class="font-mono text-gray-700">Debit: Cash (if any received)</p>
+                    <p class="font-mono text-gray-700">Debit: Accumulated Depreciation</p>
+                    <p class="font-mono text-gray-700">Debit: Loss on Disposal (if applicable)</p>
+                    <p class="font-mono text-gray-700">Credit: Asset (original cost)</p>
+                    <p class="font-mono text-gray-700">Credit: Gain on Disposal (if applicable)</p>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">The net book value of the disposed asset is equal to the original cost minus the accumulated depreciation.</p>
+            </div>
+        </section>
+
+        <section id="gross-net-ppe" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Gross vs. Net PPE</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">Companies can report PPE in two ways on the balance sheet, reflecting different levels of detail.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Gross PPE</h3>
+                        <p class="text-gray-600"><strong>Gross PPE</strong> is the total cost of all long-term assets, <strong>before</strong> subtracting any accumulated depreciation. It represents the original investment in the assets.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Net PPE</h3>
+                        <p class="text-600"><strong>Net PPE</strong> is the total cost of assets <strong>minus</strong> accumulated depreciation. This is the <strong>book value</strong> of the assets and is the most common way to report PPE on the balance sheet.</p>
+                        <p class="text-sm text-gray-500 mt-2">
+                            $$\text{Net PPE} = \text{Gross PPE} - \text{Accumulated Depreciation}$$
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="additions-ppe" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Additions to PPE</h2>
+            <div class="card p-6">
+                <p class="text-gray-600 mb-4">Additions to PPE represent all new purchases of long-term assets during a period. These can be calculated using a simple reconciliation formula.</p>
+                <p class="text-600 mt-4 font-bold text-center">
+                    $$\text{Gross PPE}_\text{end} = \text{Gross PPE}_\text{beg} + \text{Additions} - \text{Original cost of disposed items}$$
+                </p>
+                <div class="bg-gray-50 p-4 rounded-lg mt-4">
+                    <p class="text-gray-600">According to the Walmart case study in the transcript, the value of additions to plant, property, and equipment in fiscal year 2022 can be calculated as follows, based on the provided data:</p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600">
+                        <li><strong>Gross PPE (end of 2022):</strong> $53,368 million</li>
+                        <li><strong>Gross PPE (beginning of 2022):</strong> $49,887 million</li>
+                        <li><strong>Original cost of disposed items:</strong> $459 million</li>
+                    </ul>
+                    <p class="mt-4 font-bold text-gray-800 text-center">
+                        $$\text{Additions} = \$53,368 \text{M} - \$49,887 \text{M} + \$459 \text{M} = \$3,940 \text{M}$$
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tangible-assets-example" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Tangible Assets Example</h2>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Net PPE Reconciliation</h3>
+                <p class="text-gray-600 mb-4">You can reconcile the <strong>Net PPE</strong> balance from the beginning to the end of a period using a similar framework. This approach is useful when you have the net book values but not the gross balances.</p>
+                <div class="bg-gray-50 p-4 rounded-lg mt-4">
+                    <p class="text-gray-600">To calculate the total cost of additions to PPE in a period, you need to use the following values from a company's financial statements:</p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600">
+                        <li>Net PPE at the beginning of the period</li>
+                        <li>Net PPE at the end of the period</li>
+                        <li>Depreciation and amortization expense for the period</li>
+                        <li>Net book value of disposed items for the period</li>
+                    </ul>
+                    <p class="mt-4 font-bold text-gray-800 text-center">
+                        $$\text{Additions} = (\text{Net PPE}_{\text{end}} - \text{Net PPE}_{\text{beg}}) + \text{Depreciation} + \text{Net book value of disposed items}$$
+                    </p>
+                    <p class="text-sm text-gray-500 mt-2">
+                        The rationale for this formula is that the change in a company's net PPE is driven by three factors: new additions, depreciation of existing assets, and the disposal of old assets. By adding back the depreciation and the net book value of disposed assets to the change in net PPE, you can isolate the value of new asset purchases, or additions.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="fixed-assets-solver" class="mb-12">
+            <h2 class="text-2xl font-bold section-title">Fixed Assets Problem Solver</h2>
+            <div class="card p-6">
+                <section id="problem-statement" class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">The Problem</h3>
+                    <p class="text-gray-600">The fixed assets account of Brothers Inc. has a balance of <strong>$100,000</strong> and <strong>$120,000</strong> at the end of year 2025 and year 2024, respectively. The accumulated depreciation account balances are <strong>$50,000</strong> and <strong>$60,000</strong> at the end of year 2025 and year 2024, respectively. The depreciation expense in year 2025 is <strong>$10,000</strong>. Brother Inc. sold a truck for <strong>$25,000</strong> in cash and purchased new tools worth <strong>$42,000</strong> in year 2025. What is the original cost of the truck sold?</p>
+                </section>
+                <div class="space-y-6 text-gray-700">
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">1. Original Cost of the Item Sold</h3>
+                        <p>The <strong>Gross PPE (Property, Plant, and Equipment)</strong> account tracks the original cost of assets. We can find the cost of the disposed asset by looking at the change in this account. The change is caused by new additions and the removal of disposed assets.</p>
+                        <p class="mt-2 text-center font-bold">
+                            $$\text{Gross PPE}_\text{end} = \text{Gross PPE}_\text{beg} + \text{Additions} - \text{Original cost of disposed item}$$
+                        </p>
+                        <p class="mt-2 text-center font-bold">
+                            $$\text{Original cost of disposed item} = \text{Gross PPE}_\text{beg} + \text{Additions} - \text{Gross PPE}_\text{end}$$
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">2. Accumulated Depreciation on the Item Sold</h3>
+                        <p>The <strong>Accumulated Depreciation</strong> account tracks the total depreciation recorded for all assets. The change in this account is due to the depreciation expense for the period and the removal of the accumulated depreciation related to the disposed asset. We can isolate the latter to find the accumulated depreciation on the item sold.</p>
+                        <p class="mt-2 text-center font-bold">
+                            $$\text{Acc Dep}_\text{end} = \text{Acc Dep}_\text{beg} + \text{Depreciation Expense} - \text{Acc Dep on item sold}$$
+                        </p>
+                        <p class="mt-2 text-center font-bold">
+                            $$\text{Acc Dep on item sold} = \text{Acc Dep}_\text{beg} + \text{Depreciation Expense} - \text{Acc Dep}_\text{end}$$
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">3. Gain/Loss from the Sale</h3>
+                        <p>A <strong>gain or loss on sale</strong> is the difference between the cash received and the asset's **book value** at the time of sale. The book value is the original cost minus its accumulated depreciation.</p>
+                        <p class="mt-2 text-center font-bold">
+                            $$\text{Book Value} = \text{Original Cost} - \text{Accumulated Depreciation}$$
+                        </p>
+                        <p class="mt-2 text-center font-bold">
+                            $$\text{Gain/Loss} = \text{Cash Received} - \text{Book Value}$$
+                        </p>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-gray-200">
+
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Interactive Calculator</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input Fields -->
+                    <div class="input-group">
+                        <label for="grossPPEEnd" class="block text-sm text-gray-700 mb-1">Gross PPE at end of 2025</label>
+                        <input type="number" id="grossPPEEnd" value="100000">
+                    </div>
+                    <div class="input-group">
+                        <label for="grossPPEBeg" class="block text-sm text-gray-700 mb-1">Gross PPE at beginning of 2025</label>
+                        <input type="number" id="grossPPEBeg" value="120000">
+                    </div>
+                    <div class="input-group">
+                        <label for="accDepEnd" class="block text-sm text-gray-700 mb-1">Accumulated Depreciation at end of 2025</label>
+                        <input type="number" id="accDepEnd" value="50000">
+                    </div>
+                    <div class="input-group">
+                        <label for="accDepBeg" class="block text-sm text-gray-700 mb-1">Accumulated Depreciation at beginning of 2025</label>
+                        <input type="number" id="accDepBeg" value="60000">
+                    </div>
+                    <div class="input-group">
+                        <label for="depreciationExpense" class="block text-sm text-gray-700 mb-1">Depreciation Expense in 2025</label>
+                        <input type="number" id="depreciationExpense" value="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="cashReceived" class="block text-sm text-gray-700 mb-1">Cash received from sale</label>
+                        <input type="number" id="cashReceived" value="25000">
+                    </div>
+                    <div class="input-group">
+                        <label for="additions" class="block text-sm text-gray-700 mb-1">Additions (new purchases)</label>
+                        <input type="number" id="additions" value="42000">
+                    </div>
+                </div>
+
+                <button onclick="calculate()" class="w-full mt-8 bg-[#D97706] text-white px-4 py-2 rounded-full font-medium hover:bg-[#B45309] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    Calculate
+                </button>
+
+                <!-- Results Section -->
+                <div id="results" class="mt-8 p-6 bg-gray-50 rounded-lg hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Results</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700">Original Cost of Item Sold:</span>
+                            <span id="originalCost" class="font-bold text-lg text-[#D97706]"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700">Accumulated Depreciation on Item Sold:</span>
+                            <span id="accDepSold" class="font-bold text-lg text-[#D97706]"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700">Gain/Loss from Sale:</span>
+                            <span id="gainLoss" class="font-bold text-lg text-[#D97706]"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="bg-[#F3F4F6] text-center p-6 mt-12 rounded-t-lg">
+        <p class="text-gray-500 text-sm">© 2024 Financial Accounting Notes. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById('searchInput');
+            const sections = document.querySelectorAll('section');
+
+            if (searchInput) {
+                 searchInput.addEventListener('input', function(event) {
+                    const query = event.target.value.toLowerCase();
+                    sections.forEach(section => {
+                        const sectionTitle = section.querySelector('h2');
+                        const sectionText = section.textContent.toLowerCase();
+                        
+                        if (sectionText.includes(query) || (sectionTitle && sectionTitle.textContent.toLowerCase().includes(query))) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+
+        function calculate() {
+            // Get values from input fields
+            const grossPPEEnd = parseFloat(document.getElementById('grossPPEEnd').value);
+            const grossPPEBeg = parseFloat(document.getElementById('grossPPEBeg').value);
+            const accDepEnd = parseFloat(document.getElementById('accDepEnd').value);
+            const accDepBeg = parseFloat(document.getElementById('accDepBeg').value);
+            const depreciationExpense = parseFloat(document.getElementById('depreciationExpense').value);
+            const cashReceived = parseFloat(document.getElementById('cashReceived').value);
+            const additions = parseFloat(document.getElementById('additions').value);
+
+            // 1. Calculate the Original Cost of the item sold
+            // Formula: Gross PPE_beg + Additions - Gross PPE_end = Original Cost of disposed items
+            const originalCost = grossPPEBeg + additions - grossPPEEnd;
+
+            // 2. Calculate the Accumulated Depreciation on the item sold
+            // Formula: Accumulated Depr_beg + Depr Expense - Accumulated Depr_end = Accumulated Depr of disposed items
+            const accDepSold = accDepBeg + depreciationExpense - accDepEnd;
+
+            // 3. Calculate the Gain or Loss on the sale
+            // Formula: Gain/Loss = Cash received - (Original Cost - Accumulated Depreciation)
+            const gainLoss = cashReceived - (originalCost - accDepSold);
+            
+            // Format results as currency
+            const formatCurrency = (value) => {
+                const formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                });
+                return formatter.format(value);
+            };
+
+            // Display results in the output section
+            document.getElementById('originalCost').textContent = formatCurrency(originalCost);
+            document.getElementById('accDepSold').textContent = formatCurrency(accDepSold);
+
+            const gainLossElement = document.getElementById('gainLoss');
+            if (gainLoss > 0) {
+                gainLossElement.textContent = `Gain of ${formatCurrency(gainLoss)}`;
+                gainLossElement.classList.remove('text-red-600');
+                gainLossElement.classList.add('text-green-600');
+            } else if (gainLoss < 0) {
+                gainLossElement.textContent = `Loss of ${formatCurrency(Math.abs(gainLoss))}`;
+                gainLossElement.classList.remove('text-green-600');
+                gainLossElement.classList.add('text-red-600');
+            } else {
+                gainLossElement.textContent = 'No Gain or Loss';
+                gainLossElement.classList.remove('text-green-600', 'text-red-600');
+            }
+
+            // Show the results section
+            document.getElementById('results').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
