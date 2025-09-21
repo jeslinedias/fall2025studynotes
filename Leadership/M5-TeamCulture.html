@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Leadership Notes</title>
+    <title>Team Culture </title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,7 +13,7 @@
             color: #1f2937;
         }
         .main-container {
-            max-width: 800px;
+            max-width: 1024px; /* Increased from 800px to 1024px */
             margin: 0 auto;
             padding: 2rem 1rem;
         }
@@ -52,14 +52,18 @@
 <body class="bg-stone-50">
 
     <div class="main-container">
-        <header class="relative text-center mb-8">
-            <a href="#" class="absolute top-0 left-0 mt-8 ml-8 py-2 px-4 text-slate-500 font-semibold hover:text-teal-600 transition-colors duration-200 ease-in-out rounded-lg">Home</a>
-            <div class="absolute top-0 right-0 mt-8 mr-8">
-                <input type="text" id="searchInput" placeholder="Search..." class="px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-sm">
+        <header class="relative mb-8 flex flex-col md:flex-row items-center justify-between">
+            
+            <div class="text-center md:text-center mb-4 md:mb-0">
+                <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Leading Teams: Building Effective Team Cultures</h1>
+                <p class="mt-2 text-lg text-slate-600">Explore the principles of team culture, effective teamwork, and leadership strategies to foster high-performing teams.</p>
             </div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Leading Teams: Building Effective Team Cultures</h1>
-            <p class="mt-2 text-lg text-slate-600">Comprehensive notes from Module 1</p>
-        </header>
+            
+            <input type="text" id="searchInput" placeholder="Search within this module..." class="w-full md:w-1/3 px-4 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out md:ml-4">
+            
+        </header>        <!-- Home Button -->
+        <a href="LeadershipLanding.html" class="absolute top-0 left-0 mt-8 ml-8 py-2 px-4 text-slate-500 font-semibold hover:text-teal-600 transition-colors duration-200 ease-in-out rounded-lg">Home</a>
+        
 
         <!-- Tab Navigation -->
         <div class="flex justify-center border-b-2 border-slate-200 mb-8">
