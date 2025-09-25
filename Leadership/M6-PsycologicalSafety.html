@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Culture Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            padding-top: 80px; /* Space for the fixed header */
+        }
+        .prose-container {
+            max-width: 896px; /* A nice width for readability */
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .highlight {
+            background-color: #fde047; /* Tailwind yellow-300 */
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Fixed Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg py-4 px-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+        <div class="text-2xl font-bold text-indigo-600">
+            Team Culture Notes
+        </div>
+        <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <div class="relative w-full sm:w-auto">
+                <input type="text" id="searchInput" placeholder="Search notes..." class="w-full sm:w-64 py-2 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <div class="flex space-x-2 absolute right-2 top-1/2 -translate-y-1/2">
+                    <button id="searchButton" class="bg-indigo-500 text-white p-2 rounded-full hover:bg-indigo-600 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                    </button>
+                    <button id="clearButton" class="bg-gray-400 text-white p-2 rounded-full hover:bg-gray-500 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="flex space-x-6 text-lg font-medium text-gray-600">
+                <a href="#home" class="hover:text-indigo-600 transition-colors duration-200">Home</a>
+                <a href="#notes" class="hover:text-indigo-600 transition-colors duration-200">Notes</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="home" class="prose-container mt-8 mb-16">
+        <div class="flex flex-col items-center text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">Welcome to Your Team Culture Notes</h1>
+            <p class="text-lg text-gray-600 mb-6">
+                This document contains comprehensive notes on leading teams, building effective cultures, and fostering psychological safety, based on the Module 2 transcript.
+            </p>
+            <p class="text-lg text-gray-600 mb-8">
+                Use the navigation menu above to jump to the detailed notes section.
+            </p>
+            <a href="#notes" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-200">
+                View All Notes
+            </a>
+        </div>
+    </div>
+
+    <div id="notes" class="prose-container mb-16">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-6 text-gray-800">Module 2: Cultures of Safety</h1>
+        <p class="text-lg text-gray-600 text-center mb-10">Understanding and fostering a culture of psychological and emotional safety in teams.</p>
+
+        <div id="notes-content" class="prose max-w-none">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700" id="psychological-safety">Fostering Psychological Safety</h2>
+            <p class="mb-4">
+                <strong>Psychological safety</strong> is the shared belief that a team is safe for interpersonal risk-taking. The transcript emphasizes that leaders can unintentionally shut down team members, even with the best intentions, by making them feel their contributions are not valued.
+            </p>
+            <blockquote class="border-l-4 border-indigo-500 pl-4 italic text-gray-600 mb-6">
+                "even our best intentions can shut people down when we, when we make them feel like they're not valuable or we know more than them."
+            </blockquote>
+
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">Authentic vs. Formulaic Leadership</h3>
+            <p class="mb-4">
+                The notes highlight the crucial difference between leading with authenticity and following a rigid, formulaic approach. A formulaic approach, which involves using a pre-determined set of tools, is often ineffective because it lacks genuine care and adaptability.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-indigo-50 p-6 rounded-lg shadow-sm border border-indigo-200">
+                    <h4 class="text-lg font-bold mb-2 text-indigo-800">Formulaic Approach</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Using tools without considering the specific context or emotions of the team.</li>
+                        <li><strong>Example:</strong> "I always use X whatever that is."</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-6 rounded-lg shadow-sm border border-green-200">
+                    <h4 class="text-lg font-bold mb-2 text-green-800">Authentic Approach</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Engaging with the team in the moment based on what is actually happening.</li>
+                        <li>Characterized by genuine care and adaptability.</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="mb-4">
+                A formulaic approach can lead to a lack of trust because team members can perceive the actions as disingenuous, as one speaker noted:
+            </p>
+            <blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-600 mb-6">
+                "...it comes off across is like that is not you and I don't trust you now."
+            </blockquote>
+
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">The Importance of Genuine Intent</h3>
+            <p class="mb-4">
+                A common example of the contrast between these two approaches is asking team members how they are feeling. When this action is performed without genuine care, it becomes a ritual that can damage team trust.
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-4 mb-6">
+                <li>
+                    <strong>Formulaic Action:</strong>
+                    <blockquote class="italic text-gray-600 mt-2">
+                        "I must start the meeting by asking everyone how they are feeling today."
+                    </blockquote>
+                </li>
+                <li>
+                    <strong>Authentic Response:</strong>
+                    <blockquote class="italic text-gray-600 mt-2">
+                        "Please don't do that if you don't care."
+                    </blockquote>
+                </li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-700" id="deib">Cultivating Diversity, Equity, Inclusion, and Belonging</h2>
+            <p class="mb-4">
+                This section explores the crucial concepts of Diversity, Equity, Inclusion, and Belonging. The transcript highlights that while these terms are often grouped together, they represent distinct components of a healthy team culture.
+            </p>
+
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">Defining DEI&B with Examples</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-6 mb-6">
+                <li>
+                    <strong class="font-bold text-gray-800">Diversity:</strong> Refers to the differences within a team, encompassing visible traits like race and gender, as well as invisible ones like background, cognitive style, and life experience.
+                    <br>
+                    <strong>Example:</strong> A software development team that includes a recent college graduate, a senior developer with 20 years of experience, and a designer who previously worked in marketing. The diversity is in their varied skills, ages, and professional backgrounds.
+                </li>
+                <li>
+                    <strong class="font-bold text-gray-800">Inclusion:</strong> The active process of ensuring diverse individuals are involved, valued, and their voices are heard. It's about creating an environment where everyone feels they have a seat at the table and are encouraged to speak.
+                    <br>
+                    <strong>Example:</strong> In a team meeting, the leader deliberately asks for input from team members who are often quiet, ensuring their unique perspectives are not lost. They might say, "John, you have a lot of experience with the user side of this project. What are your thoughts?"
+                </li>
+                <li>
+                    <strong class="font-bold text-gray-800">Equity:</strong> The practice of providing each individual with the specific resources and support they need to succeed. It recognizes that not everyone starts from the same place, and therefore, equal treatment is not enough to achieve equal outcomes.
+                    <br>
+                    <strong>Example:</strong> Providing an employee who is a non-native English speaker with access to language and communication coaching, while another employee receives specialized training on a new software tool to help them both meet their performance goals.
+                </li>
+                <li>
+                    <strong class="font-bold text-gray-800">Belonging:</strong> The ultimate goal, representing a deep sense of acceptance and comfort where an individual feels they are a part of the team. It is the feeling of being seen, understood, and valued for their authentic self.
+                    <br>
+                    <strong>Example:</strong> An employee feels comfortable sharing a personal story about their cultural heritage during a team-building exercise, confident that it will be received with respect and genuine interest. This indicates a high level of belonging.
+                </li>
+            </ul>
+
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">The "Party Analogy"</h3>
+            <p class="mb-4">
+                A powerful analogy from the transcript explains the relationship between these concepts:
+            </p>
+            <blockquote class="border-l-4 border-indigo-500 pl-4 italic text-gray-600 mb-6">
+                "Diversity is being invited to the party. Inclusion is being asked to dance. And belonging is feeling like you can sing along to the lyrics that you know."
+            </blockquote>
+            <p class="mb-4">
+                This analogy illustrates a key takeaway: while diversity and inclusion are important steps, the true measure of success is when every individual feels a sense of belonging within the team. This goes beyond simply having a diverse group; it's about creating an environment where every person feels seen, heard, and valued for their authentic self.
+            </p>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-700" id="ethical-cultures">Developing Ethical Cultures</h2>
+            <p class="mb-4">
+                An **ethical culture** is a shared set of values, beliefs, and behaviors that guide a team's actions toward doing the right thing. It is more than just having a written code of conduct; it's about the everyday actions and decisions that demonstrate a commitment to integrity.
+            </p>
+            <blockquote class="border-l-4 border-indigo-500 pl-4 italic text-gray-600 mb-6">
+                "we all kind of like to think of ourselves as moral individuals."
+            </blockquote>
+
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">The Concept of Moral Licensing</h3>
+            <p class="mb-4">
+                A key challenge to ethical behavior is the psychological concept of **moral licensing**. This is the subconscious tendency for people to feel justified in behaving badly after they have done something good. It creates a mental ledger where a positive action is seen as a credit, allowing for a future unethical action without feeling guilt.
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-4 mb-6">
+                <li>
+                    <strong>Example:</strong> A manager who makes a generous donation to charity might then feel it is acceptable to cut corners on a project to meet a deadline, believing their previous good deed balances out the negative behavior.
+                </li>
+            </ul>
+            <p class="mb-4">
+                This phenomenon highlights the importance of not just promoting good deeds, but also consistently reinforcing ethical standards and holding everyone accountable for their actions, regardless of their past contributions.
+            </p>
+
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">Navigating Ethical Dilemmas</h3>
+            <p class="mb-4">
+                Ethical dilemmas often arise when two positive values are in conflict. A classic example is the choice between **honesty and kindness**.
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-4 mb-6">
+                <li>
+                    <strong>Example:</strong> The notes reference a situation where a leader asks an employee, "How are you?" without genuinely caring about the answer. The ethical dilemma is whether to be honest (and perhaps unkind) by revealing that you don't care, or to be kind (and perhaps dishonest) by asking a question you don't care about the answer to. The conclusion is that a leader should avoid asking questions for which they do not truly care about the response.
+                </li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-700" id="hierarchy">Navigating Hierarchy</h2>
+            <p class="mb-4">
+                The concept of the **Andon cord** is a powerful example of how to flatten a hierarchical structure and create a culture of safety. This practice originated in Toyota factories, but its principles apply to any team environment.
+            </p>
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">The Story of the Andon Cord</h3>
+            <p class="mb-4">
+                In a typical factory, the production line runs continuously, and stopping it is considered a significant failure. At Toyota, every employee—from the most junior to the most senior—is empowered to pull a physical cord (the "Andon cord") to immediately stop the entire production line if they spot a defect or a safety issue.
+            </p>
+            <p class="mb-4">
+                This is a radical concept because it gives authority and responsibility to the person closest to the problem, overriding the traditional top-down hierarchy. It sends a clear message that quality and safety are everyone's job and that speaking up is not only permitted but required.
+            </p>
+            <blockquote class="border-l-4 border-indigo-500 pl-4 italic text-gray-600 mb-6">
+                "I pull the cord and no one is going to yell at me for stopping the entire production line. It's safe for me to say there is a problem."
+            </blockquote>
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">Lessons for Leadership</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-4 mb-6">
+                <li>
+                    <strong>Empowerment over Authority:</strong> A leader's role is not just to give orders but to empower every team member to identify and solve problems.
+                </li>
+                <li>
+                    <strong>Focus on the Problem, Not the Person:</strong> The Andon cord removes the fear of blame. The focus is on fixing the problem (the defect) rather than punishing the person who found it.
+                </li>
+                <li>
+                    <strong>Creating a Safe "Red Flag" System:</strong> Leaders should establish a clear, non-punitive system for team members to "pull the cord" when they see a problem. This could be a designated channel for raising concerns or a regular "what's not working?" session.
+                </li>
+            </ul>
+
+            <div class="mt-10 pt-6 border-t border-gray-200">
+                <h3 class="text-xl font-semibold mb-3 text-gray-700">Conclusion</h3>
+                <p class="text-gray-700">
+                    A strong team culture is built on a deliberate effort to cultivate psychological safety, foster diversity, equity, inclusion, and belonging, and develop a clear ethical foundation. When these elements are in place, the result is a profound sense of belonging where team members feel comfortable being themselves, leading to greater collaboration, innovation, and overall team success.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const clearButton = document.getElementById('clearButton');
+        const notesContent = document.getElementById('notes-content');
+
+        // Function to escape special characters for regex
+        const escapeRegExp = (string) => {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        };
+
+        const highlightText = () => {
+            const searchTerm = searchInput.value.trim();
+            clearHighlights();
+
+            if (searchTerm === "") {
+                return;
+            }
+
+            const escapedSearchTerm = escapeRegExp(searchTerm);
+            const regex = new RegExp(`(${escapedSearchTerm})`, 'gi');
+
+            const textNodes = [];
+            const walk = document.createTreeWalker(notesContent, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+
+            while (node = walk.nextNode()) {
+                textNodes.push(node);
+            }
+
+            textNodes.forEach(node => {
+                if (node.nodeValue.trim() !== '') {
+                    const parent = node.parentNode;
+                    const text = node.nodeValue;
+
+                    if (regex.test(text)) {
+                        const newContent = text.replace(regex, `<span class="highlight">$1</span>`);
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = newContent;
+                        
+                        while (tempDiv.firstChild) {
+                            parent.insertBefore(tempDiv.firstChild, node);
+                        }
+                        parent.removeChild(node);
+                    }
+                }
+            });
+        };
+
+        const clearHighlights = () => {
+            const highlightedSpans = notesContent.querySelectorAll('span.highlight');
+            highlightedSpans.forEach(span => {
+                const parent = span.parentNode;
+                parent.replaceChild(document.createTextNode(span.textContent), span);
+                parent.normalize(); // Merges adjacent text nodes
+            });
+        };
+        
+        // Event listeners
+        searchButton.addEventListener('click', highlightText);
+        clearButton.addEventListener('click', () => {
+            searchInput.value = '';
+            clearHighlights();
+        });
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                highlightText();
+            }
+        });
+    </script>
+</body>
+</html>
