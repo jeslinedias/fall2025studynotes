@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Shareholders' Equity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral -->
+    <!-- Application Structure Plan: The application is designed as a multi-section, task-oriented educational tool rather than a linear report. The structure includes: 1) A visual, interactive breakdown of equity components. 2) A transaction simulator for active learning of journal entries. 3) An EPS calculator to explore performance metrics and underlying rules. 4) A tabbed section for complex, advanced topics. This non-linear, interactive structure was chosen because financial accounting concepts are highly interconnected. It allows users to freely explore topics, simulate outcomes, and understand causal relationships (e.g., how a transaction affects equity balances and EPS) in a way that a static document cannot, promoting deeper comprehension and retention. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Components of Shareholders' Equity -> Goal: Inform/Organize -> Viz/Method: Interactive HTML/CSS Diagram -> Interaction: Click/hover to reveal definitions -> Justification: More engaging and intuitive for showing hierarchical relationships than a static table.
+        - Report Info: Journal entries for various equity transactions -> Goal: Inform/Organize -> Viz/Method: JavaScript-powered Transaction Simulator -> Interaction: User selects a transaction to see its impact on accounts -> Justification: Transforms passive reading into active, experiential learning, clarifying the direct impact of actions on financial statements.
+        - Report Info: Basic vs. Diluted EPS calculations & rules -> Goal: Compare/Inform -> Viz/Method: Interactive JS Calculator with a Chart.js Bar Chart AND collapsible rules panel -> Interaction: Users input data and the chart visually compares the two EPS figures; toggle panel reveals formulas and conditions -> Justification: The chart provides the visual result, while the panel provides the necessary context and detailed calculation logic (formulas, WASO rules, anti-dilution test).
+        - Report Info: Advanced, distinct topics (Preferred Stock, OCI, etc.) -> Goal: Organize -> Viz/Method: Tabbed content sections -> Interaction: Click tabs to switch between topics -> Justification: Manages cognitive load by isolating complex information into digestible, user-controlled segments.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        .nav-link {
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #D97706; /* amber-600 */
+            border-bottom-color: #D97706;
+        }
+        .tab-button {
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background-color: #F59E0B; /* amber-500 */
+            color: #ffffff;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #F3F4F6; /* gray-100 */
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .formula-box {
+            background-color: #FEF3C7; /* amber-100 */
+            border-left: 4px solid #F59E0B; /* amber-500 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-amber-600">Shareholders' Equity Explorer</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link active px-3 py-2 rounded-md text-sm font-medium">Overview</a>
+                        <a href="#simulator" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Transaction Simulator</a>
+                        <a href="#eps" class="nav-link px-3 py-2 rounded-md text-sm font-medium">EPS Calculator</a>
+                        <a href="#advanced" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Advanced Topics</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5">
+                        <option value="#overview">Overview</option>
+                        <option value="#simulator">Simulator</option>
+                        <option value="#eps">EPS Calculator</option>
+                        <option value="#advanced">Advanced Topics</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Section 1: Overview -->
+        <section id="overview" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">The Anatomy of Shareholders' Equity</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">Shareholders' Equity represents the residual interest in the assets of an entity after deducting liabilities. It is broadly categorized into two main sources. Click on a component to learn more.</p>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex-1 card p-6">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-4 text-center">1. Contributed Capital</h3>
+                    <p class="text-gray-600 text-center mb-6">Funds invested directly by shareholders in exchange for ownership shares.</p>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-amber-50 rounded-lg cursor-pointer" onclick="showInfo('Common Stock', 'The primary ownership unit of a corporation. Represents a residual claim on assets and has voting rights. Recorded at an arbitrary \'Par Value\'.')">
+                            <h4 class="font-semibold">Common Stock</h4>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-lg cursor-pointer" onclick="showInfo('Preferred Stock', 'A class of stock with preferential rights, typically regarding dividends and asset distribution. Usually non-voting.')">
+                            <h4 class="font-semibold">Preferred Stock</h4>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-lg cursor-pointer" onclick="showInfo('Additional Paid-in Capital (APIC)', 'The excess amount paid by an investor over the par value of a stock. Also known as Share Premium.')">
+                            <h4 class="font-semibold">Additional Paid-in Capital (APIC)</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 card p-6">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-4 text-center">2. Earned Capital</h3>
+                    <p class="text-gray-600 text-center mb-6">Capital generated by the company's profitable operations and retained in the business.</p>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-teal-50 rounded-lg cursor-pointer" onclick="showInfo('Retained Earnings', 'The cumulative net income of the company from its inception, minus all dividends it has ever paid. A key link between the Income Statement and Balance Sheet.')">
+                            <h4 class="font-semibold">Retained Earnings</h4>
+                        </div>
+                        <div class="p-4 bg-teal-50 rounded-lg cursor-pointer" onclick="showInfo('Accumulated Other Comprehensive Income (AOCI)', 'A separate component of equity that includes gains and losses not yet realized and therefore excluded from Net Income, such as unrealized gains on certain investments.')">
+                            <h4 class="font-semibold">Accumulated Other Comprehensive Income (AOCI)</h4>
+                        </div>
+                        <div class="p-4 bg-gray-200 rounded-lg">
+                             <h4 class="font-semibold text-red-700">- Treasury Stock (Contra-Equity)</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Transaction Simulator -->
+        <section id="simulator" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Equity Transaction Simulator</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">See how common business transactions affect the Shareholders' Equity accounts. Select a transaction to view its impact and the corresponding journal entry.</p>
+            <div class="card p-6 md:p-8">
+                <div class="md:flex md:items-center md:space-x-6 mb-6">
+                    <label for="transaction-select" class="block text-lg font-medium text-gray-700 mb-2 md:mb-0">Select a Transaction:</label>
+                    <select id="transaction-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full md:w-auto flex-grow p-2.5">
+                        <option value="issueShares">1. Issue Common Stock for Cash (Above Par)</option>
+                        <option value="declareDividend">2. Declare a Cash Dividend</option>
+                        <option value="payDividend">3. Pay a Cash Dividend</option>
+                        <option value="buyTreasury">4. Purchase Treasury Stock</option>
+                        <option value="sellTreasuryGain">5. Resell Treasury Stock (for a Gain)</option>
+                        <option value="netIncome">6. Record Net Income for the Period</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-2">Scenario:</h4>
+                        <p id="transaction-scenario" class="text-gray-600 mb-4 min-h-[50px]"></p>
+                        <h4 class="text-xl font-semibold mb-2">Journal Entry:</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">Account</th>
+                                        <th scope="col" class="px-6 py-3 text-right">Debit</th>
+                                        <th scope="col" class="px-6 py-3 text-right">Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="journal-entry-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">Impact on Equity Accounts:</h4>
+                        <div id="equity-impact" class="space-y-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: EPS Calculator -->
+        <section id="eps" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Earnings Per Share (EPS) Calculator</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">Calculate Basic and Diluted EPS to understand a company's profitability on a per-share basis. Diluted EPS shows a "worst-case" scenario if all dilutive securities were converted.</p>
+            
+            <!-- EPS Rules and Formula Panel -->
+            <div class="card p-6 mb-6">
+                <button id="toggle-rules" class="flex justify-between items-center w-full text-left font-semibold text-lg py-2 border-b border-gray-200 text-amber-700 hover:text-amber-800">
+                    <span>View Formulas and Calculation Rules</span>
+                    <span id="rules-icon" class="text-xl">&#x25BC;</span>
+                </button>
+                <div id="eps-rules-content" class="pt-4 hidden">
+                    
+                    <h3 class="text-xl font-semibold mb-3">A. Basic EPS Formula & Conditions</h3>
+                    <div class="formula-box p-4 rounded-lg mb-4 text-center overflow-x-auto">
+                        <p class="font-mono text-lg py-2">
+                            Basic EPS = (Net Income - Preferred Dividends) / WASO
+                        </p>
+                    </div>
+
+                    <h4 class="font-semibold mt-4 mb-2">1. Preferred Dividends Calculation</h4>
+                    <p class="text-sm text-gray-600 mb-2">This is the <strong class="font-bold">annual dividend requirement</strong> for preferred stock, subtracted to find income available to common shareholders.</p>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 ml-4">
+                        <li><strong class="font-bold">Cumulative Stock:</strong> Subtract the full year's required dividend, <strong class="font-bold">even if not declared or paid</strong>.</li>
+                        <li><strong class="font-bold">Non-Cumulative Stock:</strong> Subtract <strong class="font-bold">only the dividends formally declared</strong> during the period.</li>
+                    </ul>
+
+                    <h4 class="font-semibold mt-4 mb-2">2. WASO (Weighted Average Shares Outstanding) Rules</h4>
+                    <p class="text-sm text-gray-600 mb-2">Shares are weighted by the time they were outstanding during the period.</p>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 ml-4">
+                        <li><strong class="font-bold">Shares Issued/Repurchased:</strong> Weighted from the <strong class="font-bold">date of transaction</strong>.</li>
+                        <li><strong class="font-bold">Stock Splits/Stock Dividends:</strong> Treated <strong class="font-bold">retroactively</strong> (as if they occurred at the beginning of the earliest period presented).</li>
+                        <li><strong class="font-bold">Options/Convertibles:</strong> <strong class="font-bold">EXCLUDED</strong> from Basic WASO (only used in Diluted EPS).</li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-semibold mt-6 mb-3 border-t pt-4">B. Diluted EPS Formula & Anti-Dilution Test</h3>
+                    <div class="formula-box p-4 rounded-lg mb-4 text-center overflow-x-auto">
+                        <p class="font-mono text-lg py-2">
+                            Diluted EPS = (Net Income - Pref. Dividends + Numerator Adjustments) / (WASO + Denominator Adjustments)
+                        </p>
+                    </div>
+                    
+                    <h4 class="font-semibold mt-4 mb-2">1. Key Adjustments (If-Converted Method & Treasury Stock Method)</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 ml-4">
+                        <li><strong class="font-bold">Convertible Debt/Preferred:</strong> Numerator adds back interest (net of tax) or preferred dividends saved; Denominator adds shares from conversion.</li>
+                        <li><strong class="font-bold">Options/Warrants:</strong> Numerator is usually \$0; Denominator adds <strong class="font-bold">net shares</strong> issued (shares exercised minus shares repurchased with assumed proceeds).</li>
+                    </ul>
+
+                    <h4 class="font-semibold mt-4 mb-2">2. Anti-Dilution Test (Critical Condition)</h4>
+                    <p class="text-red-700 text-sm mb-2 font-bold">A potential common stock security is included <strong class="font-bold">ONLY IF</strong> it is dilutive.</p>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 ml-4">
+                        <li><strong class="font-bold">Dilutive:</strong> Inclusion <strong class="font-bold">decreases</strong> Basic EPS. (Included)</li>
+                        <li><strong class="font-bold">Anti-Dilutive:</strong> Inclusion <strong class="font-bold">increases</strong> Basic EPS. (Excluded)</li>
+                    </ul>
+                    <div class="bg-gray-100 p-3 rounded-lg mt-3">
+                        <p class="text-xs font-semibold text-gray-800">Special Loss Rule: When a Net Loss (LPS) is reported, Diluted LPS <strong class="font-bold">always equals</strong> Basic LPS because all potential shares would be anti-dilutive.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- End EPS Rules and Formula Panel -->
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Enter Financial Data</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="netIncome" class="block mb-1 text-sm font-medium">Net Income ($)</label>
+                            <input type="number" id="netIncome" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" value="1000000">
+                        </div>
+                        <div>
+                            <label for="prefDividends" class="block mb-1 text-sm font-medium">Preferred Dividends ($)</label>
+                            <input type="number" id="prefDividends" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" value="100000">
+                        </div>
+                        <div>
+                            <label for="waso" class="block mb-1 text-sm font-medium">Weighted Average Shares Outstanding</label>
+                            <input type="number" id="waso" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" value="500000">
+                        </div>
+                        <div class="pt-2">
+                             <h4 class="text-md font-semibold mb-2">Dilutive Securities (Optional)</h4>
+                             <label for="convertibleShares" class="block mb-1 text-sm font-medium">Potential Shares from Conversion</label>
+                             <input type="number" id="convertibleShares" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" value="50000">
+                             <label for="interestSaved" class="block mb-1 mt-2 text-sm font-medium">Interest Saved (After-Tax)</label>
+                             <input type="number" id="interestSaved" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" value="40000">
+                        </div>
+                        <button onclick="calculateEPS()" class="w-full text-white bg-amber-600 hover:bg-amber-700 focus:ring-4 focus:outline-none focus:ring-amber-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Calculate EPS</button>
+                    </div>
+                </div>
+                <div class="card p-6 flex flex-col items-center justify-center">
+                    <h3 class="text-xl font-semibold mb-4">EPS Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="epsChart"></canvas>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p class="text-lg">Basic EPS: <span id="basicEpsResult" class="font-bold">-</span></p>
+                        <p class="text-lg">Diluted EPS: <span id="dilutedEpsResult" class="font-bold">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Advanced Topics -->
+        <section id="advanced" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Advanced Equity Topics</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">Explore more complex issues in accounting for shareholders' equity.</p>
+            <div class="card p-6 md:p-8">
+                <div class="mb-6 border-b border-gray-200">
+                    <div class="flex flex-wrap -mb-px space-x-2 sm:space-x-4" id="advanced-tabs">
+                        <button class="tab-button inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 active" data-tab="stock-dividends">Stock Dividends</button>
+                        <button class="tab-button inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="stock-splits">Stock Splits</button>
+                        <button class="tab-button inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="oci">OCI</button>
+                    </div>
+                </div>
+                <div id="tab-content">
+                    <div id="stock-dividends" class="tab-pane">
+                        <h3 class="text-xl font-semibold mb-2">Stock Dividends vs. Bonus Issues</h3>
+                        <p class="text-gray-600 mb-4">A stock dividend is a pro-rata distribution of additional shares to shareholders. This action capitalizes a portion of Retained Earnings into Contributed Capital. The accounting treatment depends on the size of the dividend.</p>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-lg">Small Stock Dividend (&le; 20-25%)</h4>
+                                <p class="text-gray-600">Accounted for at <strong class="font-bold">Fair Market Value</strong>. Retained Earnings is debited for the market value of the shares issued.</p>
+                            </div>
+                             <div>
+                                <h4 class="font-semibold text-lg">Large Stock Dividend (> 20-25%)</h4>
+                                <p class="text-gray-600">Considered a "stock split in the form of a dividend." Accounted for at <strong class="font-bold">Par Value</strong>. Retained Earnings is debited only for the par value of shares issued.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stock-splits" class="tab-pane hidden">
+                        <h3 class="text-xl font-semibold mb-2">Stock Splits</h3>
+                        <p class="text-gray-600 mb-4">A stock split increases the number of shares outstanding and proportionally decreases the par value per share. For example, in a 2-for-1 split, a shareholder with 100 shares at $2 par value will now have 200 shares at $1 par value. The total par value and total market value remain unchanged.</p>
+                         <div class="bg-blue-50 text-blue-800 p-4 rounded-lg">
+                            <p><strong class="font-bold">Accounting Impact:</strong> No journal entry is required for a stock split. Only a memorandum entry is made to note the change in the par value and the number of shares authorized, issued, and outstanding.</p>
+                        </div>
+                    </div>
+                    <div id="oci" class="tab-pane hidden">
+                        <h3 class="text-xl font-semibold mb-2">Other Comprehensive Income (OCI)</h3>
+                        <p class="text-gray-600 mb-4">Comprehensive Income is the total change in equity from non-owner sources. It includes Net Income plus Other Comprehensive Income (OCI). OCI includes items that have not yet been "realized" and thus bypass the standard income statement.</p>
+                        <h4 class="font-semibold text-lg mb-2">Common OCI Items:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                            <li>Unrealized gains and losses on "available-for-sale" debt securities.</li>
+                            <li>Gains and losses from foreign currency translation.</li>
+                            <li>Adjustments related to defined benefit pension plans.</li>
+                        </ul>
+                        <p class="text-gray-600 mt-4">These items are accumulated on the balance sheet in a separate equity account called <strong class="font-bold">Accumulated Other Comprehensive Income (AOCI)</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for Component Info -->
+    <div id="infoModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden items-center justify-center">
+        <div class="relative mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-2xl leading-6 font-bold text-gray-900" id="modalTitle"></h3>
+                <div class="mt-4 px-7 py-3">
+                    <p class="text-md text-gray-600" id="modalContent"></p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="closeModal" class="px-4 py-2 bg-amber-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Logic
+        const infoModal = document.getElementById('infoModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        
+        function showInfo(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').textContent = content;
+            infoModal.classList.remove('hidden');
+            infoModal.classList.add('flex');
+        }
+
+        closeModalBtn.onclick = () => {
+            infoModal.classList.add('hidden');
+            infoModal.classList.remove('flex');
+        };
+        window.onclick = (event) => {
+            if (event.target == infoModal) {
+                infoModal.classList.add('hidden');
+                infoModal.classList.remove('flex');
+            }
+        };
+
+        // Navigation Logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('main section');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                    });
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+
+        sections.forEach(section => observer.observe(section));
+        
+        document.getElementById('mobile-nav').addEventListener('change', function() {
+            window.location.href = this.value;
+        });
+
+        // Transaction Simulator Logic
+        const transactionSelect = document.getElementById('transaction-select');
+        const scenarioEl = document.getElementById('transaction-scenario');
+        const journalBodyEl = document.getElementById('journal-entry-body');
+        const equityImpactEl = document.getElementById('equity-impact');
+
+        const transactions = {
+            issueShares: {
+                scenario: 'A company issues 1,000 shares of $1 par value common stock for $10 per share.',
+                entry: [
+                    { account: 'Cash', debit: '10,000', credit: '' },
+                    { account: 'Common Stock', debit: '', credit: '1,000' },
+                    { account: 'APIC - Common Stock', debit: '', credit: '9,000' }
+                ],
+                impact: [
+                    { account: 'Contributed Capital (Common Stock & APIC)', change: '+ $10,000' },
+                    { account: 'Retained Earnings', change: 'No Change' },
+                ]
+            },
+            declareDividend: {
+                scenario: 'The board of directors declares a $5,000 cash dividend to be paid to shareholders.',
+                entry: [
+                    { account: 'Retained Earnings', debit: '5,000', credit: '' },
+                    { account: 'Dividends Payable (Liability)', debit: '', credit: '5,000' }
+                ],
+                impact: [
+                    { account: 'Contributed Capital', change: 'No Change' },
+                    { account: 'Retained Earnings', change: '- $5,000' },
+                ]
+            },
+            payDividend: {
+                scenario: 'The company pays the previously declared $5,000 cash dividend.',
+                entry: [
+                    { account: 'Dividends Payable (Liability)', debit: '5,000', credit: '' },
+                    { account: 'Cash', debit: '', credit: '5,000' }
+                ],
+                impact: [
+                     { account: 'Contributed Capital', change: 'No Change' },
+                    { account: 'Retained Earnings', change: 'No Change (decreased at declaration)' },
+                ]
+            },
+            buyTreasury: {
+                scenario: 'The company repurchases 500 of its own shares from the market for $12 per share ($6,000 total).',
+                entry: [
+                    { account: 'Treasury Stock (Contra-Equity)', debit: '6,000', credit: '' },
+                    { account: 'Cash', debit: '', credit: '6,000' }
+                ],
+                impact: [
+                    { account: 'Contributed Capital', change: 'No Change' },
+                    { account: 'Retained Earnings', change: 'No Change' },
+                    { account: 'Treasury Stock', change: '- $6,000 (Reduces total equity)'}
+                ]
+            },
+            sellTreasuryGain: {
+                scenario: 'The company resells 100 shares of its treasury stock (cost $12/share) for $15 per share.',
+                entry: [
+                    { account: 'Cash', debit: '1,500', credit: '' },
+                    { account: 'Treasury Stock', debit: '', credit: '1,200' },
+                    { account: 'APIC - Treasury Stock', debit: '', credit: '300' }
+                ],
+                impact: [
+                    { account: 'Contributed Capital (APIC - Treasury)', change: '+ $300' },
+                    { account: 'Retained Earnings', change: 'No Change' },
+                    { account: 'Treasury Stock', change: '+ $1,200 (Increases total equity)'}
+                ]
+            },
+            netIncome: {
+                scenario: 'The company closes out its books for the year, recording $50,000 of Net Income.',
+                entry: [
+                    { account: 'Income Summary', debit: '50,000', credit: '' },
+                    { account: 'Retained Earnings', debit: '', credit: '50,000' }
+                ],
+                impact: [
+                    { account: 'Contributed Capital', change: 'No Change' },
+                    { account: 'Retained Earnings', change: '+ $50,000' }
+                ]
+            }
+        };
+
+        function updateSimulator() {
+            const selected = transactionSelect.value;
+            const data = transactions[selected];
+
+            scenarioEl.textContent = data.scenario;
+
+            journalBodyEl.innerHTML = data.entry.map(row => `
+                <tr class="bg-white border-b">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ${row.credit ? 'pl-10' : ''}">${row.account}</td>
+                    <td class="px-6 py-4 text-right">${row.debit}</td>
+                    <td class="px-6 py-4 text-right">${row.credit}</td>
+                </tr>
+            `).join('');
+
+            equityImpactEl.innerHTML = data.impact.map(item => `
+                <div class="flex justify-between items-center p-3 rounded-lg ${item.change.startsWith('+') ? 'bg-green-50 text-green-800' : (item.change.startsWith('-') ? 'bg-red-50 text-red-800' : 'bg-gray-50 text-gray-800')}">
+                    <span>${item.account}</span>
+                    <span class="font-semibold">${item.change}</span>
+                </div>
+            `).join('');
+        }
+
+        transactionSelect.addEventListener('change', updateSimulator);
+        updateSimulator();
+
+        // EPS Calculator Logic
+        const toggleRulesBtn = document.getElementById('toggle-rules');
+        const rulesContent = document.getElementById('eps-rules-content');
+        const rulesIcon = document.getElementById('rules-icon');
+
+        toggleRulesBtn.addEventListener('click', () => {
+            const isHidden = rulesContent.classList.toggle('hidden');
+            rulesIcon.innerHTML = isHidden ? '&#x25BC;' : '&#x25B2;';
+        });
+
+        let epsChart;
+        function calculateEPS() {
+            const netIncome = parseFloat(document.getElementById('netIncome').value) || 0;
+            const prefDividends = parseFloat(document.getElementById('prefDividends').value) || 0;
+            const waso = parseFloat(document.getElementById('waso').value) || 1;
+            const convertibleShares = parseFloat(document.getElementById('convertibleShares').value) || 0;
+            const interestSaved = parseFloat(document.getElementById('interestSaved').value) || 0;
+
+            const basicEps = ((netIncome - prefDividends) / waso).toFixed(2);
+            
+            let dilutedEps = basicEps;
+            
+            // Apply dilution only if it results in a lower EPS (or if there's no net loss)
+            if (netIncome > 0) {
+                const potentialDilutedEps = ((netIncome - prefDividends + interestSaved) / (waso + convertibleShares));
+
+                // Anti-Dilution Test: Only include if potential EPS is lower than Basic EPS
+                if (potentialDilutedEps < basicEps) {
+                    dilutedEps = potentialDilutedEps.toFixed(2);
+                }
+            } else {
+                // Special Rule for Loss Per Share (LPS): Diluted LPS = Basic LPS
+                 dilutedEps = basicEps;
+            }
+
+
+            document.getElementById('basicEpsResult').textContent = `$${basicEps}`;
+            document.getElementById('dilutedEpsResult').textContent = `$${dilutedEps}`;
+
+            const ctx = document.getElementById('epsChart').getContext('2d');
+            if (epsChart) {
+                epsChart.destroy();
+            }
+            epsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Basic EPS', 'Diluted EPS'],
+                    datasets: [{
+                        label: 'Earnings Per Share ($)',
+                        data: [basicEps, dilutedEps],
+                        backgroundColor: [
+                            'rgba(217, 119, 6, 0.6)', // amber-600
+                            'rgba(9, 143, 126, 0.6)'  // teal-600 custom
+                        ],
+                        borderColor: [
+                            'rgba(217, 119, 6, 1)',
+                            'rgba(9, 143, 126, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        calculateEPS();
+
+        // Advanced Topics Tabs
+        const tabs = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                tabPanes.forEach(pane => {
+                    pane.classList.toggle('hidden', pane.id !== tab.dataset.tab);
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
