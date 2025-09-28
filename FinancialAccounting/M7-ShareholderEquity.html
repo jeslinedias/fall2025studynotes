@@ -8,14 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutral -->
-    <!-- Application Structure Plan: The application is designed as a multi-section, task-oriented educational tool rather than a linear report. The structure includes: 1) A visual, interactive breakdown of equity components. 2) A transaction simulator for active learning of journal entries. 3) An EPS calculator to explore performance metrics and underlying rules. 4) A tabbed section for complex, advanced topics. This non-linear, interactive structure was chosen because financial accounting concepts are highly interconnected. It allows users to freely explore topics, simulate outcomes, and understand causal relationships (e.g., how a transaction affects equity balances and EPS) in a way that a static document cannot, promoting deeper comprehension and retention. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Components of Shareholders' Equity -> Goal: Inform/Organize -> Viz/Method: Interactive HTML/CSS Diagram -> Interaction: Click/hover to reveal definitions -> Justification: More engaging and intuitive for showing hierarchical relationships than a static table.
-        - Report Info: Journal entries for various equity transactions -> Goal: Inform/Organize -> Viz/Method: JavaScript-powered Transaction Simulator -> Interaction: User selects a transaction to see its impact on accounts -> Justification: Transforms passive reading into active, experiential learning, clarifying the direct impact of actions on financial statements.
-        - Report Info: Basic vs. Diluted EPS calculations & rules -> Goal: Compare/Inform -> Viz/Method: Interactive JS Calculator with a Chart.js Bar Chart AND collapsible rules panel -> Interaction: Users input data and the chart visually compares the two EPS figures; toggle panel reveals formulas and conditions -> Justification: The chart provides the visual result, while the panel provides the necessary context and detailed calculation logic (formulas, WASO rules, anti-dilution test).
-        - Report Info: Advanced, distinct topics (Preferred Stock, OCI, etc.) -> Goal: Organize -> Viz/Method: Tabbed content sections -> Interaction: Click tabs to switch between topics -> Justification: Manages cognitive load by isolating complex information into digestible, user-controlled segments.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -65,6 +57,12 @@
             background-color: #FEF3C7; /* amber-100 */
             border-left: 4px solid #F59E0B; /* amber-500 */
         }
+        /* Custom style for search highlighting */
+        .highlight {
+            background-color: #FACC15; /* yellow-400 */
+            padding: 1px 0;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -72,18 +70,41 @@
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <div class="flex-shrink-0">
-                    <h1 class="text-xl font-bold text-amber-600">Shareholders' Equity Explorer</h1>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#overview" class="nav-link active px-3 py-2 rounded-md text-sm font-medium">Overview</a>
-                        <a href="#simulator" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Transaction Simulator</a>
-                        <a href="#eps" class="nav-link px-3 py-2 rounded-md text-sm font-medium">EPS Calculator</a>
-                        <a href="#advanced" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Advanced Topics</a>
+                <div class="flex items-center space-x-6">
+                    <!-- External Home Button -->
+                    <a href="FA-landing.html" class="hidden md:block px-3 py-1.5 rounded-full bg-amber-500 text-white text-sm font-semibold shadow hover:bg-amber-600 transition duration-150">
+                        FA Home
+                    </a>
+                    
+                    <div class="flex-shrink-0">
+                        <!-- Existing In-Page Home Link (Title) -->
+                        <a href="#overview" class="block">
+                            <h1 class="text-xl font-bold text-amber-600 hover:text-amber-700 transition duration-150">Shareholders' Equity Explorer</h1>
+                        </a>
                     </div>
                 </div>
-                <div class="md:hidden">
+                
+                <div class="hidden md:flex flex-grow justify-end items-center space-x-4">
+                    <!-- Iterative Search Input -->
+                    <div class="relative w-48">
+                        <input type="text" id="searchInput" onkeyup="liveSearch(this.value)" placeholder="Search content..." class="w-full pl-3 pr-8 py-1.5 text-sm rounded-lg border-gray-300 focus:ring-amber-500 focus:border-amber-500">
+                        <span class="absolute right-0 top-0 mt-2 mr-2 text-gray-400">
+                            <!-- Search Icon (Magnifying glass SVG using Lucide pattern) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </span>
+                    </div>
+                    <!-- Navigation Links -->
+                    <a href="#overview" class="nav-link active px-3 py-2 rounded-md text-sm font-medium">Overview</a>
+                    <a href="#simulator" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Transaction Simulator</a>
+                    <a href="#eps" class="nav-link px-3 py-2 rounded-md text-sm font-medium">EPS Calculator</a>
+                    <a href="#advanced" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Advanced Topics</a>
+                </div>
+
+                <div class="md:hidden flex items-center space-x-2">
+                    <!-- Search for Mobile (visible on right) -->
+                    <div class="relative w-28">
+                        <input type="text" id="searchInputMobile" onkeyup="liveSearch(this.value)" placeholder="Search..." class="w-full pl-3 pr-6 py-1 text-xs rounded-lg border-gray-300 focus:ring-amber-500 focus:border-amber-500">
+                    </div>
                     <select id="mobile-nav" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5">
                         <option value="#overview">Overview</option>
                         <option value="#simulator">Simulator</option>
@@ -95,7 +116,7 @@
         </nav>
     </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <main id="searchable-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
         <!-- Section 1: Overview -->
         <section id="overview" class="scroll-mt-20 mb-16">
@@ -225,7 +246,7 @@
                     <h4 class="font-semibold mt-4 mb-2">1. Key Adjustments (If-Converted Method & Treasury Stock Method)</h4>
                     <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 ml-4">
                         <li><strong class="font-bold">Convertible Debt/Preferred:</strong> Numerator adds back interest (net of tax) or preferred dividends saved; Denominator adds shares from conversion.</li>
-                        <li><strong class="font-bold">Options/Warrants:</strong> Numerator is usually \$0; Denominator adds <strong class="font-bold">net shares</strong> issued (shares exercised minus shares repurchased with assumed proceeds).</li>
+                        <li><strong class="font-bold">Options/Warrants:</strong> Numerator is usually $0; Denominator adds <strong class="font-bold">net shares</strong> issued (shares exercised minus shares repurchased with assumed proceeds).</li>
                     </ul>
 
                     <h4 class="font-semibold mt-4 mb-2">2. Anti-Dilution Test (Critical Condition)</h4>
@@ -349,6 +370,79 @@
     </div>
 
     <script>
+        // Store the original HTML of the main content area to safely reset highlights.
+        const mainContent = document.getElementById('searchable-content');
+        let originalContentHTML = mainContent.innerHTML;
+
+        /**
+         * Clears all existing highlights (<mark> tags) from the main content.
+         */
+        function clearHighlights() {
+            mainContent.innerHTML = originalContentHTML;
+        }
+
+        /**
+         * Implements live search by finding and highlighting text matches.
+         * This function clears all highlights and reapplies them, ensuring interactive
+         * elements (like the chart/simulator) are not destroyed by direct innerHTML replacement.
+         * * @param {string} query The search term.
+         */
+        function liveSearch(query) {
+            // Use the original content to prevent searching highlighted text recursively
+            clearHighlights(); 
+            const searchTerm = query.trim();
+
+            if (searchTerm.length === 0) {
+                return; // Nothing to search
+            }
+
+            // Define the replacement pattern
+            // g = global, i = case insensitive
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            
+            // Only re-apply highlight if the original content is loaded (which it should be)
+            if (originalContentHTML) {
+                 // Use a class "highlight" for styling
+                const highlightedHTML = originalContentHTML.replace(regex, '<mark class="highlight">$1</mark>');
+                mainContent.innerHTML = highlightedHTML;
+                
+                // Since innerHTML was reset, we need to reinitialize components that rely on the DOM structure:
+                updateSimulator(); // Re-initializes simulator display
+                calculateEPS();    // Re-initializes the Chart.js canvas
+                initTabs();        // Re-initializes tab functionality
+            }
+        }
+        
+        // --- Initialization and Core Logic (kept for completeness) ---
+
+        // Re-initialization function for tabs (needed after liveSearch resets innerHTML)
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            // Set the first tab active by default if none is marked
+            let firstTab = document.querySelector('.tab-button');
+            if(firstTab && !document.querySelector('.tab-button.active')) {
+                firstTab.classList.add('active');
+            }
+
+            tabs.forEach(tab => {
+                tab.removeEventListener('click', tabHandler); // Remove old listener
+                tab.addEventListener('click', tabHandler); // Add new listener
+            });
+            
+            // Function to handle tab clicks
+            function tabHandler() {
+                const targetTab = this;
+                tabs.forEach(t => t.classList.remove('active'));
+                targetTab.classList.add('active');
+                
+                tabPanes.forEach(pane => {
+                    pane.classList.toggle('hidden', pane.id !== targetTab.dataset.tab);
+                });
+            }
+        }
+        
         // Modal Logic
         const infoModal = document.getElementById('infoModal');
         const closeModalBtn = document.getElementById('closeModal');
@@ -471,6 +565,13 @@
         };
 
         function updateSimulator() {
+            // Re-select elements as they might have been reset by innerHTML
+            const transactionSelect = document.getElementById('transaction-select');
+            if (!transactionSelect) return; 
+
+            const scenarioEl = document.getElementById('transaction-scenario');
+            const journalBodyEl = document.getElementById('journal-entry-body');
+            const equityImpactEl = document.getElementById('equity-impact');
             const selected = transactionSelect.value;
             const data = transactions[selected];
 
@@ -490,24 +591,34 @@
                     <span class="font-semibold">${item.change}</span>
                 </div>
             `).join('');
+            
+            // Re-add event listener if it was removed
+            transactionSelect.removeEventListener('change', updateSimulator);
+            transactionSelect.addEventListener('change', updateSimulator);
         }
-
-        transactionSelect.addEventListener('change', updateSimulator);
-        updateSimulator();
 
         // EPS Calculator Logic
         const toggleRulesBtn = document.getElementById('toggle-rules');
         const rulesContent = document.getElementById('eps-rules-content');
         const rulesIcon = document.getElementById('rules-icon');
 
-        toggleRulesBtn.addEventListener('click', () => {
+        if (toggleRulesBtn) {
+            toggleRulesBtn.removeEventListener('click', toggleRulesHandler);
+            toggleRulesBtn.addEventListener('click', toggleRulesHandler);
+        }
+
+        function toggleRulesHandler() {
             const isHidden = rulesContent.classList.toggle('hidden');
             rulesIcon.innerHTML = isHidden ? '&#x25BC;' : '&#x25B2;';
-        });
+        }
 
         let epsChart;
         function calculateEPS() {
-            const netIncome = parseFloat(document.getElementById('netIncome').value) || 0;
+            // Re-select input elements
+            const netIncomeInput = document.getElementById('netIncome');
+            if (!netIncomeInput) return; // Exit if calculator section isn't fully loaded
+
+            const netIncome = parseFloat(netIncomeInput.value) || 0;
             const prefDividends = parseFloat(document.getElementById('prefDividends').value) || 0;
             const waso = parseFloat(document.getElementById('waso').value) || 1;
             const convertibleShares = parseFloat(document.getElementById('convertibleShares').value) || 0;
@@ -577,25 +688,18 @@
                 }
             });
         }
-        calculateEPS();
-
-        // Advanced Topics Tabs
-        const tabs = document.querySelectorAll('.tab-button');
-        const tabPanes = document.querySelectorAll('.tab-pane');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                tabPanes.forEach(pane => {
-                    pane.classList.toggle('hidden', pane.id !== tab.dataset.tab);
-                });
-            });
+        
+        // Initial setup calls
+        document.addEventListener('DOMContentLoaded', () => {
+            // Save initial HTML content
+            if (mainContent) {
+                originalContentHTML = mainContent.innerHTML;
+            }
+            updateSimulator();
+            calculateEPS();
+            initTabs();
         });
 
     </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
