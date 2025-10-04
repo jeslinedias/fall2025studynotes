@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Cultures of Growth - Comprehensive Notes</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter Font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#4f46e5', // Indigo-600
+                        'secondary': '#f3f4f6', // Gray-100
+                        'accent': '#1e40af', // Blue-800
+                        'highlight': '#fcd34d', // Amber-300
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Set Inter font as default */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* Light Gray background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+        }
+        .accordion-content.active {
+            max-height: 2000px; /* Large enough value to contain content */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        
+        /* Styles for search highlighting */
+        .highlight {
+            background-color: #fcd34d; /* Amber-300 */
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .highlight.current {
+            background-color: #ef4444; /* Red-500 for focused result */
+            color: white;
+            box-shadow: 0 0 8px #ef4444;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="container mx-auto p-4 sm:p-8 max-w-7xl">
+        
+        <!-- Header: Added Home button -->
+        <header class="mb-8 p-6 bg-white rounded-xl shadow-lg relative">
+            <!-- Home Button Link -->
+            <a href="LeadershipLanding.html" class="absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md flex items-center text-sm sm:text-base whitespace-nowrap">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Home
+            </a>
+            
+            <!-- Centered Title Block -->
+            <div class="text-center">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+                    Module 4: Cultures of Growth
+                </h1>
+                <p class="text-lg text-primary mt-2 font-semibold">
+                    Leading Teams: Building Effective Team Cultures
+                </p>
+            </div>
+        </header>
+
+        <!-- Search Bar Feature -->
+        <div class="mb-6 p-4 bg-white rounded-xl shadow-md flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-4 border border-gray-200">
+            <input type="text" id="searchInput" placeholder="Search notes (2+ characters)..." class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150" onkeyup="if(event.key === 'Enter') performSearch()">
+            
+            <div class="flex space-x-2 w-full md:w-auto">
+                <button id="searchButton" onclick="performSearch()" class="flex-shrink-0 bg-primary hover:bg-accent text-white font-bold py-2 px-4 rounded-lg transition duration-200 shadow-md flex items-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+                <button id="prevButton" onclick="prevResult()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg disabled:opacity-50" disabled>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button id="nextButton" onclick="nextResult()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg disabled:opacity-50" disabled>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+            
+            <span id="searchStatus" class="text-sm text-gray-500 w-full md:w-auto text-center md:text-right whitespace-nowrap">0 of 0</span>
+        </div>
+        <!-- End Search Bar Feature -->
+
+        <!-- Tab Navigation -->
+        <nav class="flex justify-center border-b border-gray-200 mb-8 sticky top-0 bg-gray-50 z-10 rounded-t-xl shadow-md">
+            <button id="tab-notes" onclick="switchTab('notes')" class="tab-button py-3 px-6 text-lg font-medium transition-all duration-200 ease-in-out text-white bg-primary rounded-t-lg shadow-inner">
+                Comprehensive Notes
+            </button>
+            <button id="tab-frameworks" onclick="switchTab('frameworks')" class="tab-button py-3 px-6 text-lg font-medium transition-all duration-200 ease-in-out text-gray-600 hover:text-primary hover:bg-gray-100 rounded-t-lg">
+                Frameworks Summary
+            </button>
+        </nav>
+
+        <!-- Content Containers -->
+
+        <!-- 1. Comprehensive Notes Section (Accordion) -->
+        <div id="notes-section" class="tab-content space-y-6">
+            
+            <h2 class="text-2xl font-bold text-accent mb-4 border-b pb-2">Lesson Details (Accordion View)</h2>
+
+            <!-- Lesson 4-1: Problem-Solving -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 bg-primary/90 hover:bg-primary text-white font-semibold text-xl transition duration-300 rounded-t-xl" data-target="lesson-1">
+                    1. Creating Cultures of Problem-Solving
+                    <svg class="w-6 h-6 transform transition-transform duration-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="lesson-1" class="accordion-content">
+                    <div class="p-4 sm:p-6 text-gray-700 space-y-4">
+                        <p>A successful team culture views problems as opportunities for <strong>growth and innovation</strong>. This requires establishing clear processes and a safe environment for inquiry.</p>
+                        
+                        <h3 class="text-xl font-bold text-accent mt-4">Core Concepts</h3>
+                        <div class="overflow-x-auto shadow-md rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-secondary">
+                                    <tr>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Concept</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2">Description</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Point to Remember</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Problem Framing</td>
+                                        <td class="p-3">Defining a problem accurately is often more critical than finding the solution.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Actionable Highlight:</span> Frame the problem in terms of <strong>"What is the customer/user trying to accomplish?"</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Psychological Safety</td>
+                                        <td class="p-3">The belief that one will not be punished or humiliated for speaking up with ideas, concerns, or mistakes.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Key Highlight:</span> <strong>Model vulnerability</strong> as a leader (e.g., admitting mistakes).</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Structured Problem-Solving</td>
+                                        <td class="p-3">Implementing consistent methodologies (e.g., 5 Whys, A3 Thinking) for reliable, repeatable solutions.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Example:</span> Use the <strong>5 Whys</strong> to get to the true organizational or systemic cause.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lesson 4-2: Manifesting Creativity -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 bg-primary/90 hover:bg-primary text-white font-semibold text-xl transition duration-300" data-target="lesson-2">
+                    2. Manifesting Creativity
+                    <svg class="w-6 h-6 transform transition-transform duration-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="lesson-2" class="accordion-content">
+                    <div class="p-4 sm:p-6 text-gray-700 space-y-4">
+                        <p>Fostering a creative culture focuses on an environment where novel ideas are consistently generated, supported, and tested.</p>
+                        
+                        <h3 class="text-xl font-bold text-accent mt-4">Core Concepts</h3>
+                        <div class="overflow-x-auto shadow-md rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-secondary">
+                                    <tr>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Concept</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2">Description</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Point to Remember</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Intentional Innovation</td>
+                                        <td class="p-3">Dedicating specific time and resources (e.g., innovation sprints) to explore ideas outside daily tasks.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Example:</span> Implement <strong>"Idea Banks"</strong> or regular <strong>"Pitch Sessions."</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Rules of Brainstorming</td>
+                                        <td class="p-3">Enforce rules like <strong>Defer Judgment</strong>, <strong>Encourage Wild Ideas</strong>, <strong>Build on Ideas</strong>, and <strong>Focus on Quantity</strong>.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Key Highlight:</span> The facilitator must actively <strong>shut down negative feedback</strong> to protect ideas.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Creative Tension</td>
+                                        <td class="p-3">A healthy level of pressure that encourages new thinking, often using difficult challenges or constraints.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Highlight:</span> <strong>Constraints can boost creativity</strong> by forcing non-obvious solutions.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lesson 4-3: Navigating Change -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 bg-primary/90 hover:bg-primary text-white font-semibold text-xl transition duration-300" data-target="lesson-3">
+                    3. Navigating Change
+                    <svg class="w-6 h-6 transform transition-transform duration-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="lesson-3" class="accordion-content">
+                    <div class="p-4 sm:p-6 text-gray-700 space-y-4">
+                        <p>Organizational change is constant. The goal is to build resilience and a proactive approach to transitions.</p>
+                        
+                        <h3 class="text-xl font-bold text-accent mt-4">Core Concepts</h3>
+                        <div class="overflow-x-auto shadow-md rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-secondary">
+                                    <tr>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Concept</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2">Description</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Point to Remember</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Change Communication</td>
+                                        <td class="p-3">Change must be transparently and constantly communicated.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Highlight:</span> Use the <strong>"WIIFM"</strong> principle: "What's In It For Me?" for every team member.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Overcoming Resistance</td>
+                                        <td class="p-3">Resistance often stems from fear or lack of skill; address the root cause directly.</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Example:</span> Involve resistant teams in the <strong>testing and configuration</strong> phase for ownership.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 whitespace-nowrap font-medium text-gray-900">Creating Urgency</td>
+                                        <td class="p-3">Mobilizing the team with a sense of urgency tied to a compelling opportunity or risk (Kotter's model).</td>
+                                        <td class="p-3"><span class="font-bold text-highlight bg-yellow-100 rounded-full px-2">Key Highlight:</span> Urgency should be created around <strong>opportunity</strong>, not just fear.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lesson 4-4: Module Wrap-Up -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 bg-primary/90 hover:bg-primary text-white font-semibold text-xl transition duration-300 rounded-b-xl" data-target="lesson-4">
+                    4. Module Wrap-Up: The Culture of Experimentation
+                    <svg class="w-6 h-6 transform transition-transform duration-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="lesson-4" class="accordion-content">
+                    <div class="p-4 sm:p-6 text-gray-700 space-y-6">
+                        <p class="font-semibold text-lg text-gray-900">The unifying theme across all lessons is the <strong>spirit of continuous experimentation</strong>.</p>
+                        
+                        <h3 class="text-xl font-bold text-accent mt-4">Key Points & Analogies</h3>
+                        <ul class="list-disc pl-6 space-y-3">
+                            <li><strong class="text-primary">Culture is a System (Stove Top Analogy):</strong> Culture is a "full meal" with many elements (<strong>burners</strong>) operating simultaneously (growth, engagement, etc.). Leaders must be <strong>constant monitors and managers</strong>, actively adjusting heat and stirring.</li>
+                            <li><strong class="text-primary">Culture is a Chemical Reaction (Bunsen Burner Analogy):</strong> Interventions are like adding <strong>"little pinches of this and that."</strong> Leaders must closely <strong>observe the reactions</strong> (behaviors) and adjust their input accordingly.</li>
+                            <li><strong class="text-primary">The Spirit of Experimentation is the Engine:</strong> This is the greatest long-term driver of success. The process is: 
+                                <ol class="list-decimal pl-6 mt-2 space-y-1">
+                                    <li><strong>Identify:</strong> Pick something to test that is relevant, interesting, and intriguing.</li>
+                                    <li><strong>Mobilize:</strong> Find a small group of people interested in "going to play with it."</li>
+                                    <li><strong>Validate:</strong> Actively <strong>create evidence and data</strong> to test the hypothesis.</li>
+                                    <li><strong>Conclude:</strong> <strong>Learn from that, grow, and then iterate.</strong></li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 2. Frameworks Summary Section (Tables) -->
+        <div id="frameworks-section" class="tab-content hidden space-y-8">
+            <h2 class="text-2xl font-bold text-accent mb-6 border-b pb-2">Structured Summary of Frameworks & Models</h2>
+
+            <!-- PIECE Framework -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-primary/50">
+                <h3 class="text-xl font-bold text-primary mb-4">The PIECE Framework for Growth</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-100 rounded-lg">
+                        <thead class="bg-primary/10">
+                            <tr>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-primary uppercase w-1/4">Component</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-primary uppercase w-1/2">Definition & Transcript Alignment</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-primary uppercase w-1/4">Source Concept in Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr>
+                                <td class="p-3 font-medium text-primary">P - Participation</td>
+                                <td class="p-3">Ensuring every team member feels safe and encouraged to contribute ideas, questions, and concerns.</td>
+                                <td class="p-3"><span class="font-bold">Psychological Safety:</span> (Lesson 4-1)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-primary">I - Independence of Thought</td>
+                                <td class="p-3">Valuing diverse and challenging perspectives, which aligns with <strong>encouraging wild ideas</strong> and creating <strong>creative tension</strong> to solve problems.</td>
+                                <td class="p-3"><span class="font-bold">Encourage Wild Ideas:</span> (Lesson 4-2)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-primary">E - Elaboration</td>
+                                <td class="p-3">The collaborative process of expanding, refining, and <strong>building on others' ideas</strong> during ideation sessions to generate stronger solutions.</td>
+                                <td class="p-3"><span class="font-bold">Rules of Brainstorming:</span> (Lesson 4-2)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-primary">C - Communication</td>
+                                <td class="p-3">Constant, transparent communication, especially during change, focusing on the <strong>"WIIFM"</strong> (What's In It For Me?) principle. Modeling vulnerability is also key.</td>
+                                <td class="p-3"><span class="font-bold">Change Communication:</span> (Lesson 4-3)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-primary">E - Experience</td>
+                                <td class="p-3">The ultimate driver of growth, achieved by embracing the <strong>spirit of experimentation</strong>—<strong>"go play with it and test it out and create evidence,"</strong> then learn and iterate.</td>
+                                <td class="p-3"><span class="font-bold">Culture of Experimentation:</span> (Lesson 4-4)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Problem-Solving Frameworks -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-primary mb-4">Problem-Solving Frameworks</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-100 rounded-lg">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Framework / Methodology</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Description</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Context</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr><td class="p-3 font-medium">5 Whys</td><td class="p-3">Repeatedly asking "Why?" to identify the foundational cause of a problem (part of RCA).</td><td class="p-3">Used to move beyond superficial issues to systemic cause.</td></tr>
+                            <tr><td class="p-3 font-medium">A3 Thinking</td><td class="p-3">Structured problem-solving documented on a single sheet of paper for clarity and conciseness.</td><td class="p-3">Ensures a consistent, methodical, and visible approach to problem resolution.</td></tr>
+                            <tr><td class="p-3 font-medium">Root Cause Analysis (RCA)</td><td class="p-3">The general process of finding the true, foundational cause of a problem.</td><td class="p-3">Emphasizes solving the <strong>system</strong> or <strong>process</strong> issue.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Creativity and Ideation Frameworks -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-primary mb-4">Creativity and Ideation Frameworks</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-100 rounded-lg">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Framework / Methodology</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Description</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Context</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr><td class="p-3 font-medium">SCAMPER</td><td class="p-3">Mnemonic for applying verbs (Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse) to generate new ideas.</td><td class="p-3">Used to break cognitive bias and encourage lateral thinking.</td></tr>
+                            <tr><td class="p-3 font-medium">Rules of Brainstorming</td><td class="p-3">A set of rules for ideation: Defer Judgment, Encourage Wild Ideas, Build on Ideas, Focus on Quantity.</td><td class="p-3">Critical for maximizing idea quantity and ensuring psychological safety.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Change Management Frameworks -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-primary mb-4">Change Management Frameworks</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-100 rounded-lg">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Framework / Methodology</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Description</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Context</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr><td class="p-3 font-medium">Kotter's Change Model (Implicit)</td><td class="p-3">References a formal, staged approach to change management (e.g., creating urgency, communicating vision).</td><td class="p-3">Used for large, deliberate organizational change initiatives.</td></tr>
+                            <tr><td class="p-3 font-medium">WIIFM Principle</td><td class="p-3">Communicating "What's In It For Me?" to the audience regarding the change.</td><td class="p-3">Essential for overcoming resistance by articulating personal benefit.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Cultural System Frameworks -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-primary mb-4">Cultural System Frameworks (Analogies)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-100 rounded-lg">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Framework / Methodology</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Description</th>
+                                <th class="px-3 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Context</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr><td class="p-3 font-medium">Stove Top Analogy</td><td class="p-3">Culture is a system of multiple, simultaneous components ("burners") requiring active management.</td><td class="p-3">Leaders must be <strong>constant monitors and managers</strong>, actively adjusting resources and attention.</td></tr>
+                            <tr><td class="p-3 font-medium">Bunsen Burner Analogy</td><td class="p-3">Cultural interventions are small "pinches" added to the system, requiring observation of the reactions.</td><td class="p-3">Culture is a dynamic system best managed through continuous, evidence-based experimentation.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // --- Global State for Search ---
+        let currentMatches = [];
+        let currentMatchIndex = -1;
+        const mainContent = document.querySelector('.container');
+
+        // --- Event Listener Handlers ---
+
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('bg-primary', 'text-white', 'shadow-inner');
+                button.classList.add('text-gray-600', 'hover:text-primary', 'hover:bg-gray-100');
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId + '-section').classList.remove('hidden');
+
+            // Activate the selected button
+            const selectedButton = document.getElementById('tab-' + tabId);
+            selectedButton.classList.add('bg-primary', 'text-white', 'shadow-inner');
+            selectedButton.classList.remove('text-gray-600', 'hover:text-primary', 'hover:bg-gray-100');
+        }
+
+        function accordionToggle(event) {
+            const header = event.currentTarget;
+            const targetId = header.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+            const arrowIcon = header.querySelector('.arrow-icon');
+
+            const isActive = content.classList.contains('active');
+
+            // Close all other active accordions
+            document.querySelectorAll('.accordion-content.active').forEach(activeContent => {
+                if (activeContent.previousElementSibling) { 
+                    const existingArrow = activeContent.previousElementSibling.querySelector('.arrow-icon');
+                    if (existingArrow) existingArrow.classList.remove('rotate-180');
+                }
+                activeContent.classList.remove('active');
+            });
+
+            // If it was not active, open it
+            if (!isActive) {
+                content.classList.add('active');
+                arrowIcon.classList.add('rotate-180');
+            }
+        }
+
+        // --- Search Logic ---
+
+        // Helper to escape regex special characters
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Reverts all highlight spans back to simple text nodes.
+        function clearHighlights() {
+            document.querySelectorAll('.highlight').forEach(highlightSpan => {
+                // Create a text node from the inner text of the span
+                const textNode = document.createTextNode(highlightSpan.textContent);
+                // Replace the span with the text node
+                highlightSpan.replaceWith(textNode);
+            });
+            
+            // Normalize the DOM to merge adjacent text nodes (cleans up post-replacement)
+            mainContent.normalize(); 
+            
+            currentMatches = [];
+            currentMatchIndex = -1;
+            updateStatus(0, 0);
+            updateNavButtons();
+        }
+
+        function updateStatus(currentIndex, totalMatches) {
+            document.getElementById('searchStatus').textContent = 
+                totalMatches > 0 ? `${currentIndex + 1} of ${totalMatches}` : '0 of 0';
+        }
+
+        function updateNavButtons() {
+            const hasMatches = currentMatches.length > 0;
+            document.getElementById('prevButton').disabled = !hasMatches || currentMatchIndex <= 0;
+            document.getElementById('nextButton').disabled = !hasMatches || currentMatchIndex >= currentMatches.length - 1;
+        }
+
+        function jumpToResult(index) {
+            if (index >= 0 && index < currentMatches.length) {
+                // Clear 'current' class from previous match
+                document.querySelectorAll('.highlight.current').forEach(el => el.classList.remove('current'));
+
+                const currentMatch = currentMatches[index];
+                currentMatch.classList.add('current');
+                currentMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Ensure the relevant accordion is open if applicable
+                let parentContent = currentMatch.closest('.accordion-content');
+                if (parentContent && !parentContent.classList.contains('active')) {
+                    parentContent.previousElementSibling.dispatchEvent(new Event('click'));
+                }
+                
+                // Ensure the correct tab is active
+                if (currentMatch.closest('#frameworks-section')) {
+                     switchTab('frameworks');
+                } else if (currentMatch.closest('#notes-section')) {
+                    switchTab('notes');
+                }
+
+                currentMatchIndex = index;
+                updateStatus(currentMatchIndex, currentMatches.length);
+                updateNavButtons();
+            }
+        }
+
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            
+            // Always clear previous highlights first
+            clearHighlights();
+
+            if (searchTerm.length < 2) {
+                if (searchTerm.length > 0) {
+                     document.getElementById('searchStatus').textContent = 'Enter 2+ characters';
+                }
+                return;
+            }
+
+            const escapedTerm = escapeRegExp(searchTerm);
+            const regex = new RegExp(`(${escapedTerm})`, 'gi'); // Global, Case-Insensitive, capture group for match
+
+            // Define the searchable areas
+            const searchableContainers = document.querySelectorAll('#notes-section, #frameworks-section');
+            
+            let nodesToModify = [];
+
+            searchableContainers.forEach(container => {
+                // TreeWalker to find only suitable text nodes
+                const walker = document.createTreeWalker(
+                    container,
+                    NodeFilter.SHOW_TEXT,
+                    { 
+                        acceptNode: (node) => {
+                            // Only accept text nodes that are not inside scripts, styles, inputs, etc., and contain the search term
+                            if (node.parentElement && 
+                                !['SCRIPT', 'STYLE', 'INPUT', 'BUTTON', 'TEXTAREA'].includes(node.parentElement.tagName) && 
+                                node.textContent.trim() !== '' &&
+                                node.textContent.match(regex)) 
+                            {
+                                return NodeFilter.FILTER_ACCEPT;
+                            }
+                            return NodeFilter.FILTER_SKIP;
+                        }
+                    },
+                    false
+                );
+
+                let node;
+                while (node = walker.nextNode()) {
+                    nodesToModify.push(node);
+                }
+            });
+
+            // Perform replacement on gathered text nodes
+            nodesToModify.forEach(textNode => {
+                const originalText = textNode.textContent;
+                // Replace the text with the highlighted span HTML
+                const newHtml = originalText.replace(regex, '<span class="highlight">$1</span>');
+
+                // Create a temporary div to parse the HTML string into DOM nodes
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = newHtml;
+
+                // Replace the original text node with the new parsed nodes
+                textNode.replaceWith(...Array.from(tempDiv.childNodes));
+            });
+
+            // Collect all newly created highlight spans
+            currentMatches = Array.from(document.querySelectorAll('.highlight'));
+            
+            if (currentMatches.length > 0) {
+                jumpToResult(0);
+            } else {
+                 document.getElementById('searchStatus').textContent = 'No matches found';
+            }
+        }
+
+        function nextResult() {
+            if (currentMatchIndex < currentMatches.length - 1) {
+                jumpToResult(currentMatchIndex + 1);
+            }
+        }
+
+        function prevResult() {
+            if (currentMatchIndex > 0) {
+                jumpToResult(currentMatchIndex - 1);
+            }
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Bind accordion events
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', accordionToggle);
+            });
+
+            switchTab('notes');
+            
+            // Open the first lesson's content on load (simulate a click)
+            const firstHeader = document.querySelector('.accordion-header');
+            if (firstHeader) {
+                firstHeader.dispatchEvent(new Event('click'));
+            }
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">

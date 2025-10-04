@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Interactive Playbook for Team Engagement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3f3c3a;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #005f73;
+            border-bottom-color: #005f73;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .pillar-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #e0e0e0;
+        }
+        .pillar-card.selected {
+            border-color: #005f73;
+            box-shadow: 0 4px 14px 0 rgba(0, 95, 115, 0.1);
+            transform: translateY(-4px);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .btn-toggle {
+            transition: all 0.2s ease;
+        }
+        .btn-toggle.active {
+            background-color: #005f73;
+            color: #ffffff;
+        }
+        .accordion-header {
+            cursor: pointer;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .highlighted-text {
+            background-color: #ffda79; /* A light yellow for highlighting */
+            padding: 1px 2px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Combined Header & Search Bar -->
+        <div class="flex flex-col md:flex-row md:justify-between items-center mb-10">
+            <!-- Centered Title Block -->
+            <header class="text-center md:text-left md:w-full">
+                <h1 class="text-4xl md:text-5xl font-bold text-[#003d4a]">The Interactive Playbook</h1>
+                <p class="text-lg text-gray-600 mt-2">for Building Effective Team Cultures</p>
+            </header>
+
+            <!-- Search Feature (Top Right) -->
+            <div class="mt-4 md:mt-0 md:ml-auto w-full md:w-80">
+                <div class="relative">
+                    <input id="searchInput" type="text" placeholder="Search playbook content..." class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005f73] focus:border-transparent text-sm">
+                    <button id="searchButton" class="absolute right-0 top-0 mt-2 mr-3 text-gray-400 hover:text-[#005f73]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex flex-wrap justify-center items-center border-b border-gray-300 mb-10 space-x-2 sm:space-x-4">
+            <!-- Home Icon (navigates to LeadershipLanding.html) -->
+            <a href="LeadershipLanding.html" title="Go to Home/Hub" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700 hover:text-[#005f73]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+            
+            <!-- Dashboard is the default active internal page -->
+            <a href="#dashboard" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700 active">Dashboard</a>
+            <a href="#motivation" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700">Motivation</a>
+            <a href="#organizational-purpose" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700">Org. Purpose</a>
+            <a href="#meaningful-work" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700">Meaningful Work</a>
+            <a href="#wellbeing" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700">Well-being</a>
+            <a href="#diagnostics" class="nav-link py-3 px-2 text-sm sm:text-base font-medium text-gray-700">Diagnostics</a>
+        </nav>
+
+        <main>
+            <!-- Dashboard Section is now the default view -->
+            <section id="dashboard" class="content-section active">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-[#003d4a]">The Four Pillars of Engagement</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-gray-600">Engagement isn't a single action, but a culture built on four interconnected pillars. A weakness in one area can undermine the others, leading to disengagement. Interact with the pillars below to see how they combine to create a fully engaged team and what happens when they are missing.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 items-center">
+                    <div class="lg:col-span-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div id="pillar-autonomy" class="pillar-card bg-white p-6 rounded-lg shadow-sm selected">
+                                <h3 class="font-bold text-xl mb-2 text-[#005f73]">Autonomy & Trust</h3>
+                                <p class="text-gray-600 text-sm">Granting team members ownership over their work and believing in their capability to succeed.</p>
+                            </div>
+                            <div id="pillar-collectivity" class="pillar-card bg-white p-6 rounded-lg shadow-sm selected">
+                                <h3 class="font-bold text-xl mb-2 text-[#005f73]">Collectivity</h3>
+                                <p class="text-gray-600 text-sm">Fostering a sense of a shared journey, mutual support, and belonging within the team.</p>
+                            </div>
+                            <div id="pillar-why" class="pillar-card bg-white p-6 rounded-lg shadow-sm selected">
+                                <h3 class="font-bold text-xl mb-2 text-[#005f73]">The "Why"</h3>
+                                <p class="text-gray-600 text-sm">Connecting daily tasks to a greater purpose, ensuring work feels valuable and meaningful.</p>
+                            </div>
+                            <div id="pillar-health" class="pillar-card bg-white p-6 rounded-lg shadow-sm selected">
+                                <h3 class="font-bold text-xl mb-2 text-[#005f73]">Health & Restoration</h3>
+                                <p class="text-gray-600 text-sm">Prioritizing well-being to ensure the team has the physical and mental energy to engage.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                            <h3 class="font-bold text-xl mb-2 text-gray-800">Team Engagement State</h3>
+                            <div class="chart-container">
+                                <canvas id="engagementChart"></canvas>
+                            </div>
+                            <p id="engagement-text" class="text-gray-600 mt-4 text-sm min-h-[40px]"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Motivation Section -->
+            <section id="motivation" class="content-section">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-[#003d4a]">Understanding Motivation</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-gray-600">Motivation is the psychological force that drives behavior. It's the "desire to do something." In teams, it's crucial to understand the two main types of motivation and leverage them effectively to foster sustained engagement rather than short-term compliance.</p>
+                </div>
+                
+                <div class="flex justify-center mb-8">
+                    <div class="inline-flex rounded-md shadow-sm" role="group">
+                        <button type="button" id="btn-intrinsic" class="btn-toggle active py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100">
+                            Intrinsic
+                        </button>
+                        <button type="button" id="btn-extrinsic" class="btn-toggle py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100">
+                            Extrinsic
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div id="motivation-content" class="bg-white p-8 rounded-lg shadow-sm">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-4 text-gray-800">Long-Term Impact on Engagement</h3>
+                        <div class="chart-container h-64 md:h-80">
+                             <canvas id="motivationImpactChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Organizational Purpose Section -->
+            <section id="organizational-purpose" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-[#003d4a]">Organizational Purpose: Defining the North Star</h2>
+                    <!-- FIX APPLIED HERE: Replaced ** with <b> and text-gray-800 for contrast -->
+                    <p class="mt-3 max-w-2xl mx-auto text-gray-600">Purpose serves as the foundation for <b class="text-gray-800">collective action</b>. As a leader, you must clearly define the <b class="text-gray-800">North Star</b>—the aspirational future state—and the <b class="text-gray-800">underlying motivations ("whys")</b> that guide the entire team.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <div class="bg-white p-8 rounded-lg shadow-xl border-t-4 border-[#005f73]">
+                        <h3 class="font-bold text-2xl mb-4 text-[#003d4a]">Defining Business on Purpose</h3>
+                        <p class="text-gray-600 mb-6">The leader's primary role is to connect the team's daily activities to the ultimate benefit it provides to clients, stakeholders, or the community. This clarity is what drives collective engagement.</p>
+
+                        <div class="p-4 border border-2 border-[#005f73] bg-teal-50 rounded-md my-6">
+                            <h4 class="font-semibold text-lg text-[#005f73]">The Leader's Mantra</h4>
+                            <p class="text-gray-600 text-sm">Communicate that the end product of coming to work is helping others navigate their journey.</p>
+                            <blockquote class="border-l-4 border-[#005f73] pl-4 italic text-gray-700 mt-3 text-sm">
+                                "...that that's the end product of why I'm getting out of bed and coming to work is that I'm helping other people navigate their journey."
+                            </blockquote>
+                        </div>
+                        
+                        <h4 class="font-semibold mt-6 mb-2 text-gray-800">Impact on Team Dynamics:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 text-base pl-4">
+                           <li>A clear purpose enhances <b class="text-gray-800">transparency and communication</b>.</li>
+                           <li>It cultivates a shared experience that strengthens <b class="text-gray-800">team bonds</b>.</li>
+                           <li>It fosters a strong sense of <b class="text-gray-800">belonging</b> within the collective.</li>
+                           <li>Teams with <b class="text-gray-800">shared goals</b> are highly effective, strengthening alignment.</li>
+                        </ul>
+                        
+                        <div class="mt-8 p-4 bg-gray-100 border-l-4 border-gray-400 rounded-md">
+                            <h4 class="font-bold text-gray-700 mb-1">Thought-Provoking Question for Leaders:</h4>
+                            <p class="text-gray-600 text-sm italic">"If your team's core project disappeared tomorrow, how would you articulate the lasting, beneficial void it would leave in the world, and how often do your team members hear that articulation?"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Meaningful Work Section -->
+            <section id="meaningful-work" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-[#003d4a]">Meaningful Work: Cultivating the Calling</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-gray-600">While organizational purpose provides the collective direction, <b class="text-gray-800">Meaningful Work</b> is the individual component. It is achieved when team members align their personal values and skills with their daily contributions, shifting their orientation towards a <b class="text-gray-800">Calling</b>.</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <div class="bg-white p-8 rounded-lg shadow-xl border-t-4 border-[#005f73]">
+                        <h3 class="font-bold text-2xl mb-4 text-[#003d4a]">The Three Work Orientations</h3>
+                        <p class="text-gray-600 mb-6">An individual's perspective on their work profoundly impacts their level of engagement and satisfaction. Leaders should actively help shift this perspective towards a Calling.</p>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3 border rounded-md">
+                                <h4 class="font-semibold text-md text-[#005f73]">Job</h4>
+                                <p class="text-gray-600 text-sm">Financial necessity; views work merely as a means to an end (Lowest Engagement).</p>
+                            </div>
+                            <div class="p-3 border rounded-md">
+                                <h4 class="font-semibold text-md text-[#005f73]">Career</h4>
+                                <p class="text-gray-600 text-sm">Focuses on advancement, status, and professional success (Medium Engagement).</p>
+                            </div>
+                            <div class="p-3 border border-[#005f73] bg-teal-50 rounded-md">
+                                <h4 class="font-semibold text-md text-[#005f73]">Calling</h4>
+                                <p class="text-gray-600 text-sm">Intrinsic enjoyment and belief in the value/purpose of the work itself (Highest Engagement).</p>
+                            </div>
+                        </div>
+
+                        <h4 class="font-semibold mt-8 mb-4 text-xl text-gray-800">Action: Empower Job Crafting</h4>
+                        <p class="text-gray-600 mb-4">Job crafting is the proactive step individuals take to redesign their job roles, tasks, and relationships to make their work more meaningful.</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-3 text-base pl-4">
+                           <li><b>Task Crafting:</b> Altering the tasks performed, their boundaries, or the way they are executed. 
+                                <span class="block text-sm text-gray-500 italic ml-4">Example: A copywriter volunteers to design mockups, shifting their role to include visual creativity.</span>
+                           </li>
+                           <li><b>Relational Crafting:</b> Changing who, when, or how one interacts with others, especially beneficiaries of the work. 
+                                <span class="block text-sm text-gray-500 italic ml-4">Example: A back-office analyst starts joining client feedback calls to directly hear the impact of their data.</span>
+                           </li>
+                           <li><b>Cognitive Crafting:</b> Reframing the way one thinks about the purpose of the work. 
+                                <span class="block text-sm text-gray-500 italic ml-4">Example: A software tester sees their role not just as finding bugs, but as ensuring the success and security of their customer's business.</span>
+                           </li>
+                        </ul>
+                        
+                         <div class="mt-8 p-4 bg-gray-100 border-l-4 border-gray-400 rounded-md">
+                            <h4 class="font-bold text-gray-700 mb-1">Thought-Provoking Question for Individuals:</h4>
+                            <p class="text-gray-600 text-sm italic">"What is one current task you feel is purely transactional, and how could you apply one of the three job crafting techniques to transform it into something that contributes to your sense of personal calling?"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Well-being Section -->
+            <section id="wellbeing" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-[#003d4a]">Prioritizing Well-being to Mitigate Burnout</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-gray-600">A culture of engagement is unsustainable if the team is unhealthy. Burnout—characterized by exhaustion and cynicism—is a direct threat to engagement. Fostering well-being is a collective responsibility, crucial for long-term success.</p>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-8">
+                     <div class="bg-white p-8 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-4 text-gray-800">Burnout is a Threat</h3>
+                         <p class="text-gray-600 mb-4">An engaged culture requires that team members are healthy enough to participate fully. Ignoring well-being directly depletes the team's capacity to engage.</p>
+                         
+                         <!-- Existing Notes: Understanding Burnout Causes and Context -->
+                        <h4 class="font-semibold text-lg text-gray-800 mt-6 mb-2">Understanding Burnout</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-6">
+                            <li>Burnout can stem from excessive work hours and a lack of recognition for contributions.</li>
+                            <li>Many educators experience burnout within the first few years of their careers, highlighting the need for acknowledgment and support.</li>
+                        </ul>
+                         <!-- End of Existing Notes -->
+                         
+                         <!-- New Content: Key Organizational Risk Factors -->
+                        <h4 class="font-semibold text-lg text-red-700 mt-6 mb-2">Key Organizational Risk Factors</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-6">
+                            <li><b>Workload:</b> Chronic overload can deplete employees' capacity to meet job demands.</li>
+                            <li><b>Control:</b> Lack of autonomy in decision-making can lead to disengagement and burnout.</li>
+                        </ul>
+                        
+                         <!-- New Content: Creating a Culture of Engagement (Protective Factors) -->
+                        <h4 class="font-semibold text-lg text-gray-800 mt-6 mb-2">Creating a Culture of Engagement (Protective Factors)</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-6">
+                            <li><b>Reward:</b> Sufficient recognition validates employees' work, reducing burnout risk.</li>
+                            <li><b>Community:</b> Strong relationships and support among team members help prevent isolation and burnout.</li>
+                            <li><b>Fairness and Values:</b> Perceptions of fairness and alignment with personal values are crucial for employee satisfaction and sustained engagement.</li>
+                        </ul>
+                         
+                         <!-- Added Definition of Burnout -->
+                         <div class="p-4 border border-2 border-red-400 bg-red-50 rounded-md">
+                            <h4 class="font-semibold text-lg text-red-700 mb-2">Definition of Burnout:</h4>
+                            <p class="text-gray-700 text-sm">Burnout is a syndrome characterized by three key dimensions:</p>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1 mt-2 pl-4">
+                                <li><b>Chronic Exhaustion:</b> Physical and emotional depletion.</li>
+                                <li><b>Cynicism:</b> Increased mental detachment and negative feelings toward one's job.</li>
+                                <li><b>Reduced Efficacy:</b> A decline in one's sense of professional accomplishment and effectiveness.</li>
+                            </ul>
+                        </div>
+                         <!-- Added Side Effects of Burnout -->
+                        <h4 class="font-semibold text-lg text-red-700 mt-6 mb-2">Consequences of Unchecked Burnout:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 pl-4">
+                            <!-- FIX APPLIED HERE: Replaced ** with <b> and text-gray-800 for contrast -->
+                            <li>Increases <b class="text-gray-800">turnover risk</b> and loss of talent.</li>
+                            <li>Leads to a decline in <b class="text-gray-800">job performance and quality</b> of work.</li>
+                            <li>Damages team <b class="text-gray-800">cohesion and morale</b> through increased cynicism.</li>
+                            <li>Results in higher rates of <b class="text-gray-800">absenteeism and presenteeism</b>.</li>
+                        </ul>
+                         <!-- End of Side Effects -->
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-4 text-gray-800">A Culture of Restoration</h3>
+                        <p class="text-gray-600">It is a mutual responsibility within the team to enforce breaks and encourage restoration. This is an active part of an engaged culture.</p>
+                        <blockquote class="border-l-4 border-[#005f73] pl-4 italic text-gray-700 mt-4">
+                           "We help one another in this culture of engagement to remind each other to relax and restore."
+                        </blockquote>
+                        <h4 class="font-semibold text-gray-700 mt-6">Actionable Strategies:</h4>
+                         <ul class="list-disc list-inside text-gray-600 space-y-1 mt-2">
+                            <li>Explicitly encourage taking vacation time.</li>
+                            <li>Leaders should model healthy work-life boundaries.</li>
+                            <li>Plan team activities that are not work-related.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diagnostics Section -->
+            <section id="diagnostics" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-[#003d4a]">Diagnostic Tool: The Gallup Q12</h2>
+                    <p class="mt-3 max-w-3xl mx-auto text-gray-600">To build an engaged culture, you must first measure it. The Gallup Q12 is a powerful survey that provides actionable insights into your team's health. The 12 questions measure four key dimensions of employee needs. Explore them below to understand what truly drives engagement.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto space-y-4" id="accordion-container">
+                    <!-- Accordion items will be generated by JS -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const data = {
+        motivation: {
+            intrinsic: {
+                title: 'Intrinsic Motivation',
+                description: 'These are internal drivers that come from the pleasure, interest, or sense of purpose derived from the work itself. This type of motivation is critical for building a sustainable culture of deep engagement.',
+                examples: [
+                    'Personal satisfaction and pride in one\'s work.',
+                    'Autonomy and trust to control your own tasks.',
+                    'A sense of purpose or meaning in the work.',
+                    'Opportunities to learn, grow, and master new skills.'
+                ]
+            },
+            extrinsic: {
+                title: 'Extrinsic Motivation',
+                description: 'These are external rewards or punishments applied by others. While effective for short-term compliance, they often fail to foster deep, sustained engagement on their own.',
+                examples: [
+                    'Tangible rewards like salary, bonuses, or promotions.',
+                    'Aversion to punishment, such as fear of job loss.',
+                    'Praise or public recognition from a manager.',
+                    'Meeting deadlines to avoid negative consequences.'
+                ]
+            }
+        },
+        gallupQ12: [
+            {
+                category: 'Basic Needs (What I Get)',
+                questions: [
+                    { q: 'I know what is expected of me at work.', detail: 'Measures role clarity, which is essential for autonomy and focus.' },
+                    { q: 'I have the materials and equipment I need to do my work right.', detail: 'Assesses whether basic practical needs are met to avoid frustration.' }
+                ]
+            },
+            {
+                category: 'Individual Contribution (What I Give)',
+                questions: [
+                    { q: 'At work, I have the opportunity to do what I do best every day.', detail: 'Connects individual talent to daily tasks, a key part of meaningful work.' },
+                    { q: 'In the last seven days, I have received recognition or praise for doing good work.', detail: 'Measures how frequently positive contributions are valued and seen.' },
+                    { q: 'My supervisor, or someone at work, seems to care about me as a person.', detail: 'Assesses the level of psychological safety and human connection.' },
+                    { q: 'There is someone at work who encourages my development.', detail: 'Links current work to future growth, fostering a sense of career purpose.' }
+                ]
+            },
+            {
+                category: 'Teamwork & Belonging (Do I Belong?)',
+                questions: [
+                    { q: 'At work, my opinions seem to count.', detail: 'Measures whether individuals feel heard and respected.' },
+                    { q: 'The mission or purpose of my company makes me feel my job is important.', detail: 'Directly measures the connection to the "Why" (Business on Purpose).' },
+                    { q: 'My associates or fellow employees are committed to doing quality work.', detail: 'Assesses the sense of "Collectivity" and shared standards.' },
+                    { q: 'I have a best friend at work.', detail: 'A strong indicator of social connection and belonging within the team.' }
+                ]
+            },
+            {
+                category: 'Growth (How We Grow)',
+                questions: [
+                    { q: 'In the last six months, someone at work has talked to me about my progress.', detail: 'Measures the consistency of feedback and forward-looking conversations.' },
+                    { q: 'This last year, I have had opportunities at work to learn and grow.', detail: 'Assesses the availability of skill development, a key intrinsic motivator.' }
+                ]
+            }
+        ]
+    };
+    
+    // Utility function to get the clean anchor fragment (e.g., #dashboard)
+    function getFragmentFromHref(href) {
+        const hashIndex = href.indexOf('#');
+        return hashIndex !== -1 ? href.substring(hashIndex) : href;
+    }
+
+
+    // --- Navigation ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.content-section');
+
+    // --- Search Feature Logic moved up to fix TDZ error ---
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const HIGHLIGHT_CLASS = 'highlighted-text';
+
+    /**
+     * Removes all highlight spans from the document and merges adjacent text nodes.
+     */
+    function removeHighlights() {
+        document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach(span => {
+            const parent = span.parentNode;
+            if (parent) {
+                // Replace the span with its text content
+                parent.replaceChild(document.createTextNode(span.textContent), span);
+                parent.normalize(); // Merges adjacent text nodes back into one
+            }
+        });
+    }
+
+
+    function updateActiveNav(hash) {
+        const fragment = getFragmentFromHref(hash); // Normalize hash to just the fragment
+
+        navLinks.forEach(link => {
+            const linkHref = link.getAttribute('href');
+            
+            // Check if the link is an internal link (contains '#') and is not the home icon
+            if (linkHref.includes('#')) {
+                const linkFragment = getFragmentFromHref(linkHref);
+                // Only mark internal links as 'active' based on fragment
+                link.classList.toggle('active', linkFragment === fragment);
+            } else {
+                // External links (like the Home/Hub icon) are never active in this context
+                link.classList.remove('active');
+            }
+        });
+        
+        sections.forEach(section => {
+            const sectionHash = `#${section.id}`;
+            section.classList.toggle('active', sectionHash === fragment);
+        });
+        
+        // Clear search on section change
+        removeHighlights();
+        // Check if searchInput exists before accessing its value
+        if (searchInput) {
+             searchInput.value = '';
+        }
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetHref = link.getAttribute('href');
+            
+            // If it's an internal link (contains '#'), prevent default and use history API
+            if (targetHref.includes('#')) {
+                e.preventDefault();
+                const fragment = getFragmentFromHref(targetHref); 
+                
+                // Only push the fragment, which is safe in sandboxed environments
+                history.pushState(null, null, fragment);
+                updateActiveNav(fragment);
+            } 
+            // If it's an external link (like "LeadershipLanding.html"), let the browser navigate normally
+        });
+    });
+    
+    // Set initial state based on URL hash or default: Default is now #dashboard
+    const initialHash = window.location.hash || '#dashboard';
+    updateActiveNav(initialHash);
+
+
+    
+    /**
+     * Recursively searches and highlights text within a node.
+     * @param {Node} node The DOM node to search within.
+     * @param {string} searchString The text to find and highlight.
+     */
+    function highlightText(node, searchString) {
+        if (!searchString || !node || searchString.length < 1) return;
+
+        // Only process text nodes (nodeType 3)
+        if (node.nodeType === 3) { 
+            const text = node.data;
+            const lowerText = text.toLowerCase();
+            const lowerSearch = searchString.toLowerCase();
+            let index = lowerText.indexOf(lowerSearch);
+
+            // While matches are found
+            while (index >= 0) {
+                const matchedText = text.substring(index, index + searchString.length);
+                const afterText = text.substring(index + searchString.length);
+                const beforeText = text.substring(0, index);
+
+                const fragment = document.createDocumentFragment();
+
+                // 1. Text before the match
+                if (beforeText) {
+                    fragment.appendChild(document.createTextNode(beforeText));
+                }
+
+                // 2. The highlighted match
+                const highlightSpan = document.createElement('span');
+                highlightSpan.className = HIGHLIGHT_CLASS;
+                highlightSpan.textContent = matchedText;
+                fragment.appendChild(highlightSpan);
+
+                // Create the text node for the remainder of the string
+                const afterNode = document.createTextNode(afterText);
+                fragment.appendChild(afterNode);
+
+                // Replace the original text node with the fragment
+                node.parentNode.replaceChild(fragment, node);
+
+                // Continue the search in the remaining text (afterNode)
+                node = afterNode;
+                const newText = node.data;
+                index = newText.toLowerCase().indexOf(lowerSearch);
+            }
+
+        } else if (node.nodeType === 1 && node.childNodes && node.childNodes.length > 0) {
+            // Element node: recursively search children
+            // Skip dynamic elements and elements already highlighted
+            if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'CANVAS' && !node.classList.contains(HIGHLIGHT_CLASS)) {
+                // Iterate over a *copy* of child nodes, as they might change
+                Array.from(node.childNodes).forEach(child => highlightText(child, searchString));
+            }
+        }
+    }
+
+    /**
+     * Orchestrates the search process.
+     */
+    function searchPlaybook() {
+        removeHighlights(); // Clear previous highlights
+        const searchString = searchInput.value.trim();
+
+        if (searchString.length < 3) {
+            // Only perform search if at least 3 characters are entered
+            return;
+        }
+        
+        // Find the currently active content section
+        const activeSection = document.querySelector('.content-section.active');
+        
+        if (activeSection) {
+             // Limit search to content elements to avoid issues in structural/interactive areas
+            const searchableElements = activeSection.querySelectorAll('h2, h3, h4, p, li, blockquote');
+            
+            // If no specific content elements are found, search the entire section content
+            if (searchableElements.length === 0) {
+                 highlightText(activeSection, searchString);
+            } else {
+                searchableElements.forEach(element => {
+                    highlightText(element, searchString);
+                });
+            }
+            
+            // Scroll to the first match
+            const firstMatch = document.querySelector(`.${HIGHLIGHT_CLASS}`);
+            if (firstMatch) {
+                firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }
+    
+    // Attach event listeners for search
+    searchButton.addEventListener('click', searchPlaybook);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchPlaybook();
+        }
+    });
+
+    // --- Dashboard: Engagement Chart (Rest of the existing logic) ---
+    const pillarCards = document.querySelectorAll('.pillar-card');
+    const engagementText = document.getElementById('engagement-text');
+    const engagementChartCanvas = document.getElementById('engagementChart');
+    let engagementChart;
+
+    const disengagementMessages = {
+        autonomy: "Micromanagement and a lack of trust lead to compliance, not commitment.",
+        collectivity: "Isolation and a lack of mutual support destroy morale.",
+        why: "Without purpose, work feels transactional and meaningless.",
+        health: "Burnout depletes the capacity for a team to engage at all."
+    };
+    
+    if (engagementChartCanvas) {
+        const ctxEngagement = engagementChartCanvas.getContext('2d');
+        function createEngagementChart() {
+            engagementChart = new Chart(ctxEngagement, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Engaged', 'Disengaged'],
+                    datasets: [{
+                        data: [100, 0],
+                        backgroundColor: ['#0081a7', '#e0e0e0'],
+                        borderColor: '#f8f7f4',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
+        
+        function updateEngagementChart() {
+            const selectedPillars = document.querySelectorAll('.pillar-card.selected');
+            const engagementScore = (selectedPillars.length / pillarCards.length) * 100;
+            engagementChart.data.datasets[0].data = [engagementScore, 100 - engagementScore];
+            engagementChart.update();
+
+            let message = '';
+            if (selectedPillars.length === pillarCards.length) {
+                message = 'Fully Engaged: All pillars are strong, fostering a resilient and motivated culture.';
+            } else if (selectedPillars.length === 0) {
+                message = 'Fully Disengaged: The absence of all pillars leads to apathy and high turnover risk.';
+            } else {
+                const missingPillars = Array.from(pillarCards).filter(p => !p.classList.contains('selected'));
+                const missingPillarId = missingPillars[0].id.split('-')[1];
+                message = disengagementMessages[missingPillarId];
+            }
+            engagementText.textContent = message;
+        }
+
+        pillarCards.forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('selected');
+                updateEngagementChart();
+            });
+        });
+
+        createEngagementChart();
+        updateEngagementChart();
+    }
+
+
+    // --- Motivation Section (Rest of the existing logic) ---
+    const btnIntrinsic = document.getElementById('btn-intrinsic');
+    const btnExtrinsic = document.getElementById('btn-extrinsic');
+    const motivationContent = document.getElementById('motivation-content');
+    const ctxMotivation = document.getElementById('motivationImpactChart')?.getContext('2d');
+    let motivationImpactChart;
+
+    function renderMotivationContent(type) {
+        const content = data.motivation[type];
+        let examplesHtml = content.examples.map(ex => `<li class="text-gray-600">${ex}</li>`).join('');
+        motivationContent.innerHTML = `
+            <h3 class="font-bold text-xl mb-2 text-gray-800">${content.title}</h3>
+            <p class="text-gray-600 mb-4">${content.description}</p>
+            <h4 class="font-semibold text-gray-700 mb-2">Examples:</h4>
+            <ul class="list-disc list-inside space-y-1">${examplesHtml}</ul>
+        `;
+    }
+
+    function createMotivationChart() {
+        if (!ctxMotivation) return;
+        motivationImpactChart = new Chart(ctxMotivation, {
+            type: 'bar',
+            data: {
+                labels: ['Initial Boost', '6 Months', '1 Year+'],
+                datasets: [
+                    {
+                        label: 'Intrinsic',
+                        data: [60, 80, 90],
+                        backgroundColor: '#0081a7',
+                        borderColor: '#005f73',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Extrinsic',
+                        data: [90, 50, 30],
+                        backgroundColor: '#9e9e9e',
+                        borderColor: '#616161',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Engagement Level' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+    }
+
+    if (btnIntrinsic && btnExtrinsic) {
+        btnIntrinsic.addEventListener('click', () => {
+            btnIntrinsic.classList.add('active');
+            btnExtrinsic.classList.remove('active');
+            renderMotivationContent('intrinsic');
+        });
+
+        btnExtrinsic.addEventListener('click', () => {
+            btnExtrinsic.classList.add('active');
+            btnIntrinsic.classList.remove('active');
+            renderMotivationContent('extrinsic');
+        });
+
+        renderMotivationContent('intrinsic');
+        createMotivationChart();
+    }
+
+
+    // --- Diagnostics: Gallup Q12 Accordion (Rest of the existing logic) ---
+    const accordionContainer = document.getElementById('accordion-container');
+    if (accordionContainer) {
+        data.gallupQ12.forEach((group, index) => {
+            const item = document.createElement('div');
+            item.className = 'bg-white rounded-lg shadow-sm overflow-hidden';
+            
+            const header = document.createElement('div');
+            header.className = 'accordion-header flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100';
+            header.innerHTML = `
+                <h3 class="font-semibold text-lg text-gray-800">${group.category}</h3>
+                <span class="transform transition-transform duration-300">&#9662;</span>
+            `;
+            
+            const content = document.createElement('div');
+            content.className = 'accordion-content';
+            
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'p-5 border-t border-gray-200';
+            
+            const questionList = document.createElement('ul');
+            questionList.className = 'space-y-3';
+            group.questions.forEach(q => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <p class="font-medium text-gray-700">${q.q}</p>
+                    <p class="text-sm text-gray-500 pl-4">${q.detail}</p>
+                `;
+                questionList.appendChild(li);
+            });
+            
+            contentWrapper.appendChild(questionList);
+            content.appendChild(contentWrapper);
+            item.appendChild(header);
+            item.appendChild(content);
+            accordionContainer.appendChild(item);
+
+            header.addEventListener('click', () => {
+                const isOpen = content.style.maxHeight;
+                // Close all accordions
+                document.querySelectorAll('.accordion-content').forEach(el => el.style.maxHeight = null);
+                document.querySelectorAll('.accordion-header span').forEach(el => el.style.transform = '');
+
+                if (!isOpen) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    header.querySelector('span').style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+    }
+
+});
+</script>
+
+</body>
+</html>
