@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: Cash Flow Statement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax for rendering LaTeX formulas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        .nav-link {
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #D97706; /* amber-600 */
+            border-bottom-color: #D97706;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #F3F4F6; /* gray-100 */
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .tab-button.active {
+            border-color: #0D9488;
+            color: #0D9488;
+            background-color: #F0FDF4;
+        }
+        /* Custom styling for LaTeX rendering */
+        .latex-formula {
+            font-size: 1.1rem;
+            padding: 8px 0;
+            display: block;
+            text-align: center;
+        }
+        /* New CSS for Search Highlighting */
+        mark.highlight-match {
+            background-color: #FACC15; /* yellow-400 */
+            color: #1F2937; /* gray-800 */
+            padding: 1px 2px;
+            border-radius: 3px;
+        }
+        /* Table styles for the new section */
+        .cfs-table th, .cfs-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        .cfs-table th {
+            background-color: #F9FAFB;
+            font-weight: 600;
+            color: #4B5563;
+        }
+        .cfs-table tr:nth-child(even) {
+            background-color: #F9FAFB;
+        }
+        .cfs-table .impact-add { color: #059669; font-weight: 600; }
+        .cfs-table .impact-subtract { color: #DC2626; font-weight: 600; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- LEFT: Home Button and Title -->
+                <div class="flex-shrink-0 flex items-center space-x-4">
+                    <!-- Home Button -->
+                    <a href="FA-landing.html" class="flex items-center justify-center text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 px-3 py-1.5 rounded-lg transition duration-150 shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        Home
+                    </a>
+                    <h1 class="text-xl font-bold text-teal-600">Cash Flow Statement Explorer</h1>
+                </div>
+
+                <!-- RIGHT: Nav Links, Search, and Mobile Nav -->
+                <div class="flex items-center space-x-4">
+                    <!-- Desktop Nav Links (Hidden on mobile) -->
+                    <div class="hidden md:block">
+                        <div class="flex items-baseline space-x-4">
+                            <a href="#cfs-overview" class="nav-link active px-3 py-2 rounded-md text-sm font-medium">CFS Overview</a>
+                            <a href="#cfo-direct-method-notes" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFO Direct Details</a>
+                            <a href="#cfo-indirect-method-notes" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFO Indirect Details</a>
+                            <a href="#cfo-simulator" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Indirect Method Tool</a>
+                            <a href="#activities-explorer" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFI & CFF Details</a>
+                            <a href="#cfs-cross-reference" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Ref Tables</a>
+                        </div>
+                    </div>
+
+                    <!-- Search Input (Visible on all devices, positioned right) -->
+                    <input type="text" id="search-input" placeholder="Search content..." class="p-1.5 border border-gray-300 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500 w-28 sm:w-32 md:w-40">
+                    
+                    <!-- Mobile Navigation Select (Hidden on desktop) -->
+                    <div class="md:hidden">
+                        <select id="mobile-nav" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full md:w-auto p-2.5">
+                            <option value="#cfs-overview">CFS Overview</option>
+                            <option value="#cfo-direct-method-notes">CFO Direct Details</option>
+                            <option value="#cfo-indirect-method-notes">CFO Indirect Details</option>
+                            <option value="#cfo-simulator">Indirect Method Tool</option>
+                            <option value="#activities-explorer">CFI & CFF Details</option>
+                            <option value="#cfs-cross-reference">Ref Tables</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="cfs-interactive-guide-main" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="cfs-overview" class="scroll-mt-20 mb-16 text-center">
+            <h2 class="text-3xl font-bold mb-2">The Cash Flow Statement: Structure and Methods</h2>
+            <p class="text-lg text-gray-600 mb-10">The Cash Flow Statement (CFS) details all cash movements, classifying them into three essential activities to explain the change in the cash balance.</p>
+            
+            <!-- Three Pillars -->
+            <div class="card p-8 grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="p-4 bg-teal-50 rounded-lg text-teal-800 font-semibold">
+                    <p class="text-xl mb-1">CFO</p>
+                    <p class="text-sm font-normal text-gray-600">Operations (Core Business & Working Capital)</p>
+                </div>
+                <div class="p-4 bg-amber-50 rounded-lg text-amber-800 font-semibold">
+                    <p class="text-xl mb-1">CFI</p>
+                    <p class="text-sm font-normal text-gray-600">Investing (Long-Term Assets like PPE)</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg text-blue-800 font-semibold">
+                    <p class="text-xl mb-1">CFF</p>
+                    <p class="text-sm font-normal text-gray-600">Financing (Debt and Equity Transactions)</p>
+                </div>
+            </div>
+            
+            <!-- Direct vs Indirect Methods -->
+            <div class="card p-8 text-left">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Methods for Calculating CFO</h3>
+                <p class="mb-6 text-gray-600 text-center">The final CFO value is the same under both methods, but their starting points and presentation are fundamentally different.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-5 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-yellow-800 mb-2">Indirect Method (Most Common)</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Starting Point:</strong> <strong>Net Income</strong> (from the Income Statement).</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Focus:</strong> <strong>Reconciling</strong> the accrual-based Net Income to actual cash flow by adjusting for non-cash expenses, non-operating gains/losses, and changes in working capital.</p>
+                        <p class="text-sm text-gray-700"><strong>Requirement:</strong> Companies using the Direct Method must also present a separate reconciliation that looks like the Indirect Method.</p>
+                    </div>
+                    <div class="p-5 bg-sky-50 rounded-lg border-l-4 border-sky-500">
+                        <h4 class="text-xl font-bold text-sky-800 mb-2">Direct Method (More Informative)</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Starting Point:</strong> <strong>Cash receipts and payments</strong> (line-by-line basis).</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Focus:</strong> Directly reports major classes of gross cash receipts (e.g., cash collected from customers) and gross cash payments (e.g., cash paid to suppliers).</p>
+                        <p class="text-sm text-gray-700"><strong>Benefit:</strong> Offers clearer insight into cash generation efficiency, but requires more detailed data tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cfo-direct-method-notes" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Direct Method: Item-by-Item Breakdown</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">Detailed calculations to move from accrual-based revenue/expense (Income Statement) to actual cash receipts/payments (Balance Sheet changes).</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- 1. Cash Collected from Customers -->
+                <div class="card p-5 border-l-4 border-teal-500">
+                    <h3 class="text-lg font-semibold text-teal-700 mb-2">1. Cash Collected from Customers</h3>
+                    <p class="text-xs mb-3 text-gray-500">Adjusts <strong>Sales Revenue</strong> for the change in <strong>Accounts Receivable</strong> (A/R).</p>
+
+                    <!-- New Rearranged Formula -->
+                    <div class="latex-formula text-sm font-semibold text-teal-700 mb-2">
+                        $$\text{Cash Collected from Customers} = \text{Sales} – (\text{Ending A/R} – \text{Beginning A/R})$$
+                    </div>
+                    
+                    <div class="latex-formula text-xs text-gray-500 mb-2">
+                        $$\text{Ending A/R} = \text{Beginning A/R} + \text{Sales} – \text{Cash Collected from Customers}$$
+                    </div>
+                    
+                    <!-- NEW EXAMPLE BLOCK -->
+                    <h4 class="text-xs font-semibold text-gray-700 mb-1 mt-3 border-t pt-2">Calculation Example: A/R Increase</h4>
+                    <div class="text-xs font-mono bg-teal-100 p-2 rounded-md">
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>Sales Revenue (I/S)</span>
+                            <span class="font-bold">$15,400</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1 text-red-700">
+                            <span>- Increase in Accounts Receivable (Asset Increase $\to$ Subtract)</span>
+                            <span class="font-bold">(500)</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold bg-teal-200 p-1 rounded-sm">
+                            <span>= Cash Received from Customers</span>
+                            <span class="text-teal-900">$14,900</span>
+                        </div>
+                    </div>
+                    <!-- END NEW EXAMPLE BLOCK -->
+
+                    <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">A/R Increase:</span> <strong>Subtract</strong> (Sales > Cash).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">A/R Decrease:</span> <strong>Add</strong> (Cash > Sales).</li>
+                        <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: Sales Revenue. B/S: A/R.</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Cash Collected from Interest and Dividend Income -->
+                <div class="card p-5 border-l-4 border-teal-500">
+                    <h3 class="text-lg font-semibold text-teal-700 mb-2">2. Cash from Interest/Dividends</h3>
+                    <p class="text-xs mb-3 text-gray-500">Adjusts <strong>Interest/Dividend Revenue</strong> for change in related <strong>Receivables</strong>.</p>
+                    
+                    <!-- New Rearranged Formula -->
+                    <div class="latex-formula text-sm font-semibold text-teal-700 mb-2">
+                        $$\text{Cash from I/D} = \text{I/D Revenue} – (\text{Ending Receivable} – \text{Beginning Receivable})$$
+                    </div>
+                    
+                    <div class="latex-formula text-xs text-gray-500 mb-2">
+                        $$\text{Ending Receivable} = \text{Beginning Receivable} + \text{I/D Revenue} – \text{Cash Collected}$$
+                    </div>
+                    
+                    <!-- NEW EXAMPLE BLOCK -->
+                    <h4 class="text-xs font-semibold text-gray-700 mb-1 mt-3 border-t pt-2">Calculation Example: Receivable Increase</h4>
+                    <div class="text-xs font-mono bg-teal-100 p-2 rounded-md">
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>Interest Revenue (I/S)</span>
+                            <span class="font-bold">$1,000</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1 text-red-700">
+                            <span>- Increase in Receivable (Asset Increase $\to$ Subtract)</span>
+                            <span class="font-bold">(200)</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold bg-teal-200 p-1 rounded-sm">
+                            <span>= Cash Received from Interest/Dividends</span>
+                            <span class="text-teal-900">$800</span>
+                        </div>
+                    </div>
+                    <!-- END NEW EXAMPLE BLOCK -->
+
+                    <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Receivable Increase:</span> <strong>Subtract</strong> (Earned > Cash).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">Receivable Decrease:</span> <strong>Add</strong> (Cash > Earned).</li>
+                        <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: Interest/Dividend Revenue. B/S: Interest/Dividends Receivable.</li>
+                    </ul>
+                </div>
+
+                <!-- 3. Cash Paid to Suppliers (Two Steps) -->
+                <div class="card p-5 border-l-4 border-teal-500">
+                    <h3 class="text-lg font-semibold text-teal-700 mb-2">3. Cash Paid to Suppliers (2 Steps)</h3>
+                    <p class="text-xs mb-3 text-gray-500">This requires two adjustments: <strong>(1) finding Purchases</strong> from COGS and $\Delta$Inventory, and then <strong>(2) finding Cash Paid</strong> from Purchases and $\Delta$A/P.</p>
+                    
+                    <div class="latex-formula text-sm font-semibold text-teal-700 mb-4">
+                        $$\text{Cash Paid to Suppliers} = \text{COGS} \mp \Delta\text{Inventory} \mp \Delta\text{A/P}$$
+                    </div>
+
+                    <!-- START EXAMPLE BLOCK -->
+                    <h4 class="text-xs font-semibold text-gray-700 mb-1 mt-3 border-t pt-2">Detailed Calculation Example:</h4>
+                    <div class="text-xs font-mono bg-teal-100 p-2 rounded-md">
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>Cost of Goods Sold (COGS)</span>
+                            <span class="font-bold">$40</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1 text-red-700">
+                            <span>- Decrease in Inventory (Asset Decrease $\to$ Subtract)</span>
+                            <span class="font-bold">$(1)</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold mb-1 border-t border-dashed border-teal-500">
+                            <span>= Purchases Made</span>
+                            <span class="text-teal-800">$39</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1 text-red-700">
+                            <span>- Increase in Accounts Payable (Liability Increase $\to$ Subtract)</span>
+                            <span class="font-bold">$(3)</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold bg-teal-200 p-1 rounded-sm">
+                            <span>= Cash Paid to Suppliers</span>
+                            <span class="text-teal-900">$36</span>
+                        </div>
+                    </div>
+                    <!-- END EXAMPLE BLOCK -->
+
+                    <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Inventory Decrease:</span> **Subtract** from COGS (Less purchased than sold).</li>
+                        <li class="bg-sky-50 p-1 rounded-sm"><span class="font-semibold text-sky-700">Inventory Increase:</span> **Add** to COGS (More purchased than sold).</li>
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">A/P Increase:</span> **Subtract** from Purchases (Expense incurred, but cash not paid).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">A/P Decrease:</span> **Add** to Purchases (Paid cash for past expenses, cash outflow).</li>
+                        <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: COGS. B/S: Inventory, Accounts Payable (A/P).</li>
+                    </ul>
+                </div>
+
+                <!-- 4. Cash Paid for Operating Expenses -->
+                <div class="card p-5 border-l-4 border-amber-500">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">4. Cash Paid for Operating Expenses</h3>
+                    <p class="text-xs mb-3 text-gray-500">Adjusts <strong>Operating Expenses (less non-cash)</strong> for changes in related prepaid assets (like rent) and accrued liabilities (like salaries payable).</p>
+                    
+                    <div class="latex-formula text-sm font-semibold text-amber-700 mb-2">
+                        $$\text{Opex Cash Paid} = \text{Opex Expense} \mp \Delta\text{Prepaids} \mp \Delta\text{Accruals}$$
+                    </div>
+
+                    <!-- PREPAID RENT EXAMPLE BLOCK -->
+                    <h4 class="text-xs font-semibold text-gray-700 mb-1 mt-3 border-t pt-2">Specific Case Example: Prepaid Rent Increase</h4>
+                    <div class="text-xs font-mono bg-amber-100 p-2 rounded-md">
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>Operating Expenses (I/S)</span>
+                            <span class="font-bold">$2,000,000</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1 text-green-700">
+                            <span>+ Increase in Prepaid Rent (Asset Increase $\to$ Add Back)</span>
+                            <span class="font-bold">50,000</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold bg-amber-200 p-1 rounded-sm">
+                            <span>= Cash Paid for Operating Expenses</span>
+                            <span class="text-amber-900">$2,050,000</span>
+                        </div>
+                    </div>
+                    <!-- END PREPAID RENT EXAMPLE BLOCK -->
+                    
+                    <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
+                        <li class="bg-sky-50 p-1 rounded-sm"><span class="font-semibold text-sky-700">Prepaid (Asset) Increase:</span> <strong>Add</strong> (Cash paid now, expense later).</li>
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Prepaid (Asset) Decrease:</span> <strong>Subtract</strong> (Expense now, cash paid previously).</li>
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Accrual (Liability) Increase:</span> <strong>Subtract</strong> (Expense now, cash paid later).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">Accrual (Liability) Decrease:</span> <strong>Add</strong> (Cash paid now, expense recorded previously).</li>
+                        <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: SG&A. B/S: Prepaids, Accrued Liabilities.</li>
+                    </ul>
+                </div>
+
+                <!-- 5. Cash Paid for Tax -->
+                <div class="card p-5 border-l-4 border-amber-500">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">5. Cash Paid for Tax</h3>
+                    <p class="text-xs mb-3 text-gray-500">Adjusts <strong>Income Tax Expense</strong> for change in <strong>Income Tax Payable</strong>.</p>
+                    <div class="latex-formula text-sm">$$\text{Tax Expense} \mp \text{Change in Tax Payable}$$</div>
+                    <div class="latex-formula text-xs text-gray-500 mb-2">
+                        $$\text{Ending Tax Payable} = \text{Beginning Tax Payable} + \text{Income Tax Expense} – \text{Cash Paid for Income Taxes}$$
+                    </div>
+                    
+                    <!-- REARRANGED FORMULA -->
+                    <div class="latex-formula text-xs text-amber-700 mb-4 font-semibold">
+                        $$\text{Cash Paid for Taxes} = \text{Tax Expense} – (\text{Ending Tax Payable} – \text{Beginning Tax Payable})$$
+                    </div>
+
+                    <!-- EXAMPLE -->
+                    <h4 class="text-xs font-semibold text-gray-700 mb-1 mt-3 border-t pt-2">Example Calculation (Tax Payable Increase):</h4>
+                    <div class="text-xs font-mono bg-amber-100 p-2 rounded-md">
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>Income Tax Expense</span>
+                            <span class="font-bold">$1,700,000</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>- Increase in Tax Payable ($120,000)</span>
+                            <span class="font-bold text-red-600">$(120,000)</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold bg-amber-200 p-1 rounded-sm">
+                            <span>= Cash Paid for Income Taxes</span>
+                            <span class="text-amber-900">$1,580,000</span>
+                        </div>
+                    </div>
+                    <!-- END EXAMPLE -->
+
+                    <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Tax Payable Increase:</span> <strong>Subtract</strong> (Expense > Cash Paid).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">Tax Payable Decrease:</span> <strong>Add</strong> (Cash Paid > Expense).</li>
+                        <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: Income Tax Expense. B/S: Income Tax Payable.</li>
+                    </ul>
+                </div>
+
+                <!-- 6. Cash Paid for Interest -->
+                <div class="card p-5 border-l-4 border-amber-500">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">6. Cash Paid for Interest</h3>
+                    <p class="text-xs mb-3 text-gray-500">Adjusts <strong>Interest Expense</strong> for change in <strong>Interest Payable</strong>.</p>
+                    
+                    <!-- REARRANGED FORMULA -->
+                    <div class="latex-formula text-sm font-semibold text-amber-700 mb-2">
+                        $$\text{Cash Paid for Interest} = \text{Interest Expense} – (\text{Ending Payable} – \text{Beginning Payable})$$
+                    </div>
+
+                    <div class="latex-formula text-xs text-gray-500 mb-2">
+                        $$\text{Ending Interest Payable} = \text{Beginning Payable} + \text{Interest Expense} – \text{Cash Paid}$$
+                    </div>
+                    
+                    <!-- NEW EXAMPLE BLOCK -->
+                    <h4 class="text-xs font-semibold text-gray-700 mb-1 mt-3 border-t pt-2">Calculation Example: Payable Decrease</h4>
+                    <div class="text-xs font-mono bg-amber-100 p-2 rounded-md">
+                        <div class="flex justify-between border-b pb-1 mb-1">
+                            <span>Interest Expense (I/S)</span>
+                            <span class="font-bold">$5,000</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1 mb-1 text-green-700">
+                            <span>+ Decrease in Interest Payable (Liability Decrease $\to$ Add Back)</span>
+                            <span class="font-bold">500</span>
+                        </div>
+                        <div class="flex justify-between pt-1 font-bold bg-amber-200 p-1 rounded-sm">
+                            <span>= Cash Paid for Interest</span>
+                            <span class="text-amber-900">$5,500</span>
+                        </div>
+                    </div>
+                    <!-- END NEW EXAMPLE BLOCK -->
+
+                    <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Payable Increase:</span> <strong>Subtract</strong> (Expense > Cash Paid).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">Payable Decrease:</span> <strong>Add</strong> (Cash Paid > Expense).</li>
+                        <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: Interest Expense. B/S: Interest Payable.</li>
+                    </ul>
+                </div>
+                
+            </div>
+        </section>
+
+        <section id="cfo-simulator" class="scroll-mt-20 mb-16">
+             <h2 class="text-3xl font-bold text-center mb-2">CFO Adjustment Tool (Indirect Method)</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">This simulator demonstrates the <strong>Indirect Method</strong> process: adjusting accrual Net Income for non-cash transactions and changes in working capital to calculate Cash Flow from Operations (CFO).</p>
+            <div class="card p-6 md:p-8">
+                 <div class="md:flex md:items-center md:space-x-6 mb-6">
+                    <label for="adjustment-select" class="block text-lg font-medium text-gray-700 mb-2 md:mb-0">Select Adjustment Type:</label>
+                    <select id="adjustment-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full md:w-auto flex-grow p-2.5">
+                        <option value="depreciation">Non-Cash: Depreciation Expense ($100k)</option>
+                        <option value="arIncrease">Asset Change: Increase in A/R ($50k)</option>
+                        <option value="apDecrease">Liability Change: Decrease in A/P ($20k)</option>
+                        <option value="saleGain">Gain/Loss: Gain on Asset Sale ($10k)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-2">Scenario & Rationale:</h4>
+                        <p id="cfo-scenario" class="text-gray-600 mb-4 min-h-[60px]"></p>
+                        <div class="overflow-x-auto">
+                            <h5 class="font-semibold text-lg mb-2">Calculation Flow (Base NI: $500,000)</h5>
+                            <table class="w-full text-sm text-left text-gray-500">
+                                <tbody id="cfo-calculation-body">
+                                    <tr class="font-bold border-b"><td class="px-3 py-2">Net Income</td><td class="px-3 py-2 text-right">$500,000</td><td class="px-3 py-2 text-right"></td></tr>
+                                    <tr class="border-b"><td class="px-3 py-2" id="cfo-adj-type">Adjustment</td><td class="px-3 py-2 text-right" id="cfo-adj-value">-</td><td class="px-3 py-2 text-right" id="cfo-adj-op">-</td></tr>
+                                    <tr class="font-bold bg-teal-50"><td class="px-3 py-2">Cash Flow from Operations (CFO)</td><td class="px-3 py-2 text-right" id="cfo-final-value">-</td><td class="px-3 py-2 text-right"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <h4 class="text-xl font-semibold mb-4">Visual Impact on Cash Flow:</h4>
+                        <div class="chart-container">
+                            <canvas id="cfoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities-explorer" class="scroll-mt-20 mb-16">
+             <h2 class="text-3xl font-bold text-center mb-2">CFI & CFF Explorer</h2>
+             <p class="text-center text-lg text-gray-600 mb-10">Use the tabs to identify the major sources and uses of cash within the Investing and Financing sections of the CFS, which remain the same regardless of the CFO method chosen.</p>
+             <div class="card p-6 md:p-8">
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm active" data-tab="cfi">Investing Activities (CFI)</button>
+                        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="cff">Financing Activities (CFF)</button>
+                        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="noncash">Non-Cash Disclosures</button>
+                    </nav>
+                </div>
+                <div id="tab-content">
+                    <div id="cfi" class="tab-pane">
+                        <p class="mb-4 text-gray-600"><strong>Cash Flow from Investing (CFI)</strong> tracks transactions related to long-term assets (non-current). A high negative CFI indicates the company is investing heavily in future growth.</p>
+                         <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="p-3 bg-green-50 rounded-lg"><strong>Cash Inflow (+):</strong> Sale of Property, Plant & Equipment; Sale of investment securities.</div>
+                            <div class="p-3 bg-red-50 rounded-lg"><strong>Cash Outflow (-):</strong> Purchase of Property, Plant & Equipment (Capital Expenditure); Purchase of investment securities.</div>
+                        </div>
+                    </div>
+                    <!-- START CFF TAB UPDATE -->
+                    <div id="cff" class="tab-pane hidden">
+                        <p class="mb-4 text-gray-600"><strong>Cash Flow from Financing (CFF)</strong> tracks cash flows between the company and its capital providers (creditors and owners). **Treasury Stock** purchases are a major cash outflow in CFF.</p>
+                        
+                        <!-- CFF Formula and Example -->
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3 mt-4 border-t pt-3">CFF Calculation Formula and Example</h4>
+                        <div class="latex-formula text-sm font-semibold text-blue-700 mb-2">
+                            $$\text{CFF} = \text{New Stock Proceeds} + \text{New Loan Proceeds} – \text{Dividends Paid}$$
+                        </div>
+                        <div class="latex-formula text-sm font-semibold text-blue-700 mb-4">
+                            $$\text{CFF} = \$1,100,000 + \$700,000 - \$300,000 = \$1,500,000$$
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="p-3 bg-green-50 rounded-lg"><strong>Cash Inflow (+):</strong> Issuing stock (Equity); Issuing bonds or other long-term debt (Liabilities).</div>
+                            <div class="p-3 bg-red-50 rounded-lg"><strong>Cash Outflow (-):</strong> Paying cash dividends; Repurchasing treasury stock; Repaying long-term debt (e.g., principal on loans).</div>
+                        </div>
+                    </div>
+                    <!-- END CFF TAB UPDATE -->
+                     <div id="noncash" class="tab-pane hidden">
+                        <p class="mb-4 text-gray-600"><strong>Non-Cash Investing and Financing Activities</strong> are significant transactions that do not involve immediate cash exchange but are crucial for investors. They are disclosed separately from the three main sections.</p>
+                        <ul class="list-disc list-inside space-y-2 text-sm">
+                            <li>Acquiring assets by issuing stock or debt (e.g., purchasing a factory with a mortgage).</li>
+                            <li>Converting convertible bonds into common stock.</li>
+                            <li>Exchanging one non-cash asset for another (bartering).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- START NEW SECTION: COMPREHENSIVE TRANSACTION CROSS-REFERENCE -->
+        <section id="cfs-cross-reference" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Comprehensive Transaction Cross-Reference</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">Detailed reference guide showing how common balance sheet and income statement changes map directly to the three cash flow activities.</p>
+
+            <!-- CFO INDIRECT ADJUSTMENTS -->
+            <div class="card p-6 md:p-8 mb-10 border-l-4 border-teal-600">
+                <h3 class="text-xl font-semibold text-teal-800 mb-4">1. Cash Flow from Operations (CFO) Adjustments (Indirect Method)</h3>
+
+                <h4 class="text-lg font-semibold text-gray-700 mb-3 mt-6">A. Adjustments from the Income Statement (Non-Cash/Non-Operating)</h4>
+                <div class="overflow-x-auto">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Adjustment Item</th>
+                                <th class="w-1/6">Account Source</th>
+                                <th class="w-1/6">SCF Impact</th>
+                                <th class="w-2/4">Rationale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Depreciation Expense</strong></td>
+                                <td>I/S</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>It reduced Net Income but is a non-cash expense.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amortization Expense</strong></td>
+                                <td>I/S</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>It reduced Net Income but is a non-cash expense.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loss on Sale of Asset</strong></td>
+                                <td>I/S</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>The loss reduced Net Income, but the cash effect is fully recorded in CFI.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gain on Sale of Asset</strong></td>
+                                <td>I/S</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>The gain increased Net Income, but the cash effect is fully recorded in CFI.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Impairment Charges</strong></td>
+                                <td>I/S</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>Non-cash expense that reduced Net Income.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stock-Based Compensation</strong></td>
+                                <td>I/S</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>Non-cash expense (issuing equity, not paying cash).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Change in Deferred Tax</strong></td>
+                                <td>B/S</td>
+                                <td>Add / Subtract</td>
+                                <td>Adjustment for non-cash income tax differences.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 class="text-lg font-semibold text-gray-700 mb-3 mt-6">B. Changes in Non-Cash Current Operating Accounts (Working Capital)</h4>
+                <div class="overflow-x-auto">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Balance Sheet Change</th>
+                                <th class="w-1/6">Account Type</th>
+                                <th class="w-1/6">SCF Impact</th>
+                                <th class="w-2/4">Rationale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Increase in Accounts Receivable</strong></td>
+                                <td>Current Asset</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>Sales increased Net Income, but cash has not yet been collected.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Decrease in Accounts Receivable</strong></td>
+                                <td>Current Asset</td>
+                                <td class="impact-add">Add (+)</td>
+                                <td>Cash was collected for sales recorded in a prior period.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Increase in Inventory</strong></td>
+                                <td>Current Asset</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>Cash was spent to buy inventory that hasn't been sold yet.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Decrease in Inventory</strong></td>
+                                <td>Current Asset</td>
+                                <td class="impact-add">Add (+)</td>
+                                <td>Inventory was sold; the cost of inventory sold is adjusted out here.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Increase in Accounts Payable</strong></td>
+                                <td>Current Liability</td>
+                                <td class="impact-add">Add (+)</td>
+                                <td>Expenses were recorded on the I/S, but cash has not yet been paid.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Decrease in Accounts Payable</strong></td>
+                                <td>Current Liability</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>Cash was paid for expenses recorded in a prior period.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Increase in Prepaid Expenses</strong></td>
+                                <td>Current Asset</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>Cash was paid, but the expense has not yet been recorded on the I/S.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Increase in Deferred/Unearned Revenue</strong></td>
+                                <td>Current Liability</td>
+                                <td class="impact-add">Add (+)</td>
+                                <td>Cash was collected, but the revenue has not yet been earned.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CFI TRANSACTIONS -->
+            <div class="card p-6 md:p-8 mb-10 border-l-4 border-amber-600">
+                <h3 class="text-xl font-semibold text-amber-800 mb-4">2. Cash Flow from Investing (CFI)</h3>
+                <p class="text-sm text-gray-600 mb-4">Focuses on cash movements related to long-term assets (PP&E, Investments, Loans).</p>
+                <div class="overflow-x-auto">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Transaction</th>
+                                <th class="w-1/6">Account Source</th>
+                                <th class="w-1/6">SCF Impact</th>
+                                <th class="w-2/4">Rationale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Purchase of PP&E (CapEx)</strong></td>
+                                <td>Non-Current Asset (B/S)</td>
+                                <td class="impact-subtract">Cash Outflow (-)</td>
+                                <td>Spending cash on fixed assets (Capital Expenditures).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sale of PP&E</strong></td>
+                                <td>Non-Current Asset (B/S)</td>
+                                <td class="impact-add">Cash Inflow (+)</td>
+                                <td>Cash received from disposal of fixed assets.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Purchase of Long-Term Investments</strong></td>
+                                <td>Non-Current Asset (B/S)</td>
+                                <td class="impact-subtract">Cash Outflow (-)</td>
+                                <td>Spending cash to acquire long-term securities.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sale of Long-Term Investments</strong></td>
+                                <td>Non-Current Asset (B/S)</td>
+                                <td class="impact-add">Cash Inflow (+)</td>
+                                <td>Cash received from selling long-term investments.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Issuing Loans to Others</strong></td>
+                                <td>Non-Current Asset (B/S)</td>
+                                <td class="impact-subtract">Cash Outflow (-)</td>
+                                <td>Lending cash to another entity (creation of a Note Receivable).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Collecting Principal on Loans Made</strong></td>
+                                <td>Non-Current Asset (B/S)</td>
+                                <td class="impact-add">Cash Inflow (+)</td>
+                                <td>Receiving payment on the principal of a loan issued.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CFF TRANSACTIONS -->
+            <div class="card p-6 md:p-8 border-l-4 border-blue-600">
+                <h3 class="text-xl font-semibold text-blue-800 mb-4">3. Cash Flow from Financing (CFF)</h3>
+                <p class="text-sm text-gray-600 mb-4">Focuses on cash movements between the company and its capital providers (creditors and owners).</p>
+                <div class="overflow-x-auto">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Transaction</th>
+                                <th class="w-1/6">Account Source</th>
+                                <th class="w-1/6">SCF Impact</th>
+                                <th class="w-2/4">Rationale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Issuance of Common Stock</strong></td>
+                                <td>Equity (B/S)</td>
+                                <td class="impact-add">Cash Inflow (+)</td>
+                                <td>Receiving cash from new shareholders.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Purchase of Treasury Stock</strong></td>
+                                <td>Contra-Equity (B/S)</td>
+                                <td class="impact-subtract">Cash Outflow (-)</td>
+                                <td>Spending cash to buy back the company's own shares.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Payment of Cash Dividends</strong></td>
+                                <td>Equity (B/S)</td>
+                                <td class="impact-subtract">Cash Outflow (-)</td>
+                                <td>Paying cash to shareholders.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Issuance of Long-Term Debt</strong></td>
+                                <td>Non-Current Liability (B/S)</td>
+                                <td class="impact-add">Cash Inflow (+)</td>
+                                <td>Receiving cash from new creditors (e.g., new bonds/notes payable).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Repayment of Long-Term Debt</strong></td>
+                                <td>Non-Current Liability (B/S)</td>
+                                <td class="impact-subtract">Cash Outflow (-)</td>
+                                <td>Spending cash to pay off outstanding loans or bonds principal.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Borrowing under Line of Credit (LT)</strong></td>
+                                <td>Non-Current Liability (B/S)</td>
+                                <td class="impact-add">Cash Inflow (+)</td>
+                                <td>Increasing long-term debt obligation.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <!-- END NEW SECTION -->
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainContentArea = document.getElementById('cfs-interactive-guide-main');
+            const searchInput = document.getElementById('search-input');
+
+            // --- Search Functionality ---
+
+            // 1. Clears all previous <mark> highlights and restores text nodes.
+            function clearHighlights() {
+                if (!mainContentArea) return;
+                mainContentArea.querySelectorAll('mark.highlight-match').forEach(match => {
+                    // Replace the <mark> element with its text content
+                    const parent = match.parentNode;
+                    parent.replaceChild(document.createTextNode(match.textContent), match);
+                    parent.normalize(); // Clean up adjacent text nodes
+                });
+            }
+
+            // 2. Highlights matching text within the main content area.
+            function highlightText(query) {
+                clearHighlights();
+                
+                if (!query) return;
+
+                const regex = new RegExp(query, 'gi'); // Case-insensitive, global search
+                let matchesFound = 0;
+                
+                // Use a TreeWalker to safely navigate text nodes within the main content
+                const walker = document.createTreeWalker(
+                    mainContentArea,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+
+                let node;
+                const nodesToProcess = [];
+
+                // Collect all text nodes first
+                while (node = walker.nextNode()) {
+                    // Skip nodes inside interactive elements (inputs, select, chart canvas)
+                    if (node.parentElement.closest('script, style, textarea, input, select, canvas')) {
+                        continue;
+                    }
+                    nodesToProcess.push(node);
+                }
+                
+                nodesToProcess.forEach(textNode => {
+                    const text = textNode.nodeValue;
+                    
+                    if (regex.test(text)) {
+                        const result = text.match(regex);
+                        matchesFound += result.length;
+                        
+                        // Use a temporary div and innerHTML to safely perform the replacement
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = text.replace(regex, (match) => `<mark class="highlight-match">${match}</mark>`);
+                        
+                        // Move the new structure (text nodes and <mark> elements) into the DOM
+                        let frag = document.createDocumentFragment();
+                        while (tempDiv.firstChild) {
+                            frag.appendChild(tempDiv.firstChild);
+                        }
+                        
+                        textNode.parentNode.replaceChild(frag, textNode);
+                    }
+                });
+                
+                // Scroll to the first match if any were found
+                const firstMatch = document.querySelector('mark.highlight-match');
+                if (firstMatch) {
+                    firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // 3. Attach listener to the search input
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                highlightText(query);
+            });
+
+            // --- Existing Functionality ---
+
+            // Navigation scroll highlighting
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: '-40% 0px -60% 0px' });
+            sections.forEach(section => observer.observe(section));
+
+            document.getElementById('mobile-nav').addEventListener('change', function() {
+                const targetId = this.value;
+                document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+            });
+
+            const BASE_NI = 500000;
+            const adjustmentSelect = document.getElementById('adjustment-select');
+            let cfoChart;
+
+            const cfoAdjustments = {
+                depreciation: {
+                    amount: 100000,
+                    operation: 'ADD BACK (+)',
+                    scenario: 'Depreciation Expense reduces Net Income but is a non-cash expense. We must add it back to find the true cash flow.',
+                    label: 'Depreciation Exp.',
+                    color: '#10B981'
+                },
+                arIncrease: {
+                    amount: -50000,
+                    operation: 'SUBTRACT (-)',
+                    scenario: 'An increase in Accounts Receivable means sales were recorded, but the cash has not yet been collected. We subtract the non-cash revenue.',
+                    label: 'Increase in A/R',
+                    color: '#EF4444'
+                },
+                apDecrease: {
+                    amount: -20000,
+                    operation: 'SUBTRACT (-)',
+                    scenario: 'A decrease in Accounts Payable means cash was used to pay down an existing liability. This cash outflow reduces CFO.',
+                    label: 'Decrease in A/P',
+                    color: '#EF4444'
+                },
+                saleGain: {
+                    amount: -10000,
+                    operation: 'SUBTRACT (-)',
+                    scenario: 'A Gain on Sale is included in Net Income, but the cash proceeds from the sale are reported in CFI. We subtract the non-cash gain from NI here.',
+                    label: 'Gain on Sale',
+                    color: '#EF4444'
+                }
+            };
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(value);
+            }
+
+            function updateSimulator() {
+                const selected = adjustmentSelect.value;
+                const data = cfoAdjustments[selected];
+
+                const finalCFO = BASE_NI + data.amount;
+                const adjustmentValueDisplay = data.amount > 0 ? formatCurrency(data.amount) : formatCurrency(Math.abs(data.amount));
+
+                document.getElementById('cfo-scenario').textContent = data.scenario;
+                document.getElementById('cfo-adj-type').textContent = data.label;
+                document.getElementById('cfo-adj-value').textContent = adjustmentValueDisplay;
+                document.getElementById('cfo-adj-op').textContent = data.operation;
+                document.getElementById('cfo-final-value').textContent = formatCurrency(finalCFO);
+                document.getElementById('cfo-final-value').classList.toggle('text-green-600', finalCFO > BASE_NI);
+                document.getElementById('cfo-final-value').classList.toggle('text-red-600', finalCFO < BASE_NI);
+
+                const ctx = document.getElementById('cfoChart').getContext('2d');
+                if (cfoChart) cfoChart.destroy();
+                
+                cfoChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Net Income', data.label, 'Final CFO'],
+                        datasets: [{
+                            data: [BASE_NI, data.amount, finalCFO],
+                            backgroundColor: [
+                                '#FBBF24',
+                                data.color,
+                                '#0D9488'
+                            ],
+                            borderColor: [
+                                '#D97706', 
+                                data.color, 
+                                '#0D9488'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                beginAtZero: false, 
+                                ticks: { callback: value => formatCurrency(value) }
+                            }
+                        }
+                    }
+                });
+            }
+            adjustmentSelect.addEventListener('change', updateSimulator);
+            updateSimulator();
+
+            // CFS Tabs for CFI/CFF/Non-Cash
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    tabPanes.forEach(pane => {
+                        pane.classList.toggle('hidden', pane.id !== tab.dataset.tab);
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
