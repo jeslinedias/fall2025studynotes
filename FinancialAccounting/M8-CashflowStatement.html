@@ -78,6 +78,14 @@
         }
         .cfs-table .impact-add { color: #059669; font-weight: 600; }
         .cfs-table .impact-subtract { color: #DC2626; font-weight: 600; }
+        /* Style for the new numerical examples */
+        .cash-flow-box {
+            background-color: #F0F9FF; /* blue-50 */
+            border: 1px solid #BFDBFE; /* blue-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -104,9 +112,12 @@
                         <div class="flex items-baseline space-x-4">
                             <a href="#cfs-overview" class="nav-link active px-3 py-2 rounded-md text-sm font-medium">CFS Overview</a>
                             <a href="#cfo-direct-method-notes" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFO Direct Details</a>
+                            <!-- Placeholder for Indirect Method Notes -->
                             <a href="#cfo-indirect-method-notes" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFO Indirect Details</a>
                             <a href="#cfo-simulator" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Indirect Method Tool</a>
-                            <a href="#activities-explorer" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFI & CFF Details</a>
+                            <!-- New Link for Numerical Examples -->
+                            <a href="#cfo-numerical-examples" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Numerical Examples</a>
+                            <a href="#activities-explorer" class="nav-link px-3 py-2 rounded-md text-sm font-medium">CFI & CFF Explorer</a>
                             <a href="#cfs-cross-reference" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Ref Tables</a>
                         </div>
                     </div>
@@ -121,7 +132,8 @@
                             <option value="#cfo-direct-method-notes">CFO Direct Details</option>
                             <option value="#cfo-indirect-method-notes">CFO Indirect Details</option>
                             <option value="#cfo-simulator">Indirect Method Tool</option>
-                            <option value="#activities-explorer">CFI & CFF Details</option>
+                            <option value="#cfo-numerical-examples">Numerical Examples</option>
+                            <option value="#activities-explorer">CFI & CFF Explorer</option>
                             <option value="#cfs-cross-reference">Ref Tables</option>
                         </select>
                     </div>
@@ -294,10 +306,10 @@
                     <!-- END EXAMPLE BLOCK -->
 
                     <ul class="text-xs space-y-1 mt-2 pt-2 border-t">
-                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Inventory Decrease:</span> **Subtract** from COGS (Less purchased than sold).</li>
-                        <li class="bg-sky-50 p-1 rounded-sm"><span class="font-semibold text-sky-700">Inventory Increase:</span> **Add** to COGS (More purchased than sold).</li>
-                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">A/P Increase:</span> **Subtract** from Purchases (Expense incurred, but cash not paid).</li>
-                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">A/P Decrease:</span> **Add** to Purchases (Paid cash for past expenses, cash outflow).</li>
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">Inventory Decrease:</span> <strong>Subtract</strong> from COGS (Less purchased than sold).</li>
+                        <li class="bg-sky-50 p-1 rounded-sm"><span class="font-semibold text-sky-700">Inventory Increase:</span> <strong>Add</strong> to COGS (More purchased than sold).</li>
+                        <li class="bg-red-50 p-1 rounded-sm"><span class="font-semibold text-red-700">A/P Increase:</span> <strong>Subtract</strong> from Purchases (Expense incurred, but cash not paid).</li>
+                        <li class="bg-green-50 p-1 rounded-sm"><span class="font-semibold text-green-700">A/P Decrease:</span> <strong>Add</strong> to Purchases (Paid cash for past expenses, cash outflow).</li>
                         <li class="text-gray-600 mt-2"><span class="font-semibold">Sources:</span> I/S: COGS. B/S: Inventory, Accounts Payable (A/P).</li>
                     </ul>
                 </div>
@@ -419,6 +431,12 @@
             </div>
         </section>
 
+        <!-- Placeholder for CFO Indirect Details (to match nav link) -->
+        <section id="cfo-indirect-method-notes" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Indirect Method: Core Concepts</h2>
+            <p class="text-center text-lg text-gray-600 mb-10">The core goal is to adjust the accrual Net Income to reflect only operating cash inflows and outflows. All adjustments fall into three categories: Non-Cash Expenses, Non-Operating Gains/Losses, and Working Capital Changes.</p>
+        </section>
+
         <section id="cfo-simulator" class="scroll-mt-20 mb-16">
              <h2 class="text-3xl font-bold text-center mb-2">CFO Adjustment Tool (Indirect Method)</h2>
             <p class="text-center text-lg text-gray-600 mb-10">This simulator demonstrates the <strong>Indirect Method</strong> process: adjusting accrual Net Income for non-cash transactions and changes in working capital to calculate Cash Flow from Operations (CFO).</p>
@@ -456,6 +474,160 @@
                 </div>
             </div>
         </section>
+        
+        <!-- NEW SECTION ADDED HERE -->
+        <section id="cfo-numerical-examples" class="scroll-mt-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Numerical Examples: CFS Transactions</h2>
+            <!-- FIX APPLIED HERE: $\mathbf{\$100,000}$ changed to $\textbf{\$100,000}$ -->
+            <p class="text-center text-lg text-gray-600 mb-10">A real-world guide showing how specific transactions are recorded in the Cash Flow Statement across all three activities. (Baseline Net Income (NI) for CFO is $100,000)</p>
+            
+            <div class="card p-6 md:p-8">
+                
+                <!-- CFO SECTION -->
+                <h3 class="text-2xl font-semibold text-teal-700 mb-4 border-b pb-2">I. Cash Flow from Operating Activities (CFO - Indirect)</h3>
+                <!-- FIX APPLIED HERE: $\mathbf{\$100,000}$ changed to $\textbf{\$100,000}$ -->
+                <p class="text-sm text-gray-600 mb-4 italic">Adjustments start with Net Income of $100,000. </p>
+
+                <div class="overflow-x-auto mb-8">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr class="bg-teal-100">
+                                <th class="w-1/4">Transaction Type</th>
+                                <th class="w-1/6">Example Value</th>
+                                <th class="w-1/6">CFO Adjustment</th>
+                                <th class="w-2/4">Rationale & Real-World Context</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Non-Cash Items -->
+                            <tr class="bg-teal-50">
+                                <td colspan="4" class="font-bold text-teal-800">A. Adjustments for Non-Cash Items (Reverse I/S Impact)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Depreciation/Amortization Expense</strong></td>
+                                <td>$20,000</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>It reduced Net Income (NI), but no cash was spent. We add back the non-cash charge.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loss on Sale of Asset</strong></td>
+                                <td>$2,000</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>The loss reduced NI, but the full cash received from the sale is recorded in CFI. Must reverse the loss.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gain on Sale of Asset</strong></td>
+                                <td>$10,000</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>The gain inflated NI, but the full cash received from the sale is recorded in CFI. Must reverse the gain.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stock-Based Compensation</strong></td>
+                                <td>$5,000</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>Non-cash expense that reduced NI.</td>
+                            </tr>
+                            <!-- Working Capital -->
+                            <tr class="bg-teal-50">
+                                <td colspan="4" class="font-bold text-teal-800">B. Adjustments for Changes in Working Capital</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Increase in Accounts Receivable (A/R)</strong></td>
+                                <td>$(15,000)</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>Revenue was recorded, but cash was <strong>not</strong> collected. Decreases cash flow. (Current Asset $\uparrow \to$ Cash $\downarrow$)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Decrease in Inventory</strong></td>
+                                <td>$5,000</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>Inventory was sold; cost was paid in a prior period. Increases cash flow. (Current Asset $\downarrow \to$ Cash $\uparrow$)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Increase in Accounts Payable (A/P)</strong></td>
+                                <td>$8,000</td>
+                                <td class="impact-add">Add Back (+)</td>
+                                <td>Expense was recorded, but payment was <strong>deferred</strong>. Increases cash flow. (Current Liability $\uparrow \to$ Cash $\uparrow$)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Decrease in Wages Payable</strong></td>
+                                <td>$(3,000)</td>
+                                <td class="impact-subtract">Subtract (-)</td>
+                                <td>Cash was paid for an expense recorded last period. Decreases cash flow. (Current Liability $\downarrow \to$ Cash $\downarrow$)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- CFI SECTION -->
+                <h3 class="text-2xl font-semibold text-amber-700 mb-4 border-b pb-2 mt-8">II. Cash Flow from Investing Activities (CFI - Direct)</h3>
+                <p class="text-sm text-gray-600 mb-4 italic">Reports <strong>direct cash flows</strong> related to long-term assets (PP&E and investments).</p>
+                <div class="overflow-x-auto mb-8">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr class="bg-amber-100">
+                                <th class="w-1/4">Transaction Type</th>
+                                <th class="w-1/6">Cash Impact</th>
+                                <th class="w-1/6">Activity</th>
+                                <th class="w-2/4">Example Scenario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Purchase of PP&E (CapEx)</strong></td>
+                                <td class="impact-subtract">$(\$500,000)$</td>
+                                <td>Cash Outflow (-)</td>
+                                <td>Company purchased a new factory (long-term asset).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sale of Long-Term Investment</strong></td>
+                                <td class="impact-add">$75,000</td>
+                                <td>Cash Inflow (+)</td>
+                                <td>Company sold stock it held in another corporation.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- CFF SECTION -->
+                <h3 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2 mt-8">III. Cash Flow from Financing Activities (CFF - Direct)</h3>
+                <p class="text-sm text-gray-600 mb-4 italic">Reports <strong>direct cash flows</strong> related to capital providers (debt and equity).</p>
+                <div class="overflow-x-auto">
+                    <table class="cfs-table w-full text-sm">
+                        <thead>
+                            <tr class="bg-blue-100">
+                                <th class="w-1/4">Transaction Type</th>
+                                <th class="w-1/6">Cash Impact</th>
+                                <th class="w-1/6">Activity</th>
+                                <th class="w-2/4">Example Scenario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Issuance of Debt (New Bonds)</strong></td>
+                                <td class="impact-add">$350,000</td>
+                                <td>Cash Inflow (+)</td>
+                                <td>Company issued a new 5-year corporate bond to raise capital.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Purchase of Treasury Stock</strong></td>
+                                <td class="impact-subtract">$(\$180,000)$</td>
+                                <td>Cash Outflow (-)</td>
+                                <td>Company spent cash to buy back its own shares from the market.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Payment of Cash Dividends</strong></td>
+                                <td class="impact-subtract">$(\$25,000)$</td>
+                                <td>Cash Outflow (-)</td>
+                                <td>Cash distributed to shareholders as a return on investment.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+        <!-- END NEW SECTION -->
 
         <section id="activities-explorer" class="scroll-mt-20 mb-16">
              <h2 class="text-3xl font-bold text-center mb-2">CFI & CFF Explorer</h2>
@@ -478,7 +650,7 @@
                     </div>
                     <!-- START CFF TAB UPDATE -->
                     <div id="cff" class="tab-pane hidden">
-                        <p class="mb-4 text-gray-600"><strong>Cash Flow from Financing (CFF)</strong> tracks cash flows between the company and its capital providers (creditors and owners). **Treasury Stock** purchases are a major cash outflow in CFF.</p>
+                        <p class="mb-4 text-gray-600"><strong>Cash Flow from Financing (CFF)</strong> tracks cash flows between the company and its capital providers (creditors and owners). <strong>Treasury Stock</strong> purchases are a major cash outflow in CFF.</p>
                         
                         <!-- CFF Formula and Example -->
                         <h4 class="text-lg font-semibold text-gray-700 mb-3 mt-4 border-t pt-3">CFF Calculation Formula and Example</h4>
@@ -966,5 +1138,3 @@
 
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
